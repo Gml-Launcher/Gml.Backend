@@ -9,7 +9,7 @@ COPY ["src/Gml.WebApi/Gml.WebApi.csproj", "src/Gml.WebApi/"]
 COPY ["src/gml-core/src/GmlCore.Interfaces/GmlCore.Interfaces.csproj", "src/gml-core/src/GmlCore.Interfaces/"]
 COPY ["src/gml-core/src/GmlCore/GmlCore.csproj", "src/gml-core/src/GmlCore/"]
 COPY ["src/gml-core/src/CmlLib.Core.Installer.Forge/CmlLib.Core.Installer.Forge/CmlLib.Core.Installer.Forge.csproj", "src/gml-core/src/CmlLib.Core.Installer.Forge/CmlLib.Core.Installer.Forge/"]
-COPY ["../../source/repos/Gml.Common/Gml.Common/Gml.Common.csproj", "../../source/repos/Gml.Common/Gml.Common/"]
+COPY ["src/Gml.Common/Gml.Common/Gml.Common.csproj", "src/Gml.Common/Gml.Common/"]
 COPY ["src/Gml.WebApi.Models/Gml.WebApi.Models.csproj", "src/Gml.WebApi.Models/"]
 RUN dotnet restore "src/Gml.WebApi/Gml.WebApi.csproj"
 COPY . .

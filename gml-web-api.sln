@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{A2E6D9
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+		.dockerignore = .dockerignore
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore", "src\gml-core\src\GmlCore\GmlCore.csproj", "{9F0244C3-F499-4572-964D-ED30F0E4AC03}"
@@ -21,12 +23,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmlLib.Core.Installer.Forge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.WebApi.Models", "src\Gml.WebApi.Models\Gml.WebApi.Models.csproj", "{4921D185-BE14-41B0-8327-F82F036A7A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Common", "..\..\source\repos\Gml.Common\Gml.Common\Gml.Common.csproj", "{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{23C5C5C3-BD2C-431E-B47B-86BC9F019974}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Common", "src\Gml.Common\Gml.Common\Gml.Common.csproj", "{410B82AA-FFF6-4CC6-9E30-BB2D79638EAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,10 +56,10 @@ Global
 		{4921D185-BE14-41B0-8327-F82F036A7A61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4921D185-BE14-41B0-8327-F82F036A7A61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4921D185-BE14-41B0-8327-F82F036A7A61}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{410B82AA-FFF6-4CC6-9E30-BB2D79638EAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{410B82AA-FFF6-4CC6-9E30-BB2D79638EAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{410B82AA-FFF6-4CC6-9E30-BB2D79638EAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{410B82AA-FFF6-4CC6-9E30-BB2D79638EAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112} = {173407F0-6602-48A5-BF49-E288C6043FE3}
@@ -65,6 +67,6 @@ Global
 		{5DC19A4D-EE11-4F49-A1EB-B833E7212655} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{0B17CE15-825E-419F-B207-036FCFF8D30D} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{4921D185-BE14-41B0-8327-F82F036A7A61} = {173407F0-6602-48A5-BF49-E288C6043FE3}
-		{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3} = {173407F0-6602-48A5-BF49-E288C6043FE3}
+		{410B82AA-FFF6-4CC6-9E30-BB2D79638EAB} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 	EndGlobalSection
 EndGlobal
