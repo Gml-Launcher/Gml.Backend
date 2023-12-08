@@ -1,0 +1,3 @@
+[submodule "src/gml-core"]
+	path = src/gml-core
+	url = https://github.com/GamerVII-NET/gml-core.git

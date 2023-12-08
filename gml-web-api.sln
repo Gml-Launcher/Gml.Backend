@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.WebApi", "src\Gml.WebApi\Gml.WebApi.csproj", "{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{173407F0-6602-48A5-BF49-E288C6043FE3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{AA158165-09EE-4338-9FC8-9F172E47F62D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{A2E6D9BD-8CCB-48FC-91B9-D935ED9188D5}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore", "src\gml-core\src\GmlCore\GmlCore.csproj", "{9F0244C3-F499-4572-964D-ED30F0E4AC03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore.Interfaces", "src\gml-core\src\GmlCore.Interfaces\GmlCore.Interfaces.csproj", "{5DC19A4D-EE11-4F49-A1EB-B833E7212655}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmlLib.Core.Installer.Forge", "src\gml-core\src\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge.csproj", "{0B17CE15-825E-419F-B207-036FCFF8D30D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.WebApi.Models", "src\Gml.WebApi.Models\Gml.WebApi.Models.csproj", "{4921D185-BE14-41B0-8327-F82F036A7A61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Common", "..\..\source\repos\Gml.Common\Gml.Common\Gml.Common.csproj", "{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F0244C3-F499-4572-964D-ED30F0E4AC03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F0244C3-F499-4572-964D-ED30F0E4AC03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F0244C3-F499-4572-964D-ED30F0E4AC03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F0244C3-F499-4572-964D-ED30F0E4AC03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DC19A4D-EE11-4F49-A1EB-B833E7212655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DC19A4D-EE11-4F49-A1EB-B833E7212655}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DC19A4D-EE11-4F49-A1EB-B833E7212655}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DC19A4D-EE11-4F49-A1EB-B833E7212655}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B17CE15-825E-419F-B207-036FCFF8D30D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B17CE15-825E-419F-B207-036FCFF8D30D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B17CE15-825E-419F-B207-036FCFF8D30D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B17CE15-825E-419F-B207-036FCFF8D30D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4921D185-BE14-41B0-8327-F82F036A7A61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4921D185-BE14-41B0-8327-F82F036A7A61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4921D185-BE14-41B0-8327-F82F036A7A61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4921D185-BE14-41B0-8327-F82F036A7A61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112} = {173407F0-6602-48A5-BF49-E288C6043FE3}
+		{9F0244C3-F499-4572-964D-ED30F0E4AC03} = {173407F0-6602-48A5-BF49-E288C6043FE3}
+		{5DC19A4D-EE11-4F49-A1EB-B833E7212655} = {173407F0-6602-48A5-BF49-E288C6043FE3}
+		{0B17CE15-825E-419F-B207-036FCFF8D30D} = {173407F0-6602-48A5-BF49-E288C6043FE3}
+		{4921D185-BE14-41B0-8327-F82F036A7A61} = {173407F0-6602-48A5-BF49-E288C6043FE3}
+		{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3} = {173407F0-6602-48A5-BF49-E288C6043FE3}
+	EndGlobalSection
+EndGlobal
