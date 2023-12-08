@@ -8,9 +8,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{AA158165
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{A2E6D9BD-8CCB-48FC-91B9-D935ED9188D5}"
 	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore", "src\gml-core\src\GmlCore\GmlCore.csproj", "{9F0244C3-F499-4572-964D-ED30F0E4AC03}"
@@ -22,6 +22,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.WebApi.Models", "src\Gml.WebApi.Models\Gml.WebApi.Models.csproj", "{4921D185-BE14-41B0-8327-F82F036A7A61}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Common", "..\..\source\repos\Gml.Common\Gml.Common\Gml.Common.csproj", "{C65D4377-FC74-47D1-9E76-78EDBB3CE6A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{23C5C5C3-BD2C-431E-B47B-86BC9F019974}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

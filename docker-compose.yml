@@ -1,0 +1,8 @@
+﻿services:
+  gml.webapi:
+    image: gml.webapi
+    build:
+      context: .
+      dockerfile: src/Gml.WebApi/Dockerfile
+    ports:
+      - "5000:8080"
