@@ -3,6 +3,6 @@
     image: gml.webapi
     build:
       context: .
-      dockerfile: src/Gml.WebApi/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "5000:8080"
