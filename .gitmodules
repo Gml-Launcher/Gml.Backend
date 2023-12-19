@@ -1,3 +1,6 @@
 [submodule "src/gml-core"]
 	path = src/gml-core
 	url = https://github.com/GamerVII-NET/gml-core.git
+[submodule "src/CmlLib.Core"]
+	path = src/CmlLib.Core
+	url = https://github.com/GamerVII-NET/CmlLib.Core.git
