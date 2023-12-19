@@ -12,10 +12,9 @@ public static class ApplicationExtensions
                             ?? throw new Exception("AppSettings error, section 'ProjectName' not found");
 
         var directory = builder.Configuration.GetSection("ProjectPath").Value
-                            ?? throw new Exception("AppSettings error, section 'ProjectPath' not found");
+                        ?? throw new Exception("AppSettings error, section 'ProjectPath' not found");
 
-        builder.Services.AddSingleton<IGmlManager>(options =>
-            new GmlManager(new GmlSettings(configuration, directory)));
+        builder.Services.AddSingleton<IGmlManager>(_ => new GmlManager(new GmlSettings(configuration, directory)));
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -44,8 +43,8 @@ public static class ApplicationExtensions
 
         app.MapGet("/api/file/{fileHash}", RequestHandler.DownloadFile);
 
-
         #endregion
+
         app.MapGet("/", () => Results.Ok("Hello world!"));
 
 
@@ -54,10 +53,6 @@ public static class ApplicationExtensions
 
     public static WebApplication AddMiddlewares(this WebApplication app)
     {
-
-
-
         return app;
     }
-
 }

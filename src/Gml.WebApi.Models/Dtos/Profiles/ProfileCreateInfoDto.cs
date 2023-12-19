@@ -1,3 +1,5 @@
+using Gml.WebApi.Models.Enums.System;
+
 namespace Gml.WebApi.Models.Dtos.Profiles
 {
     public class ProfileCreateInfoDto
@@ -13,6 +15,8 @@ namespace Gml.WebApi.Models.Dtos.Profiles
         public bool IsFullScreen { get; set; }
         public int RamSize { get; set; }
         public string UserUuid { get; set; }
+        public int OsType { get; set; }
+        public string OsArchitecture { get; set; }
     }
 
 }

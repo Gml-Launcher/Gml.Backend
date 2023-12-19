@@ -2,8 +2,9 @@ namespace Gml.WebApi.Models.Enums.System
 {
     public enum OsType
     {
-        Linux = 0,
-        MaxOs = 1,
-        Windows = 2,
+        Undefined = 0,
+        Linux = 1,
+        MaxOs = 2,
+        Windows = 3,
     }
 }

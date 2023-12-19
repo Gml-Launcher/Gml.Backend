@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Gml.Core.Launcher;
 using Gml.Core.User;
 using Gml.WebApi.Models.Dtos.Profiles;
+using Gml.WebApi.Models.Enums.System;
 using GmlCore.Interfaces;
 using GmlCore.Interfaces.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -55,6 +56,14 @@ public class RequestHandler
         if (string.IsNullOrEmpty(profile.ClientName))
             return Results.BadRequest();
 
+        var checkProfile = await gmlManager.Profiles.GetProfile(profile.ClientName);
+
+        if (checkProfile is null)
+            return Results.NotFound();
+
+        if (!Enum.TryParse(profile.OsType.ToString(), out OsType osType))
+            return Results.BadRequest();
+
         var profileInfoRead = await gmlManager.Profiles.GetProfileInfo(profile.ClientName, new StartupOptions
         {
             FullScreen = profile.IsFullScreen,
@@ -62,7 +71,8 @@ public class RequestHandler
             ScreenWidth = profile.SizeX,
             ServerIp = profile.GameAddress,
             ServerPort = profile.GamePort,
-            MaximumRamMb = profile.RamSize
+            MaximumRamMb = profile.RamSize,
+            OsType = osType
         }, new User
         {
             Name = profile.UserName,
