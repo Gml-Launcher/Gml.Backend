@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -13,7 +13,7 @@ COPY ["src/Gml.Common/Gml.Common/Gml.Common.csproj", "src/Gml.Common/Gml.Common/
 COPY ["src/Gml.WebApi.Models/Gml.WebApi.Models.csproj", "src/Gml.WebApi.Models/"]
 RUN dotnet restore "src/Gml.WebApi/Gml.WebApi.csproj"
 COPY . .
-WORKDIR "/src/src/Gml.WebApi"
+WORKDIR "/src/Gml.WebApi"
 RUN dotnet build "Gml.WebApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
