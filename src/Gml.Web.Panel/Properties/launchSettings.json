@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "GmlAdminPanel.Server": {
+    "Gml.AdminPanel.Server": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

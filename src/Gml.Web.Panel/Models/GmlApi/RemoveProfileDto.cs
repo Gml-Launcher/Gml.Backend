@@ -1,4 +1,4 @@
-namespace GmlAdminPanel.Models.GmlApi;
+namespace Gml.AdminPanel.Models.GmlApi;
 
 public class RemoveProfileDto
 {

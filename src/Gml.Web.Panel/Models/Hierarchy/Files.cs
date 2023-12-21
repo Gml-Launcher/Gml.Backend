@@ -1,4 +1,4 @@
-namespace GmlAdminPanel.Models.Hierarchy;
+namespace Gml.AdminPanel.Models.Hierarchy;
 
 public class File
 {

@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Client", "src\Gml.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Client", "src\Gml.Client\src\Gml.Client\Gml.Client.csproj", "{10627438-8319-4083-A98E-6ABE228FBAC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlAdminPanel", "src\Gml.Web.Panel\GmlAdminPanel.csproj", "{2BF3C6A4-3B5B-4AFC-A604-57077A385AAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.AdminPanel", "src\Gml.Web.Panel\Gml.AdminPanel.csproj", "{2BF3C6A4-3B5B-4AFC-A604-57077A385AAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

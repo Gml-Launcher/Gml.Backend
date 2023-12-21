@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GmlAdminPanel.Models.GmlApi;
+using Gml.AdminPanel.Models.GmlApi;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -11,7 +11,7 @@ using Radzen.Blazor;
 using File = System.IO.File;
 using FileInfo = Radzen.FileInfo;
 
-namespace GmlAdminPanel.Components.Pages
+namespace Gml.AdminPanel.Components.Pages
 {
     public partial class ProfilesList
     {
@@ -27,19 +27,19 @@ namespace GmlAdminPanel.Components.Pages
 
         [Inject] protected NotificationService NotificationService { get; set; }
 
-        [Inject] protected GmlAdminPanel.GmlApiService GmlApiService { get; set; }
+        [Inject] protected Gml.AdminPanel.GmlApiService GmlApiService { get; set; }
 
-        protected IEnumerable<GmlAdminPanel.Models.GmlApi.GetProfileDto> getProfileDtos;
+        protected IEnumerable<Gml.AdminPanel.Models.GmlApi.GetProfileDto> getProfileDtos;
 
-        private IList<GmlAdminPanel.Models.GmlApi.GetProfileDto> _selectedProfiles = new List<GetProfileDto>();
-        protected GmlAdminPanel.Models.GmlApi.GetProfileInfo ProfileInfo { get; set; }
+        private IList<Gml.AdminPanel.Models.GmlApi.GetProfileDto> _selectedProfiles = new List<GetProfileDto>();
+        protected Gml.AdminPanel.Models.GmlApi.GetProfileInfo ProfileInfo { get; set; }
         protected IList<System.IO.FileInfo> Files { get; set; }
 
         List<string> entries;
         protected bool IsPackaging { get; set; }
         protected bool IsRemoving { get; set; }
 
-        protected IList<GmlAdminPanel.Models.GmlApi.GetProfileDto> SelectedProfiles
+        protected IList<Gml.AdminPanel.Models.GmlApi.GetProfileDto> SelectedProfiles
         {
             get => _selectedProfiles;
             set

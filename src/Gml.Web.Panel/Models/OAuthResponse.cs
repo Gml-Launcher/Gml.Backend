@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Text.Json;
 
-namespace GmlAdminPanel.Models
+namespace Gml.AdminPanel.Models
 {
     public class OAuthResponse
     {
@@ -81,7 +81,7 @@ namespace GmlAdminPanel.Models
             try
             {
                 return new OAuthResponse(json);
-            } 
+            }
             catch (JsonException)
             {
                 return new OAuthResponse { Error = json };
