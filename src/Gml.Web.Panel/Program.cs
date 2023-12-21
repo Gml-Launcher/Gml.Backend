@@ -1,7 +1,9 @@
+using System.Net;
 using Radzen;
 using Gml.AdminPanel.Components;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddControllers();
@@ -16,7 +18,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-builder.Services.AddHttpClient("GmlApi", client => client.BaseAddress = new Uri("https://localhost:5000/"));
+builder.Services.AddHttpClient("GmlApi", client => client.BaseAddress = new Uri("http://localhost:5000/"));
 builder.Services.AddScoped<Gml.AdminPanel.GmlApiService>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.

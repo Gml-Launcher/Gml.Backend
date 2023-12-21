@@ -1,25 +1,11 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:19712",
-      "sslPort": 44395
-    }
-  },
   "profiles": {
     "Gml.AdminPanel.Server": {
       "commandName": "Project",
+      "externalUrlConfiguration": true,
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:8081;http://localhost:8082",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
+      "applicationUrl": "http://localhost:8081",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
