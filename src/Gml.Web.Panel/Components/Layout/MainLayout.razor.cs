@@ -10,7 +10,7 @@ using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
 
-namespace GmlAdminPanel.Components.Layout
+namespace Gml.AdminPanel.Components.Layout
 {
     public partial class MainLayout
     {

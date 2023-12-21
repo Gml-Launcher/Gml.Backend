@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace GmlAdminPanel.Models.GmlApi
+namespace Gml.AdminPanel.Models.GmlApi
 {
     public partial class CreateProfile
     {
