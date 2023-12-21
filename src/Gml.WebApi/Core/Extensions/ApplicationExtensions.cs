@@ -1,6 +1,8 @@
 using Gml.Core.Launcher;
 using Gml.WebApi.Core.Handlers;
 using GmlCore.Interfaces;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gml.WebApi.Core.Extensions;
 
@@ -24,9 +26,7 @@ public static class ApplicationExtensions
 
     public static WebApplication RegisterRoutes(this WebApplication app)
     {
-        // if (app.Environment.IsDevelopment())
-        // {
-        // }
+
         app.UseSwagger();
         app.UseSwaggerUI();
 
@@ -34,11 +34,13 @@ public static class ApplicationExtensions
 
         #region Profiles
 
-        app.MapGet("/api/profiles", RequestHandler.GetClients);
+        app.MapGet( "/api/profiles", RequestHandler.GetClients);
         app.MapPost("/api/profiles", RequestHandler.CreateProfile);
+        app.MapDelete("/api/profiles", RequestHandler.DeleteProfile);
 
 
         app.MapPost("/api/profiles/info", RequestHandler.GetProfileInfo);
+        app.MapPost("/api/profiles/restore", RequestHandler.RestoreProfileInfo);
         app.MapPost("/api/profiles/pack", RequestHandler.PackProfile);
 
         app.MapGet("/api/file/{fileHash}", RequestHandler.DownloadFile);

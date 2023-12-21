@@ -1,0 +1,111 @@
+@page "/profile-add"
+@using Gml.WebApi.Models.Dtos.Profiles
+@using Gml.Client
+@using System.Collections.ObjectModel
+
+<PageTitle>profile-add</PageTitle>
+
+
+<div class="container-fluid">
+    <div class="row px-3">
+        <div class="col-md-6 col-lg-3">
+            <RadzenText TextStyle="TextStyle.H6" Text="New profile" />
+            <RadzenCard class="mt-3">
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Profile name</RadzenText>
+                <RadzenTextBox Value=@CreateProfileDto.Name class="w-100" aria-label="Default TextBox"/>
+
+                <RadzenText class="mt-2" TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Profile version</RadzenText>
+                <RadzenTextBox Value=@CreateProfileDto.Version class="w-100" aria-label="Default TextBox"/>
+
+                <RadzenText class="mt-2" TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">
+                    Game loader
+                    (amount: @GameLoaders.Count)
+                </RadzenText>
+                <RadzenDropDown @bind-Value=@SelectedLoader
+                                Style="width: 100%;"
+                                Data=@GameLoaders
+                                Name="Value"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Primary"
+                              class="w-100 mt-3"
+                              @Click="@CreateNewProfile"
+                              Text="Create"/>
+            </RadzenCard>
+
+
+        </div>
+
+        <div class="col-md-6 col-lg-9">
+            <RadzenText TextStyle="TextStyle.H6" Text="Profiles" />
+            <RadzenDataGrid AllowFiltering="true"
+                            class="mt-3"
+                            FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            AllowPaging="false"
+                            AllowRowSelectOnRowClick="true"
+                            AllowSorting="true"
+                            Data="@Profiles"
+                            ValueChanged="dtos => GetSelectedProfileInfo(dtos)"
+                            TItem="ReadProfileDto"
+                            ColumnWidth="200px"
+                            SelectionMode="DataGridSelectionMode.Single">
+                <Columns>
+                    <RadzenDataGridColumn TItem="ReadProfileDto" Property="Name" Title="Name" Sortable="false" Filterable="false">
+                        <Template Context="data">
+                            @data.Name
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="ReadProfileDto" Property="GameVersion" Title="Game version" Width="160px"/>
+                    <RadzenDataGridColumn TItem="ReadProfileDto" Property="LaunchVersion" Title="Launch version" Width="200px"/>
+                </Columns>
+            </RadzenDataGrid>
+        </div>
+    </div>
+</div>
+
+
+@code
+{
+    public class GameLoader(string name, string value)
+    {
+        public string Name { get; set; } = name;
+        public string Value { get; set; } = value;
+    }
+
+    public GameLoader? SelectedLoader { get; set; }
+    ObservableCollection<GameLoader> GameLoaders = new ObservableCollection<GameLoader>();
+
+    CreateProfileDto CreateProfileDto = new CreateProfileDto
+    {
+    };
+
+    List<ReadProfileDto> Profiles { get; set; } = new List<ReadProfileDto>();
+
+    GmlClientManager GmlClientManager = new GmlClientManager("http://localhost:5000", string.Empty);
+
+    IList<ReadProfileDto>? SelectedProfiles { get; set; }
+
+    protected override void OnInitialized()
+    {
+        GameLoaders.Add(new GameLoader("Vanilla", "1"));
+        GameLoaders.Add(new GameLoader("Forge", "2"));
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Profiles = (await GmlClientManager.GetProfiles()).ToList();
+    }
+
+
+    private async Task CreateNewProfile()
+    {
+
+    }
+
+    private async Task GetSelectedProfileInfo(IList<ReadProfileDto> dtos)
+    {
+        var profile = dtos.FirstOrDefault();
+
+
+
+    }
+}

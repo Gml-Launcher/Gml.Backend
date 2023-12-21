@@ -4,7 +4,6 @@ namespace Gml.WebApi.Models.Dtos.Profiles
 {
     public class ProfileCreateInfoDto
     {
-
         public string UserName { get; set; }
         public string UserAccessToken { get; set; }
         public string ClientName { get; set; }

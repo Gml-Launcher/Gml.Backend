@@ -6,12 +6,17 @@ using Gml.WebApi.Models.Enums.System;
 using GmlCore.Interfaces;
 using GmlCore.Interfaces.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gml.WebApi.Core.Handlers;
 
 public class RequestHandler
 {
-
+    /// <summary>
+    /// Retrieves the list of clients from the GmlManager.
+    /// </summary>
+    /// <param name="gmlManager">The GmlManager instance used to retrieve the client profiles.</param>
+    /// <returns>An instance of IResult representing the result of the operation. Contains a collection of ReadProfileDto objects representing the client profiles if successful, or an error message if unsuccessful.</returns>
     public static async Task<IResult> GetClients(IGmlManager gmlManager)
     {
         var profiles = await gmlManager.Profiles.GetProfiles();
@@ -26,6 +31,12 @@ public class RequestHandler
         return Results.Ok(dto);
     }
 
+    /// <summary>
+    /// Downloads a file from the GML manager.
+    /// </summary>
+    /// <param name="gmlManager">The GML manager instance.</param>
+    /// <param name="fileHash">The hash of the file to be downloaded.</param>
+    /// <returns>Returns a task that represents the asynchronous download operation. The task result is an instance of <see cref="IResult"/>.</returns>
     public static async Task<IResult> DownloadFile(IGmlManager gmlManager, string fileHash)
     {
         var file = await gmlManager.Files.GetFileInfo(fileHash);
@@ -36,6 +47,12 @@ public class RequestHandler
         return Results.File(string.Join(string.Empty, gmlManager.LauncherInfo.InstallationDirectory, file.Directory));
     }
 
+    /// <summary>
+    /// Packs the profile for a client.
+    /// </summary>
+    /// <param name="gmlManager">The GML manager object.</param>
+    /// <param name="packProfileDto">The profile DTO containing client information.</param>
+    /// <returns>An asynchronous task representing the packing process result.</returns>
     public static async Task<IResult> PackProfile(IGmlManager gmlManager, PackProfileDto packProfileDto)
     {
         if (string.IsNullOrEmpty(packProfileDto.ClientName))
@@ -51,6 +68,75 @@ public class RequestHandler
         return Results.Ok();
     }
 
+
+    /// <summary>
+    /// Deletes a user profile.
+    /// </summary>
+    /// <param name="gmlManager">The GML manager.</param>
+    /// <param name="removeProfile">The profile information to remove.</param>
+    /// <returns>The result of the operation.</returns>
+    public static async Task<IResult> DeleteProfile(IGmlManager gmlManager, [FromBody] RemoveProfileDto removeProfile)
+    {
+        if (string.IsNullOrEmpty(removeProfile.ClientName))
+            return Results.BadRequest();
+
+        var profile = await gmlManager.Profiles.GetProfile(removeProfile.ClientName);
+
+        if (profile is null)
+            return Results.NotFound();
+
+        await gmlManager.Profiles.RemoveProfile(profile, removeProfile.RemoveFiles);
+
+        return Results.Ok();
+    }
+
+    /// <summary>
+    /// Restores the profile information for a given client in the GML manager.
+    /// </summary>
+    /// <param name="gmlManager">The GML manager instance.</param>
+    /// <param name="profile">The profile to be restored.</param>
+    /// <returns>
+    /// Returns a task that represents the asynchronous operation.
+    /// The task result contains the restored profile information as an <see cref="IResult"/>.
+    /// </returns>
+    public static async Task<IResult> RestoreProfileInfo(IGmlManager gmlManager, ProfileCreateInfoDto profile)
+    {
+        if (string.IsNullOrEmpty(profile.ClientName))
+            return Results.BadRequest();
+
+        var checkProfile = await gmlManager.Profiles.GetProfile(profile.ClientName);
+
+        if (checkProfile is null)
+            return Results.NotFound();
+
+        if (!Enum.TryParse(profile.OsType.ToString(), out OsType osType))
+            return Results.BadRequest();
+
+        var profileInfoRead = await gmlManager.Profiles.RestoreProfileInfo(profile.ClientName, new StartupOptions
+        {
+            FullScreen = profile.IsFullScreen,
+            ScreenHeight = profile.SizeY,
+            ScreenWidth = profile.SizeX,
+            ServerIp = profile.GameAddress,
+            ServerPort = profile.GamePort,
+            MaximumRamMb = profile.RamSize,
+            OsType = osType
+        }, new User
+        {
+            Name = profile.UserName,
+            AccessToken = profile.UserAccessToken,
+            Uuid = profile.UserUuid
+        });
+
+        return Results.Ok(profileInfoRead);
+    }
+
+    /// <summary>
+    /// Retrieves the profile information based on the provided profile details.
+    /// </summary>
+    /// <param name="gmlManager">The GML manager instance.</param>
+    /// <param name="profile">The profile details.</param>
+    /// <returns>An asynchronous task, returning the profile information.</returns>
     public static async Task<IResult> GetProfileInfo(IGmlManager gmlManager, ProfileCreateInfoDto profile)
     {
         if (string.IsNullOrEmpty(profile.ClientName))
@@ -83,6 +169,12 @@ public class RequestHandler
         return Results.Ok(profileInfoRead);
     }
 
+    /// <summary>
+    /// Creates a new profile using the specified GmlManager and CreateProfileDto.
+    /// </summary>
+    /// <param name="gmlManager">The IGmlManager used to interact with profiles.</param>
+    /// <param name="profile">The CreateProfileDto containing the profile details.</param>
+    /// <returns>Returns an asynchronous task that represents the creation of the profile.</returns>
     public static async Task<IResult> CreateProfile(IGmlManager gmlManager, CreateProfileDto profile)
     {
         var canAddProfile = await gmlManager.Profiles.CanAddProfile(profile.Name, profile.Version);

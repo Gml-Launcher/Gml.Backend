@@ -4,3 +4,6 @@
 [submodule "src/CmlLib.Core"]
 	path = src/CmlLib.Core
 	url = https://github.com/GamerVII-NET/CmlLib.Core.git
+[submodule "src/Gml.Client"]
+	path = src/Gml.Client
+	url = https://github.com/GamerVII-NET/Gml.Client.git

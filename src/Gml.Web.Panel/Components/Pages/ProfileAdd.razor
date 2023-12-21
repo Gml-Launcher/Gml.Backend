@@ -1,0 +1,33 @@
+@page "/profile-add"
+
+<PageTitle>ProfileAdd</PageTitle>
+<RadzenRow>
+    <RadzenColumn Size="12">
+        <RadzenText Text="Create profile" TextStyle="TextStyle.H3" TagName="TagName.H1" />
+        <RadzenText Text="On this page you can create a profile" />
+        <RadzenRow>
+            <RadzenColumn>
+                <RadzenCard>
+                    <RadzenText Text="Profile name" />
+                    <RadzenTextBox Style="width: 100%; margin: 0 10px 0 0; margin-top: 5px" @bind-Value="@ProfileName"></RadzenTextBox>
+
+                    <RadzenText Text="Version" Style="margin-top: 10px" />
+                    <RadzenDropDown TValue="string" Data="@MinecraftVersions" Style="width: 100%; margin-top: 10px" @bind-Value="@SelectedMinecraftVersion" />
+
+                    <RadzenText Text="Game loader" Style="margin-top: 10px" />
+                    <RadzenDropDown TValue="GmlApiService.GameLoader" Style="width: 100%; margin-top: 10px" Data="@GameLoaders" @bind-Value="@SelectedGameLoader"></RadzenDropDown>
+                    <RadzenButton Style="margin-top: 10px; width: 100%" Text="Create profile" Click="@OnCreateProfile"></RadzenButton>
+                </RadzenCard>
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenDataGrid TItem="GmlAdminPanel.Models.GmlApi.GetProfileDto" Data="@GameProfiles" ColumnWidth="200px" AllowSorting="true" AllowPaging="true" AllowFiltering="true">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="GmlAdminPanel.Models.GmlApi.GetProfileDto" Property="Name" Title="Name" />
+                        <RadzenDataGridColumn TItem="GmlAdminPanel.Models.GmlApi.GetProfileDto" Property="GameVersion" Title="GameVersion" />
+                        <RadzenDataGridColumn TItem="GmlAdminPanel.Models.GmlApi.GetProfileDto" Property="LaunchVersion" Title="LaunchVersion" />
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenColumn>
+</RadzenRow>

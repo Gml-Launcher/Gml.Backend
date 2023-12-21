@@ -4,7 +4,7 @@ namespace Gml.WebApi.Models.Enums.System
     {
         Undefined = 0,
         Linux = 1,
-        MaxOs = 2,
+        OsX = 2,
         Windows = 3,
     }
 }
