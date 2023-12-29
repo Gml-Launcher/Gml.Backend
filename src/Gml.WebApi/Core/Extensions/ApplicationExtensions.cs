@@ -30,7 +30,7 @@ public static class ApplicationExtensions
         app.UseSwagger();
         app.UseSwaggerUI();
 
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
 
         #region Profiles
 

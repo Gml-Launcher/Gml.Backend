@@ -19,6 +19,9 @@
       <Content Update="appsettings.Development.json">
         <DependentUpon>appsettings.json</DependentUpon>
       </Content>
+      <Content Include="..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
