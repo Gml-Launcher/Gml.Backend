@@ -10,7 +10,7 @@ using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
 
-namespace GmlAdminPanel.Components.Pages
+namespace Gml.AdminPanel.Components.Pages
 {
     public partial class Index
     {

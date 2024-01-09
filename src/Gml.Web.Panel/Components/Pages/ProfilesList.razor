@@ -10,9 +10,9 @@
 
                 <RadzenDataGrid TItem="Models.GmlApi.GetProfileDto" Data="@getProfileDtos" @bind-value="@SelectedProfiles" ColumnWidth="200px" AllowSorting="true" AllowFiltering="true" SelectionMode="Radzen.DataGridSelectionMode.Single" AllowRowSelectOnRowClick="true">
                     <Columns>
-                        <RadzenDataGridColumn TItem="GmlAdminPanel.Models.GmlApi.GetProfileDto" Property="Name" Title="Name"/>
-                        <RadzenDataGridColumn TItem="GmlAdminPanel.Models.GmlApi.GetProfileDto" Property="LaunchVersion" Title="LaunchVersion"/>
-                        <RadzenDataGridColumn TItem="GmlAdminPanel.Models.GmlApi.GetProfileDto" Property="GameVersion" Title="GameVersion"/>
+                        <RadzenDataGridColumn TItem="Gml.AdminPanel.Models.GmlApi.GetProfileDto" Property="Name" Title="Name"/>
+                        <RadzenDataGridColumn TItem="Gml.AdminPanel.Models.GmlApi.GetProfileDto" Property="LaunchVersion" Title="LaunchVersion"/>
+                        <RadzenDataGridColumn TItem="Gml.AdminPanel.Models.GmlApi.GetProfileDto" Property="GameVersion" Title="GameVersion"/>
                     </Columns>
                 </RadzenDataGrid>
             </RadzenColumn>

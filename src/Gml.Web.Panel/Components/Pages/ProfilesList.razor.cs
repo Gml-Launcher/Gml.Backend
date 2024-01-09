@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GmlAdminPanel.Models;
-using GmlAdminPanel.Models.GmlApi;
-using GmlAdminPanel.Models.Hierarchy;
+using Gml.AdminPanel.Models.GmlApi;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -13,7 +11,7 @@ using Radzen.Blazor;
 using File = System.IO.File;
 using FileInfo = Radzen.FileInfo;
 
-namespace GmlAdminPanel.Components.Pages
+namespace Gml.AdminPanel.Components.Pages
 {
     public partial class ProfilesList
     {
@@ -29,22 +27,19 @@ namespace GmlAdminPanel.Components.Pages
 
         [Inject] protected NotificationService NotificationService { get; set; }
 
-        [Inject] protected GmlAdminPanel.GmlApiService GmlApiService { get; set; }
+        [Inject] protected Gml.AdminPanel.GmlApiService GmlApiService { get; set; }
 
-        protected IEnumerable<GmlAdminPanel.Models.GmlApi.GetProfileDto> getProfileDtos;
+        protected IEnumerable<Gml.AdminPanel.Models.GmlApi.GetProfileDto> getProfileDtos;
 
-        private IList<GmlAdminPanel.Models.GmlApi.GetProfileDto> _selectedProfiles = new List<GetProfileDto>();
-        protected GmlAdminPanel.Models.GmlApi.GetProfileInfo ProfileInfo { get; set; }
+        private IList<Gml.AdminPanel.Models.GmlApi.GetProfileDto> _selectedProfiles = new List<GetProfileDto>();
+        protected Gml.AdminPanel.Models.GmlApi.GetProfileInfo ProfileInfo { get; set; }
         protected IList<System.IO.FileInfo> Files { get; set; }
-        protected IList<Node> Directories { get; set; }
 
-
-        List<string> filesToView;
+        List<string> entries;
         protected bool IsPackaging { get; set; }
         protected bool IsRemoving { get; set; }
-        protected RadzenDataGrid<GmlAdminPanel.Models.Hierarchy.Node> grid;
 
-        protected IList<GmlAdminPanel.Models.GmlApi.GetProfileDto> SelectedProfiles
+        protected IList<Gml.AdminPanel.Models.GmlApi.GetProfileDto> SelectedProfiles
         {
             get => _selectedProfiles;
             set
@@ -57,9 +52,9 @@ namespace GmlAdminPanel.Components.Pages
 
         private async Task LoadAdditionalData()
         {
-            if (_selectedProfiles.Any() && _selectedProfiles.FirstOrDefault() is { } profileDto)
+            if (_selectedProfiles.Any() && _selectedProfiles.FirstOrDefault() is GetProfileDto profileDto)
             {
-                filesToView = new List<string>();
+                entries = new List<string>();
                 ProfileInfo = null;
 
                 ProfileInfo = await GmlApiService.GetProfileInfo(new ProfileCreateInfoDto
@@ -81,44 +76,30 @@ namespace GmlAdminPanel.Components.Pages
 
                 Files = ProfileInfo.Files.Select(c => new System.IO.FileInfo(c.Directory)).ToList();
 
-
-                filesToView = Files.Select(c => c.FullName.Split($"{ProfileInfo.ProfileName}\\").LastOrDefault())
+                entries = Files.Select(c => c.FullName.Split($"{ProfileInfo.ProfileName}\\").LastOrDefault())
                     .Select(c => c.Split('\\').First())
                     .Distinct()
                     .ToList();
 
-                Directories = filesToView.Select(c => new FolderNode
-                {
-                    Name = c,
-                    Directory = c
-                }).Cast<Node>().ToList();
-
-                var test = ProfileInfo.Files.Select(c => c.Directory.Split($"{ProfileInfo.ProfileName}\\")).ToList();
-
                 StateHasChanged();
             }
         }
-
         private async Task LoadAdditionalDataWindows()
         {
             await LoadAdditionalData(OsType.Windows);
         }
-
         private async Task LoadAdditionalDataLinux()
         {
             await LoadAdditionalData(OsType.Linux);
         }
-
         private async Task LoadAdditionalDataMacOs()
         {
             await LoadAdditionalData(OsType.OsX);
         }
-
         private async Task LoadAdditionalData(OsType osType)
         {
             var isSuccess = await DialogService.Confirm(
-                $"It may take a long time to download the client, as well as overwrite the current settings, do you want to continue?",
-                "Confirmation",
+                $"It may take a long time to download the client, as well as overwrite the current settings, do you want to continue?", "Confirmation",
                 new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
 
             if (isSuccess is not true)
@@ -153,86 +134,6 @@ namespace GmlAdminPanel.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             getProfileDtos = await GmlApiService.GetProfiles();
-        }
-
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-        }
-
-        void RowRender(RowRenderEventArgs<Node> args)
-        {
-            args.Expandable = !string.IsNullOrEmpty(args.Data.Directory) && args.Data?.GetType() != typeof(FileNode);
-        }
-
-        private async Task AddFileToWhiteList(GmlAdminPanel.Models.GmlApi.File file)
-        {
-            if (file != null && _selectedProfiles.Any() && _selectedProfiles.FirstOrDefault() is { } profileDto)
-            {
-                ProfileInfo.WhiteListFiles = await GmlApiService.AddWhiteList(new FileWhiteListDto
-                {
-                    ClientName = profileDto.Name,
-                    FileHash = file.Hash
-                });
-            }
-        }
-
-        private async Task RemoveFileFromWhiteList(GmlAdminPanel.Models.GmlApi.File file)
-        {
-            if (_selectedProfiles.Any() && _selectedProfiles.FirstOrDefault() is { } profileDto)
-            {
-                ProfileInfo.WhiteListFiles = await GmlApiService.RemoveWhiteList(new FileWhiteListDto
-                {
-                    ClientName = profileDto.Name,
-                    FileHash = file.Hash
-                });
-            }
-        }
-
-        void LoadChildData(DataGridLoadChildDataEventArgs<Node> args)
-        {
-            List<Node> childNodes = new List<Node>();
-
-            var path = args.Item.GetHierarchyPath(args.Item);
-
-            var directoryPath = $"{ProfileInfo.ProfileName}\\{path}\\";
-
-            var children = ProfileInfo.Files
-                .Where(c => c.Directory.Contains(directoryPath))
-                .ToList();
-
-            var files = children
-                .Where(c => c.Directory.Split(directoryPath).Last().Count(c => c == '\\') == 0)
-                .Select(c => new FileNode
-                {
-                    Parent = args.Item,
-                    Directory = c.Directory,
-                    Name = c.Name,
-                    Hash = c.Hash,
-                    CurrentFile = c
-                }).ToList();
-
-            var directories = children.Except(files.Select(f => f.CurrentFile)).Where(c => c.Directory.Contains(directoryPath))
-                .Select(c => c.Directory.Split(directoryPath).Last()).Select(c => c.Split('\\').First()).Distinct()
-                .ToList()
-                .Select(c => new FolderNode
-                {
-                    Directory = c,
-                    Name = c,
-                    Parent = args.Item
-                });
-
-            childNodes.AddRange(files);
-            childNodes.AddRange(directories);
-
-            args.Data = childNodes;
-        }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            base.OnAfterRender(firstRender);
-
-            // await grid.ExpandRow(filesToView?.FirstOrDefault());
         }
 
         protected async Task RemoveSelectedProfile()
@@ -285,8 +186,10 @@ namespace GmlAdminPanel.Components.Pages
 
         protected async Task PackageSelectedProfile()
         {
+
             if (_selectedProfiles.Any() && _selectedProfiles.FirstOrDefault() is { } profileDto)
             {
+
                 if (IsRemoving)
                 {
                     NotificationService.Notify(new NotificationMessage

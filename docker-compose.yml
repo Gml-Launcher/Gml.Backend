@@ -1,4 +1,4 @@
-﻿services:
+﻿﻿services:
   gml-web-api:
     image: gml-web-api-image
     container_name: gml-web-api-container

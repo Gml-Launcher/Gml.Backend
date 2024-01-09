@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
-using GmlAdminPanel.Models;
-using GmlAdminPanel.Models.GmlApi;
+using Gml.AdminPanel.Models;
+using Gml.AdminPanel.Models.GmlApi;
 using Newtonsoft.Json;
 using File = GmlAdminPanel.Models.GmlApi.File;
 
-namespace GmlAdminPanel
+namespace Gml.AdminPanel
 {
     public partial class GmlApiService
     {
@@ -40,7 +40,7 @@ namespace GmlAdminPanel
         partial void OnGetProfiles(HttpRequestMessage request);
         partial void OnGetProfilesResponse(HttpResponseMessage response);
 
-        public async Task<IEnumerable<GmlAdminPanel.Models.GmlApi.GetProfileDto>> GetProfiles()
+        public async Task<IEnumerable<Gml.AdminPanel.Models.GmlApi.GetProfileDto>> GetProfiles()
         {
             var uri = new Uri(httpClient.BaseAddress, $"api/profiles");
 
@@ -56,7 +56,7 @@ namespace GmlAdminPanel
 
             OnGetProfilesResponse(response);
 
-            return await response.Content.ReadFromJsonAsync<IEnumerable<GmlAdminPanel.Models.GmlApi.GetProfileDto>>();
+            return await response.Content.ReadFromJsonAsync<IEnumerable<Gml.AdminPanel.Models.GmlApi.GetProfileDto>>();
         }
 
         partial void OnCreateProfile(HttpRequestMessage request);
@@ -83,7 +83,7 @@ namespace GmlAdminPanel
         partial void OnGetProfileInfo(HttpRequestMessage request);
         partial void OnGetProfileInfoResponse(HttpResponseMessage response);
 
-        public async Task<GmlAdminPanel.Models.GmlApi.GetProfileInfo> LoadProfileInfo(ProfileCreateInfoDto project)
+        public async Task<Gml.AdminPanel.Models.GmlApi.GetProfileInfo> LoadProfileInfo(ProfileCreateInfoDto project)
         {
             var uri = new Uri(httpClient.BaseAddress, $"api/profiles/restore");
 
@@ -105,7 +105,7 @@ namespace GmlAdminPanel
             return JsonConvert.DeserializeObject<GetProfileInfo>(content);
         }
 
-        public async Task<GmlAdminPanel.Models.GmlApi.GetProfileInfo> GetProfileInfo(ProfileCreateInfoDto project)
+        public async Task<Gml.AdminPanel.Models.GmlApi.GetProfileInfo> GetProfileInfo(ProfileCreateInfoDto project)
         {
             var uri = new Uri(httpClient.BaseAddress, $"api/profiles/info");
 

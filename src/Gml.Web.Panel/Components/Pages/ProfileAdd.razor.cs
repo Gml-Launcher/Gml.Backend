@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Radzen;
 using Radzen.Blazor;
 
-namespace GmlAdminPanel.Components.Pages
+namespace Gml.AdminPanel.Components.Pages
 {
     public partial class ProfileAdd
     {
@@ -31,7 +31,7 @@ namespace GmlAdminPanel.Components.Pages
         protected NotificationService NotificationService { get; set; }
 
         [Inject]
-        protected GmlAdminPanel.GmlApiService GmlApiService { get; set; }
+        protected Gml.AdminPanel.GmlApiService GmlApiService { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -46,7 +46,7 @@ namespace GmlAdminPanel.Components.Pages
         protected string ProfileName;
         protected string SelectedMinecraftVersion;
 
-        protected IEnumerable<GmlAdminPanel.Models.GmlApi.GetProfileDto> GameProfiles;
+        protected IEnumerable<Gml.AdminPanel.Models.GmlApi.GetProfileDto> GameProfiles;
 
         protected async Task OnCreateProfile()
         {
