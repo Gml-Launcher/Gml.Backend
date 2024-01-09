@@ -1,11 +1,10 @@
-using System.Text.RegularExpressions;
 using Gml.Core.Launcher;
 using Gml.Core.User;
 using Gml.WebApi.Models.Dtos.Profiles;
 using Gml.WebApi.Models.Enums.System;
 using GmlCore.Interfaces;
 using GmlCore.Interfaces.Enums;
-using Microsoft.AspNetCore.Http.HttpResults;
+using GmlCore.Interfaces.System;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gml.WebApi.Core.Handlers;
@@ -47,6 +46,50 @@ public class RequestHandler
         return Results.File(string.Join(string.Empty, gmlManager.LauncherInfo.InstallationDirectory, file.Directory));
     }
 
+    public static async Task<IResult> GetProfileWhiteList(IGmlManager gmlManager, string profileName)
+    {
+
+        var profile = await gmlManager.Profiles.GetProfile(profileName);
+
+        return profile == null
+            ? Results.BadRequest($"Profile not found by name: {profileName}")
+            : Results.Ok(profile.FileWhiteList ??= []);
+    }
+
+    public static async Task<IResult> AddFileToWhiteList(IGmlManager gmlManager, [FromBody] FileWhiteListDto fileDto)
+    {
+        var profile = await gmlManager.Profiles.GetProfile(fileDto.ClientName);
+
+        if (profile == null)
+            return Results.NotFound($"Profile not found by name: {fileDto.ClientName}");
+
+        var file = await gmlManager.Files.GetFileInfo(fileDto.FileHash);
+
+        if (file == null)
+            return Results.NotFound($"File not found by hash: {fileDto.FileHash}");
+
+        await gmlManager.Profiles.AddFileToWhiteList(profile, file);
+
+        return Results.Ok(profile.FileWhiteList);
+    }
+
+    public static async Task<IResult> RemoveFileFromWhiteList(IGmlManager gmlManager, [FromBody] FileWhiteListDto fileDto)
+    {
+        var profile = await gmlManager.Profiles.GetProfile(fileDto.ClientName);
+
+        if (profile == null)
+            return Results.NotFound($"Profile not found by name: {fileDto.ClientName}");
+
+        var file = await gmlManager.Files.GetFileInfo(fileDto.FileHash);
+
+        if (file == null)
+            return Results.NotFound($"File not found by hash: {fileDto.FileHash}");
+
+        await gmlManager.Profiles.RemoveFileFromWhiteList(profile, file);
+
+        return Results.Ok(profile.FileWhiteList);
+    }
+
     /// <summary>
     /// Packs the profile for a client.
     /// </summary>
@@ -67,7 +110,6 @@ public class RequestHandler
 
         return Results.Ok();
     }
-
 
     /// <summary>
     /// Deletes a user profile.

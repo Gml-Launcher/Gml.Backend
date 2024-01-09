@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Http;
 using GmlAdminPanel.Models;
 using GmlAdminPanel.Models.GmlApi;
 using Newtonsoft.Json;
+using File = GmlAdminPanel.Models.GmlApi.File;
 
 namespace GmlAdminPanel
 {
@@ -181,7 +182,44 @@ namespace GmlAdminPanel
             var response = await httpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
+        }
 
+
+
+        public async Task<IEnumerable<File>> AddWhiteList(FileWhiteListDto fileWhiteListDto)
+        {
+            var uri = new Uri(httpClient.BaseAddress, $"api/file/whitelist");
+
+            var request = new HttpRequestMessage(HttpMethod.Post, uri);
+            request.Content = new StringContent(JsonConvert.SerializeObject(fileWhiteListDto), Encoding.UTF8, "application/json");
+
+            await AuthorizeRequest(request);
+
+            var response = await httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<List<File>>(content);
+        }
+
+        public async Task<IEnumerable<File>> RemoveWhiteList(FileWhiteListDto fileWhiteListDto)
+        {
+            var uri = new Uri(httpClient.BaseAddress, $"api/file/whitelist");
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, uri);
+            request.Content = new StringContent(JsonConvert.SerializeObject(fileWhiteListDto), Encoding.UTF8, "application/json");
+
+            await AuthorizeRequest(request);
+
+            var response = await httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<List<File>>(content);
         }
 
 

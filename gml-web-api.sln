@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{A2E6D9
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		docker-compose.yml = docker-compose.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore", "src\gml-core\src\GmlCore\GmlCore.csproj", "{9F0244C3-F499-4572-964D-ED30F0E4AC03}"
@@ -35,6 +36,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Client", "src\Gml.Client\src\Gml.Client\Gml.Client.csproj", "{10627438-8319-4083-A98E-6ABE228FBAC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlAdminPanel", "src\Gml.Web.Panel\GmlAdminPanel.csproj", "{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.WebApi.Tests", "tests\Gml.WebApi.Tests\Gml.WebApi.Tests.csproj", "{C5AEBEE5-A317-4573-9159-5D39662349CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +85,10 @@ Global
 		{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5AEBEE5-A317-4573-9159-5D39662349CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5AEBEE5-A317-4573-9159-5D39662349CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5AEBEE5-A317-4573-9159-5D39662349CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5AEBEE5-A317-4573-9159-5D39662349CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112} = {173407F0-6602-48A5-BF49-E288C6043FE3}
@@ -94,5 +101,6 @@ Global
 		{8F2797AD-ECB7-4C5E-AE54-733EEB8B5D8E} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{10627438-8319-4083-A98E-6ABE228FBAC5} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4} = {173407F0-6602-48A5-BF49-E288C6043FE3}
+		{C5AEBEE5-A317-4573-9159-5D39662349CB} = {AA158165-09EE-4338-9FC8-9F172E47F62D}
 	EndGlobalSection
 EndGlobal

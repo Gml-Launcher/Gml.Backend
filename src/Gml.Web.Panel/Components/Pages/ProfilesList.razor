@@ -1,4 +1,5 @@
 @page "/profiles-list"
+@using GmlAdminPanel.Models.Hierarchy
 
 <PageTitle>ProfilesList</PageTitle>
 <RadzenRow>
@@ -25,17 +26,29 @@
                     @if (SelectedProfiles?.Any() == true)
                     {
                         <RadzenCard>
-                            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="Radzen.AlignItems.Center" Gap="5">
+                            <RadzenRow>
+                                <RadzenColumn>
+                                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="Radzen.AlignItems.Center" Gap="5">
 
-                                <RadzenStack Visible="ProfileInfo == null">
+                                        <RadzenStack Visible="ProfileInfo == null">
 
-                                    <div class="spinner-border spinner-border-sm" role="status">
-                                        <span class="visually-hidden">Загрузка...</span>
-                                    </div>
-                                </RadzenStack>
-                                <RadzenText Text="Profile"/>
+                                            <div class="spinner-border spinner-border-sm" role="status">
+                                                <span class="visually-hidden">Загрузка...</span>
+                                            </div>
+                                        </RadzenStack>
+                                        <RadzenText Text="Profile"/>
 
-                            </RadzenStack>
+                                    </RadzenStack>
+
+                                </RadzenColumn>
+                                <RadzenColumn>
+                                    <RadzenStack Orientation="Orientation.Horizontal"
+                                                 JustifyContent="JustifyContent.End"
+                                                 AlignItems="AlignItems.End">
+                                        <RadzenButton Icon="refresh" Click="LoadAdditionalData" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark"/>
+                                    </RadzenStack>
+                                </RadzenColumn>
+                            </RadzenRow>
                             <RadzenText Text="@SelectedProfiles[0].Name" TextStyle="Radzen.Blazor.TextStyle.DisplayH6" Style="margin-top: 8px"/>
 
                             <RadzenRow Style="margin-top: 10px" Visible="!(ProfileInfo == null)">
@@ -74,8 +87,6 @@
                                     <RadzenButton Style="width: 100%;" Text="Remove profile" Click="@RemoveSelectedProfile" ButtonStyle="Radzen.ButtonStyle.Danger" Visible="(IsRemoving == false)" Icon="delete"/>
                                 </RadzenColumn>
                             </RadzenRow>
-                            <RadzenRow>
-                            </RadzenRow>
 
                         </RadzenCard>
                     }
@@ -95,27 +106,45 @@
 
                     </RadzenStack>
 
-                    <RadzenRow class="mt-3">
+                    <RadzenRow class="mt-3" Visible="!(ProfileInfo == null)">
                         <RadzenColumn>
-                            @* <RadzenDataGrid TItem="Models.GmlApi.File" *@
-                            @*                 Data="@ProfileInfo?.Files" Visible="!(ProfileInfo == null)" *@
-                            @*                 AllowPaging="true" *@
-                            @*                 AllowFiltering="true" *@
-                            @*                 PageSize="10"> *@
-                            @*     <Columns> *@
-                            @*         <RadzenDataGridColumn TItem="Models.GmlApi.File" Property="Directory" Title="Downloading files"/> *@
-                            @*         <RadzenDataGridColumn TItem="Models.GmlApi.File" Property="Size" Title="Size"/> *@
-                            @*     </Columns> *@
-                            @* </RadzenDataGrid> *@
-
-                            <RadzenTree Data=@entries Expand=@LoadFiles Style="width: 100%; height: 300px">
-                                <RadzenTreeLevel Text=@GetTextForNode Template=@FileOrFolderTemplate/>
-                            </RadzenTree>
+                            <RadzenDataGrid @ref="grid"
+                                            AllowFiltering="true"
+                                            AllowSorting="true"
+                                            AllowColumnResize="true"
+                                            Data="@Directories"
+                                            TItem="GmlAdminPanel.Models.Hierarchy.Node"
+                                            RowRender="@RowRender"
+                                            LoadChildData="@LoadChildData"
+                                            RowCollapse="@(args => grid.ColumnsCollection.ToList().ForEach(c => c.ClearFilters()))">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="GmlAdminPanel.Models.Hierarchy.Node" Property="Name" Title="File"/>
+                                    <RadzenDataGridColumn TItem="GmlAdminPanel.Models.Hierarchy.Node" Title="Action" Frozen="true" Sortable="false" Filterable="false" Width="300px">
+                                        <Template Context="file">
+                                            <RadzenButton ButtonStyle="ButtonStyle.Light"
+                                                          Visible="(file is FileNode fileNode && string.IsNullOrEmpty(fileNode.CurrentFile.Hash) == false && ProfileInfo.WhiteListFiles.All(c => c.Name != file.Name))"
+                                                          Click="@(eventArgs => AddFileToWhiteList((file as FileNode)?.CurrentFile))"
+                                                          Size="ButtonSize.Small"
+                                                          Text="Add to whitelist">
+                                            </RadzenButton>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                </Columns>
+                            </RadzenDataGrid>
                         </RadzenColumn>
                         <RadzenColumn>
-                            <RadzenDataGrid TItem="string" Data="@ProfileInfo?.WhiteListFiles" Visible="!(ProfileInfo == null)">
+                            <RadzenDataGrid TItem="GmlAdminPanel.Models.GmlApi.File" Data="@ProfileInfo?.WhiteListFiles">
                                 <Columns>
-                                    <RadzenDataGridColumn TItem="string" Property="." Title="Not check files"/>
+                                    <RadzenDataGridColumn TItem="GmlAdminPanel.Models.GmlApi.File" Property="Name" Title="Not check files"/>
+                                    <RadzenDataGridColumn TItem="GmlAdminPanel.Models.GmlApi.File" Title="Action" Frozen="true" Sortable="false" Filterable="false" Width="300px">
+                                        <Template Context="file">
+                                            <RadzenButton ButtonStyle="ButtonStyle.Danger"
+                                                          Click="@(eventArgs => RemoveFileFromWhiteList(file))"
+                                                          Size="ButtonSize.Small"
+                                                          Text="Remove from whitelist">
+                                            </RadzenButton>
+                                        </Template>
+                                    </RadzenDataGridColumn>
                                 </Columns>
                             </RadzenDataGrid>
                             <RadzenText Text="Files in this list will not be forcibly updated on the client side" class="mt-3" TextStyle="Radzen.Blazor.TextStyle.Caption"/>

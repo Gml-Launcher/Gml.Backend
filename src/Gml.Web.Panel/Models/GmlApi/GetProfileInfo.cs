@@ -23,6 +23,6 @@ namespace GmlAdminPanel.Models.GmlApi
         public IEnumerable<File> Files { get; set; }
 
         [JsonPropertyName("whiteListFiles")]
-        public IEnumerable<string> WhiteListFiles { get; set; }
+        public IEnumerable<File> WhiteListFiles { get; set; }
     }
 }

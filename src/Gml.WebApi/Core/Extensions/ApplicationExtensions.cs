@@ -45,6 +45,10 @@ public static class ApplicationExtensions
 
         app.MapGet("/api/file/{fileHash}", RequestHandler.DownloadFile);
 
+        app.MapGet("/api/file/whitelist/{profileName}", RequestHandler.GetProfileWhiteList);
+        app.MapPost("/api/file/whitelist", RequestHandler.AddFileToWhiteList);
+        app.MapDelete("/api/file/whitelist", RequestHandler.RemoveFileFromWhiteList);
+
         #endregion
 
         app.MapGet("/", () => Results.Ok("Hello world!"));
