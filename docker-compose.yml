@@ -1,22 +1,33 @@
-﻿services:
-  gml.web.api:
-    image: gml.web.api
+﻿﻿services:
+  gml-web-api:
+    image: gml-web-api-image
+    container_name: gml-web-api-container
     build:
       context: .
       dockerfile: src/Gml.WebApi/Dockerfile
     ports:
       - "5000:8080"
-  gml.web.admin:
-    image: gml.web.admin
+    networks:
+      - gml-network
+  gml-web-admin:
+    image: gml-web-admin-image
+    container_name: gml-web-admin-container
     build:
       context: .
       dockerfile: src/Gml.Web.Panel/Dockerfile
     ports:
-      - "5001:8081"
-      - "5002:8082"
+      - "5003:8081"
+      - "5004:8082"
+    networks:
+      - gml-network
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8081;http://+:8082;
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+networks:
+  gml-network:
+    name: gml-network
+    attachable: true

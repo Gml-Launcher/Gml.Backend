@@ -1,11 +1,10 @@
 {
   "profiles": {
-    "Gml.AdminPanel.Server": {
+    "GmlAdminPanel.Server": {
       "commandName": "Project",
-      "externalUrlConfiguration": true,
       "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "applicationUrl": "http://localhost:8081",
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:8081;http://localhost:8082",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
