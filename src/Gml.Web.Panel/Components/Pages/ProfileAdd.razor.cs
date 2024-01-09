@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Gml.AdminPanel.Services;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -31,7 +32,7 @@ namespace Gml.AdminPanel.Components.Pages
         protected NotificationService NotificationService { get; set; }
 
         [Inject]
-        protected Gml.AdminPanel.GmlApiService GmlApiService { get; set; }
+        protected GmlApiService GmlApiService { get; set; }
 
         protected override async Task OnInitializedAsync()
         {

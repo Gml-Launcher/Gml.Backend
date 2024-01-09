@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Gml.AdminPanel.Models.GmlApi;
+using Gml.AdminPanel.Services;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Radzen;
 using Radzen.Blazor;
-using File = System.IO.File;
-using FileInfo = Radzen.FileInfo;
 
 namespace Gml.AdminPanel.Components.Pages
 {
@@ -27,7 +21,7 @@ namespace Gml.AdminPanel.Components.Pages
 
         [Inject] protected NotificationService NotificationService { get; set; }
 
-        [Inject] protected Gml.AdminPanel.GmlApiService GmlApiService { get; set; }
+        [Inject] protected GmlApiService GmlApiService { get; set; }
 
         protected IEnumerable<Gml.AdminPanel.Models.GmlApi.GetProfileDto> getProfileDtos;
 

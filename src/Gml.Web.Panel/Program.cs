@@ -1,5 +1,6 @@
 using Radzen;
-using GmlAdminPanel.Components;
+using Gml.AdminPanel.Components;
+using Gml.AdminPanel.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -17,7 +18,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddHttpClient("GmlApi", client => client.BaseAddress = new Uri("https://localhost:5000"));
-builder.Services.AddScoped<GmlAdminPanel.GmlApiService>();
+builder.Services.AddScoped<GmlApiService>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
