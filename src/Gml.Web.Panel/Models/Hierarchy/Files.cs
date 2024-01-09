@@ -1,22 +1,33 @@
 namespace Gml.AdminPanel.Models.Hierarchy;
 
-public class File
+public class FileNode : Node
+{
+    public GmlApi.File CurrentFile { get; set; }
+}
+
+public class FolderNode : Node
+{
+
+}
+
+public class Node
 {
     public string Name { get; set; }
     public string Directory { get; set; }
     public long Size { get; set; }
     public string Hash { get; set; }
-}
+    public Node Parent { get; set; }
+    public List<FileNode> Files { get; set; }
+    public List<FolderNode> Folders { get; set; }
 
-public class Folder
-{
-    public string Name { get; set; }
-    public List<Folder> Subfolders { get; set; }
-    public List<File> Files { get; set; }
-}
+    public string GetHierarchyPath(Node node)
+    {
+        if (node == null)
+            return string.Empty;
 
-public class Root
-{
-    public List<File> Files { get; set; }
-    public List<Folder> Folders { get; set; }
+        if (node.Parent == null)
+            return node.Directory;
+
+        return string.Concat(GetHierarchyPath(node.Parent), "\\", node.Directory);
+    }
 }
