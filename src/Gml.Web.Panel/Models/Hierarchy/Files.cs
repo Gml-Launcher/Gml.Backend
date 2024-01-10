@@ -28,6 +28,6 @@ public class Node
         if (node.Parent == null)
             return node.Directory;
 
-        return string.Concat(GetHierarchyPath(node.Parent), "\\", node.Directory);
+        return string.Concat(GetHierarchyPath(node.Parent), "/", node.Directory);
     }
 }
