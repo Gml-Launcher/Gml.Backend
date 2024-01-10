@@ -43,11 +43,13 @@ public static class ApplicationExtensions
         app.MapPost("/api/profiles/restore", RequestHandler.RestoreProfileInfo);
         app.MapPost("/api/profiles/pack", RequestHandler.PackProfile);
 
+        app.MapPost("/api/file", RequestHandler.LoadFile);
         app.MapGet("/api/file/{fileHash}", RequestHandler.DownloadFile);
 
         app.MapGet("/api/file/whitelist/{profileName}", RequestHandler.GetProfileWhiteList);
         app.MapPost("/api/file/whitelist", RequestHandler.AddFileToWhiteList);
         app.MapDelete("/api/file/whitelist", RequestHandler.RemoveFileFromWhiteList);
+
 
         #endregion
 

@@ -38,6 +38,8 @@ namespace GmlAdminPanel.Components.Pages
         protected IList<System.IO.FileInfo> Files { get; set; }
         protected IList<Node> Directories { get; set; }
 
+        protected RadzenUpload upload;
+
 
         List<string> filesToView;
         protected bool IsPackaging { get; set; }
@@ -53,6 +55,39 @@ namespace GmlAdminPanel.Components.Pages
 
                 LoadAdditionalData();
             }
+        }
+
+        async Task OnProgress(UploadProgressArgs args, string name)
+        {
+            await ShowConfirmationDialog(args.Files);
+            // console.Log($"{args.Progress}% '{name}' / {args.Loaded} of {args.Total} bytes.");
+            //
+            // if (args.Progress == 100)
+            // {
+            //     foreach (var file in args.Files)
+            //     {
+            //         console.Log($"Uploaded: {file.Name} / {file.Size} bytes");
+            //     }
+            // }
+        }
+
+        async Task ShowConfirmationDialog(IEnumerable<FileInfo> argsFiles)
+        {
+            var result = await DialogService.OpenAsync<ConfirmFilePathDialog>($"Load files to profile \"{ProfileInfo.ProfileName}\"",
+                new Dictionary<string, object>
+                {
+                    { "Files", argsFiles.ToList() },
+                    { "Upload", upload },
+                    { "HttpClient", GmlApiService.HttpClient },
+                },
+                new DialogOptions
+                {
+                    Width = "700px",
+                    Height = "512px",
+                    Resizable = true,
+                    Draggable = true
+                }
+            );
         }
 
         private async Task LoadAdditionalData()
@@ -212,7 +247,8 @@ namespace GmlAdminPanel.Components.Pages
                     CurrentFile = c
                 }).ToList();
 
-            var directories = children.Except(files.Select(f => f.CurrentFile)).Where(c => c.Directory.Contains(directoryPath))
+            var directories = children.Except(files.Select(f => f.CurrentFile))
+                .Where(c => c.Directory.Contains(directoryPath))
                 .Select(c => c.Directory.Split(directoryPath).Last()).Select(c => c.Split('\\').First()).Distinct()
                 .ToList()
                 .Select(c => new FolderNode

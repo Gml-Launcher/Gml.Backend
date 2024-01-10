@@ -1,14 +1,31 @@
 ﻿services:
+  filebrowser:
+    image: filebrowser/filebrowser
+    user: "${UID}:${GID}"
+    environment:
+      - FB_BASEURL=/filebrowser
+    volumes:
+      - shared_volume:/srv
+      - /DATA_DIR:/data
+      - /CONFIG_DIR:/config
+    restart: always
+    ports:
+      - 5005:80
+    networks:
+      - gml-network
+
   gml-web-api:
     image: gml-web-api-image
     container_name: gml-web-api-container
     build:
-      context: .
       dockerfile: src/Gml.WebApi/Dockerfile
+    volumes:
+      - shared_volume:/home/app
     ports:
       - "5000:8080"
     networks:
       - gml-network
+
   gml-web-admin:
     image: gml-web-admin-image
     container_name: gml-web-admin-container
@@ -31,3 +48,6 @@ networks:
   gml-network:
     name: gml-network
     attachable: true
+
+volumes:
+  shared_volume:
