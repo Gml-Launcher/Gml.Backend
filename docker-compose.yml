@@ -1,6 +1,8 @@
-﻿services:
+﻿name: gml-core
+services:
   filebrowser:
     image: filebrowser/filebrowser
+    container_name: file-browser
     user: "${UID}:${GID}"
     environment:
       - FB_BASEURL=/filebrowser
@@ -16,7 +18,7 @@
 
   gml-web-api:
     image: gml-web-api-image
-    container_name: gml-web-api-container
+    container_name: gml-web-api
     build:
       dockerfile: src/Gml.WebApi/Dockerfile
     volumes:
@@ -28,7 +30,7 @@
 
   gml-web-admin:
     image: gml-web-admin-image
-    container_name: gml-web-admin-container
+    container_name: gml-web-admin
     build:
       context: .
       dockerfile: src/Gml.Web.Panel/Dockerfile

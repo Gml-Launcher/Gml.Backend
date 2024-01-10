@@ -117,8 +117,8 @@ namespace GmlAdminPanel.Components.Pages
                 Files = ProfileInfo.Files.Select(c => new System.IO.FileInfo(c.Directory)).ToList();
 
 
-                filesToView = Files.Select(c => c.FullName.Split($"{ProfileInfo.ProfileName}\\").LastOrDefault())
-                    .Select(c => c.Split('\\').First())
+                filesToView = Files.Select(c => c.FullName.Split($"{ProfileInfo.ProfileName}/").LastOrDefault())
+                    .Select(c => c.Split('/').First())
                     .Distinct()
                     .ToList();
 
@@ -230,14 +230,14 @@ namespace GmlAdminPanel.Components.Pages
 
             var path = args.Item.GetHierarchyPath(args.Item);
 
-            var directoryPath = $"{ProfileInfo.ProfileName}\\{path}\\";
+            var directoryPath = $"{ProfileInfo.ProfileName}/{path}/";
 
             var children = ProfileInfo.Files
                 .Where(c => c.Directory.Contains(directoryPath))
                 .ToList();
 
             var files = children
-                .Where(c => c.Directory.Split(directoryPath).Last().Count(c => c == '\\') == 0)
+                .Where(c => c.Directory.Split(directoryPath).Last().Count(c => c == '/') == 0)
                 .Select(c => new FileNode
                 {
                     Parent = args.Item,
@@ -249,7 +249,7 @@ namespace GmlAdminPanel.Components.Pages
 
             var directories = children.Except(files.Select(f => f.CurrentFile))
                 .Where(c => c.Directory.Contains(directoryPath))
-                .Select(c => c.Directory.Split(directoryPath).Last()).Select(c => c.Split('\\').First()).Distinct()
+                .Select(c => c.Directory.Split(directoryPath).Last()).Select(c => c.Split('/').First()).Distinct()
                 .ToList()
                 .Select(c => new FolderNode
                 {
