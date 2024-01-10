@@ -22,12 +22,12 @@ namespace GmlAdminPanel
 {
     public partial class GmlApiService
     {
-        private readonly HttpClient httpClient;
+        internal readonly HttpClient HttpClient;
         private readonly NavigationManager navigationManager;
 
         public GmlApiService(NavigationManager navigationManager, IHttpClientFactory httpClientFactory)
         {
-            this.httpClient = httpClientFactory.CreateClient("GmlApi");
+            this.HttpClient = httpClientFactory.CreateClient("GmlApi");
             this.navigationManager = navigationManager;
         }
 
@@ -42,7 +42,7 @@ namespace GmlAdminPanel
 
         public async Task<IEnumerable<GmlAdminPanel.Models.GmlApi.GetProfileDto>> GetProfiles()
         {
-            var uri = new Uri(httpClient.BaseAddress, $"api/profiles");
+            var uri = new Uri(HttpClient.BaseAddress, $"api/profiles");
 
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
 
@@ -50,7 +50,7 @@ namespace GmlAdminPanel
 
             await AuthorizeRequest(request);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
 
@@ -64,7 +64,7 @@ namespace GmlAdminPanel
 
         public async Task CreateProfile(CreateProfileDto profileDto)
         {
-            var uri = new Uri(httpClient.BaseAddress, $"api/profiles");
+            var uri = new Uri(HttpClient.BaseAddress, $"api/profiles");
 
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
             request.Content = new StringContent(JsonConvert.SerializeObject(profileDto), Encoding.UTF8, "application/json");
@@ -73,7 +73,7 @@ namespace GmlAdminPanel
 
             await AuthorizeRequest(request);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
 
@@ -85,7 +85,7 @@ namespace GmlAdminPanel
 
         public async Task<GmlAdminPanel.Models.GmlApi.GetProfileInfo> LoadProfileInfo(ProfileCreateInfoDto project)
         {
-            var uri = new Uri(httpClient.BaseAddress, $"api/profiles/restore");
+            var uri = new Uri(HttpClient.BaseAddress, $"api/profiles/restore");
 
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
             request.Content = new StringContent(JsonConvert.SerializeObject(project), Encoding.UTF8, "application/json");
@@ -94,7 +94,7 @@ namespace GmlAdminPanel
 
             await AuthorizeRequest(request);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
 
@@ -107,7 +107,7 @@ namespace GmlAdminPanel
 
         public async Task<GmlAdminPanel.Models.GmlApi.GetProfileInfo> GetProfileInfo(ProfileCreateInfoDto project)
         {
-            var uri = new Uri(httpClient.BaseAddress, $"api/profiles/info");
+            var uri = new Uri(HttpClient.BaseAddress, $"api/profiles/info");
 
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
             request.Content = new StringContent(JsonConvert.SerializeObject(project), Encoding.UTF8, "application/json");
@@ -116,7 +116,7 @@ namespace GmlAdminPanel
 
             await AuthorizeRequest(request);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
 
@@ -132,7 +132,7 @@ namespace GmlAdminPanel
 
         public async Task PackProfile(PackProfileDto packProfileDto)
         {
-            var uri = new Uri(httpClient.BaseAddress, $"api/profiles/pack");
+            var uri = new Uri(HttpClient.BaseAddress, $"api/profiles/pack");
 
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
 
@@ -142,7 +142,7 @@ namespace GmlAdminPanel
 
             await AuthorizeRequest(request);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
 
@@ -154,7 +154,7 @@ namespace GmlAdminPanel
 
         public async Task DownloadFile(string fileHash)
         {
-            var uri = new Uri(httpClient.BaseAddress, $"api/file/{fileHash}");
+            var uri = new Uri(HttpClient.BaseAddress, $"api/file/{fileHash}");
 
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
 
@@ -162,7 +162,7 @@ namespace GmlAdminPanel
 
             await AuthorizeRequest(request);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
 
@@ -171,7 +171,7 @@ namespace GmlAdminPanel
 
         public async Task RemoveProfile(RemoveProfileDto removeProfileDto)
         {
-            var uri = new Uri(httpClient.BaseAddress, $"api/profiles");
+            var uri = new Uri(HttpClient.BaseAddress, $"api/profiles");
 
             var request = new HttpRequestMessage(HttpMethod.Delete, uri);
 
@@ -179,7 +179,7 @@ namespace GmlAdminPanel
 
             await AuthorizeRequest(request);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
         }
@@ -188,14 +188,14 @@ namespace GmlAdminPanel
 
         public async Task<IEnumerable<File>> AddWhiteList(FileWhiteListDto fileWhiteListDto)
         {
-            var uri = new Uri(httpClient.BaseAddress, $"api/file/whitelist");
+            var uri = new Uri(HttpClient.BaseAddress, $"api/file/whitelist");
 
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
             request.Content = new StringContent(JsonConvert.SerializeObject(fileWhiteListDto), Encoding.UTF8, "application/json");
 
             await AuthorizeRequest(request);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
 
@@ -206,14 +206,14 @@ namespace GmlAdminPanel
 
         public async Task<IEnumerable<File>> RemoveWhiteList(FileWhiteListDto fileWhiteListDto)
         {
-            var uri = new Uri(httpClient.BaseAddress, $"api/file/whitelist");
+            var uri = new Uri(HttpClient.BaseAddress, $"api/file/whitelist");
 
             var request = new HttpRequestMessage(HttpMethod.Delete, uri);
             request.Content = new StringContent(JsonConvert.SerializeObject(fileWhiteListDto), Encoding.UTF8, "application/json");
 
             await AuthorizeRequest(request);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
 

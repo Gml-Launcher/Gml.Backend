@@ -30,6 +30,12 @@ public class RequestHandler
         return Results.Ok(dto);
     }
 
+    public static async Task<IResult> LoadFile(IGmlManager gmlManager, IEnumerable<IFormFile> request)
+    {
+        return Results.Ok();
+
+    }
+
     /// <summary>
     /// Downloads a file from the GML manager.
     /// </summary>
