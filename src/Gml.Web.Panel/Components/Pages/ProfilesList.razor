@@ -30,7 +30,7 @@
                                 <RadzenColumn>
                                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="Radzen.AlignItems.Center" Gap="5">
 
-                                        <RadzenStack Visible="ProfileInfo == null">
+                                        <RadzenStack Visible="ProfileInfo == null || IsDownloading || IsRemoving || IsPackaging">
 
                                             <div class="spinner-border spinner-border-sm" role="status">
                                                 <span class="visually-hidden">Загрузка...</span>
@@ -44,6 +44,7 @@
                                 <RadzenColumn>
                                     <RadzenStack Orientation="Orientation.Horizontal"
                                                  JustifyContent="JustifyContent.End"
+                                                 Visible="ProfileInfo != null && !IsDownloading && !IsRemoving && !IsPackaging"
                                                  AlignItems="AlignItems.End">
                                         <RadzenButton Icon="refresh" Click="LoadAdditionalData" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark"/>
                                     </RadzenStack>
@@ -56,23 +57,22 @@
                                     <RadzenStack Visible="@IsPackaging" Orientation="Radzen.Orientation.Horizontal" AlignItems="Radzen.AlignItems.Center">
 
                                         <div class="spinner-border spinner-border-sm" role="status">
-                                            <span class="visually-hidden">Загрузка...</span>
+                                            <span class="visually-hidden">Packaging...</span>
                                         </div>
                                         <RadzenText Text="Packaging..."/>
 
                                     </RadzenStack>
-                                    <RadzenButton Style="width: 100%; visibility: visible" Text="Package profile" Click="@PackageSelectedProfile" Visible="(IsPackaging == false)" Icon="archive"/>
+                                    <RadzenButton Style="width: 100%; visibility: visible" Text="Package profile" Click="@PackageSelectedProfile" Visible="(IsPackaging == false && IsDownloading == false)" Icon="archive"/>
                                 </RadzenColumn>
-
-                                <RadzenColumn class="d-flex align-items-end">
+                                <RadzenColumn class="d-flex align-items-end" Visible="!(IsDownloading)">
                                     <RadzenButton Style="width: 100%" ButtonStyle="Radzen.ButtonStyle.Light" Text="for Windows" Click="@LoadAdditionalDataWindows" Icon="get_app">
                                     </RadzenButton>
                                 </RadzenColumn>
-                                <RadzenColumn class="d-flex align-items-end">
+                                <RadzenColumn class="d-flex align-items-end" Visible="!(IsDownloading)">
                                     <RadzenButton Style="width: 100%" ButtonStyle="Radzen.ButtonStyle.Light" Text="for Linux" Click="@LoadAdditionalDataLinux" Icon="get_app">
                                     </RadzenButton>
                                 </RadzenColumn>
-                                <RadzenColumn class="d-flex  align-items-end">
+                                <RadzenColumn class="d-flex  align-items-end" Visible="!(IsDownloading)">
                                     <RadzenButton Style="width: 100%" ButtonStyle="Radzen.ButtonStyle.Light" Text="for OsX" Click="@LoadAdditionalDataMacOs" Icon="get_app"></RadzenButton>
                                 </RadzenColumn>
                                 <RadzenColumn class="d-flex flex-column align-items-center justify-content-center">
@@ -84,8 +84,13 @@
                                         <RadzenText Text="Removing..."/>
 
                                     </RadzenStack>
-                                    <RadzenButton Style="width: 100%;" Text="Remove profile" Click="@RemoveSelectedProfile" ButtonStyle="Radzen.ButtonStyle.Danger" Visible="(IsRemoving == false)" Icon="delete"/>
+                                    <RadzenButton Style="width: 100%;" Text="Remove profile" Click="@RemoveSelectedProfile" ButtonStyle="Radzen.ButtonStyle.Danger" Visible="(IsRemoving == false && IsDownloading == false)" Icon="delete"/>
                                 </RadzenColumn>
+                            </RadzenRow>
+
+                            <RadzenRow class="mt-3" Visible="IsDownloading">
+                                <RadzenText Text="@ProcessFileName" />
+                                <RadzenProgressBar class="w-100" ProgressBarStyle="ProgressBarStyle.Primary" Value="ProcessPercentValue"/>
                             </RadzenRow>
 
                         </RadzenCard>

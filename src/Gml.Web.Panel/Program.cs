@@ -16,7 +16,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-builder.Services.AddHttpClient("GmlApi", client => client.BaseAddress = new Uri("http://gml-web-api:8080"));
+// builder.Services.AddHttpClient("GmlApi", client => client.BaseAddress = new Uri("http://gml-web-api:8080"));
+builder.Services.AddHttpClient("GmlApi", client => client.BaseAddress = new Uri("https://localhost:5000"));
 builder.Services.AddScoped<GmlAdminPanel.GmlApiService>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
