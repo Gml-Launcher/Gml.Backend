@@ -54,14 +54,6 @@
 
                             <RadzenRow Style="margin-top: 10px" Visible="!(ProfileInfo == null)">
                                 <RadzenColumn class="d-flex flex-column align-items-center justify-content-center">
-                                    <RadzenStack Visible="@IsPackaging" Orientation="Radzen.Orientation.Horizontal" AlignItems="Radzen.AlignItems.Center">
-
-                                        <div class="spinner-border spinner-border-sm" role="status">
-                                            <span class="visually-hidden">Packaging...</span>
-                                        </div>
-                                        <RadzenText Text="Packaging..."/>
-
-                                    </RadzenStack>
                                     <RadzenButton Style="width: 100%; visibility: visible" Text="Package profile" Click="@PackageSelectedProfile" Visible="(IsPackaging == false && IsDownloading == false)" Icon="archive"/>
                                 </RadzenColumn>
                                 <RadzenColumn class="d-flex align-items-end" Visible="!(IsDownloading)">

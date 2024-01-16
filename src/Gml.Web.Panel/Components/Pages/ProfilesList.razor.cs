@@ -212,6 +212,20 @@ namespace GmlAdminPanel.Components.Pages
                 });
 
                 IsDownloading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+
+            hubConnection.On("SuccessPacked", async () =>
+            {
+
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Detail = "The client has been successfully packaged",
+                });
+                IsPackaging = false;
+                IsDownloading = false;
+                await InvokeAsync(StateHasChanged);
             });
 
 
@@ -372,54 +386,17 @@ namespace GmlAdminPanel.Components.Pages
 
                 StateHasChanged();
 
-                await GmlApiService.PackProfile(new PackProfileDto
-                {
-                    ClientName = profileDto.Name
-                });
+                await hubConnection.SendAsync("Pack", profileDto.Name);
 
-                NotificationService.Notify(new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Success,
-                    Detail = "The client has been successfully packaged",
-                });
-                IsPackaging = false;
+                // await GmlApiService.PackProfile(new PackProfileDto
+                // {
+                //     ClientName = profileDto.Name
+                // });
+
 
                 StateHasChanged();
             }
         }
-
-        void LoadFiles(TreeExpandEventArgs args)
-        {
-            var directory = args.Value as string;
-
-            args.Children.Data = Files.Where(c => c.FullName.Contains($"\\{directory}\\"))
-                .Select(c => c.FullName.Split($"\\{directory}\\").LastOrDefault())
-                .Select(c => c.Split('\\').First())
-                .Distinct()
-                .ToList();
-            args.Children.Text = GetTextForNode;
-            args.Children.HasChildren = (path) => Files
-                .Where(c => c.FullName.Contains($"\\{directory}\\{path}\\"))
-                .Select(c => c.FullName.Split($"\\{directory}\\{path}\\").LastOrDefault())
-                .Any(c => !string.IsNullOrEmpty(c));
-            args.Children.Template = FileOrFolderTemplate;
-        }
-
-        string GetTextForNode(object data)
-        {
-            return Path.GetFileName((string)data);
-        }
-
-        RenderFragment<RadzenTreeItem> FileOrFolderTemplate = (context) => builder =>
-        {
-            string path = context.Value as string;
-            bool isDirectory = Path.GetExtension(path)?.Length < 3;
-
-            builder.OpenComponent<RadzenIcon>(0);
-            builder.AddAttribute(1, nameof(RadzenIcon.Icon), isDirectory ? "folder" : "insert_drive_file");
-            builder.CloseComponent();
-            builder.AddContent(3, context.Text);
-        };
     }
 
     public class FileItem
