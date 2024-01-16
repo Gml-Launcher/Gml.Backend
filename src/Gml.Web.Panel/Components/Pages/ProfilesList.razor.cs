@@ -8,6 +8,7 @@ using GmlAdminPanel.Models.Hierarchy;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.SignalR.Client;
 using Radzen;
 using Radzen.Blazor;
 using File = System.IO.File;
@@ -31,6 +32,8 @@ namespace GmlAdminPanel.Components.Pages
 
         [Inject] protected GmlAdminPanel.GmlApiService GmlApiService { get; set; }
 
+        private HubConnection hubConnection;
+
         protected IEnumerable<GmlAdminPanel.Models.GmlApi.GetProfileDto> getProfileDtos;
 
         private IList<GmlAdminPanel.Models.GmlApi.GetProfileDto> _selectedProfiles = new List<GetProfileDto>();
@@ -43,7 +46,10 @@ namespace GmlAdminPanel.Components.Pages
 
         List<string> filesToView;
         protected bool IsPackaging { get; set; }
+        protected bool IsDownloading { get; set; }
         protected bool IsRemoving { get; set; }
+        protected int ProcessPercentValue { get; set; }
+        protected string ProcessFileName { get; set; }
         protected RadzenDataGrid<GmlAdminPanel.Models.Hierarchy.Node> grid;
 
         protected IList<GmlAdminPanel.Models.GmlApi.GetProfileDto> SelectedProfiles
@@ -73,7 +79,8 @@ namespace GmlAdminPanel.Components.Pages
 
         async Task ShowConfirmationDialog(IEnumerable<FileInfo> argsFiles)
         {
-            var result = await DialogService.OpenAsync<ConfirmFilePathDialog>($"Load files to profile \"{ProfileInfo.ProfileName}\"",
+            var result = await DialogService.OpenAsync<ConfirmFilePathDialog>(
+                $"Load files to profile \"{ProfileInfo.ProfileName}\"",
                 new Dictionary<string, object>
                 {
                     { "Files", argsFiles.ToList() },
@@ -92,6 +99,9 @@ namespace GmlAdminPanel.Components.Pages
 
         private async Task LoadAdditionalData()
         {
+            if (IsDownloading)
+                return;
+
             if (_selectedProfiles.Any() && _selectedProfiles.FirstOrDefault() is { } profileDto)
             {
                 filesToView = new List<string>();
@@ -128,25 +138,23 @@ namespace GmlAdminPanel.Components.Pages
                     Directory = c
                 }).Cast<Node>().ToList();
 
-                var test = ProfileInfo.Files.Select(c => c.Directory.Split($"{ProfileInfo.ProfileName}\\")).ToList();
-
                 StateHasChanged();
             }
         }
 
-        private async Task LoadAdditionalDataWindows()
+        private Task LoadAdditionalDataWindows()
         {
-            await LoadAdditionalData(OsType.Windows);
+            return LoadAdditionalData(OsType.Windows);
         }
 
-        private async Task LoadAdditionalDataLinux()
+        private Task LoadAdditionalDataLinux()
         {
-            await LoadAdditionalData(OsType.Linux);
+            return LoadAdditionalData(OsType.Linux);
         }
 
-        private async Task LoadAdditionalDataMacOs()
+        private Task LoadAdditionalDataMacOs()
         {
-            await LoadAdditionalData(OsType.OsX);
+            return LoadAdditionalData(OsType.OsX);
         }
 
         private async Task LoadAdditionalData(OsType osType)
@@ -159,35 +167,69 @@ namespace GmlAdminPanel.Components.Pages
             if (isSuccess is not true)
                 return;
 
-            if (_selectedProfiles.Any() && _selectedProfiles.FirstOrDefault() is GetProfileDto profileDto)
-            {
-                ProfileInfo = null;
+            IsDownloading = true;
 
-                ProfileInfo = await GmlApiService.LoadProfileInfo(new ProfileCreateInfoDto
-                {
-                    ClientName = profileDto.Name,
-                    GameAddress = "192.168.0.1",
-                    GamePort = 25565,
-                    RamSize = 4096,
-                    SizeX = 1500,
-                    SizeY = 900,
-                    IsFullScreen = false,
-                    UserAccessToken = "sergsecgrfsecgriseuhcygrshecngrysicugrbn7csewgrfcsercgser",
-                    UserName = "GamerVII",
-                    OsType = (int)osType,
-                    UserUuid = "31f5f477-53db-4afd-b88d-2e01815f4887"
-                });
+            await hubConnection.SendAsync("Restore", ProfileInfo.ProfileName, (osType).ToString());
 
-                ProfileInfo.Files = ProfileInfo.Files.OrderBy(c => c.Directory);
-
-                StateHasChanged();
-            }
+            return;
         }
-
 
         protected override async Task OnInitializedAsync()
         {
             getProfileDtos = await GmlApiService.GetProfiles();
+
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl(NavigationManager.ToAbsoluteUri(
+                    $"{GmlApiService.HttpClient.BaseAddress!.AbsoluteUri}ws/profiles/restore"))
+                .Build();
+
+            hubConnection.On<int>("ChangeProgress", async (progress) =>
+            {
+                if (ProcessPercentValue != progress)
+                {
+                    ProcessPercentValue = progress;
+                    IsDownloading = true;
+                    await InvokeAsync(StateHasChanged);
+                }
+            });
+
+            hubConnection.On<string>("FileChanged", async (fileName) =>
+            {
+                if (!string.IsNullOrEmpty(fileName))
+                {
+                    ProcessFileName = fileName;
+                    IsDownloading = true;
+                    //await InvokeAsync(StateHasChanged);
+                }
+            });
+
+            hubConnection.On("SuccessInstalled", async () =>
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Detail = "The profile has been successfully installed.",
+                });
+
+                IsDownloading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+
+            hubConnection.On("SuccessPacked", async () =>
+            {
+
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Detail = "The client has been successfully packaged",
+                });
+                IsPackaging = false;
+                IsDownloading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+
+
+            await hubConnection.StartAsync();
         }
 
         protected override void OnInitialized()
@@ -310,7 +352,7 @@ namespace GmlAdminPanel.Components.Pages
 
                     ProfileInfo = null;
 
-                    await OnInitializedAsync();
+                    getProfileDtos = await GmlApiService.GetProfiles();
 
                     StateHasChanged();
 
@@ -344,54 +386,17 @@ namespace GmlAdminPanel.Components.Pages
 
                 StateHasChanged();
 
-                await GmlApiService.PackProfile(new PackProfileDto
-                {
-                    ClientName = profileDto.Name
-                });
+                await hubConnection.SendAsync("Pack", profileDto.Name);
 
-                NotificationService.Notify(new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Success,
-                    Detail = "The client has been successfully packaged",
-                });
-                IsPackaging = false;
+                // await GmlApiService.PackProfile(new PackProfileDto
+                // {
+                //     ClientName = profileDto.Name
+                // });
+
 
                 StateHasChanged();
             }
         }
-
-        void LoadFiles(TreeExpandEventArgs args)
-        {
-            var directory = args.Value as string;
-
-            args.Children.Data = Files.Where(c => c.FullName.Contains($"\\{directory}\\"))
-                .Select(c => c.FullName.Split($"\\{directory}\\").LastOrDefault())
-                .Select(c => c.Split('\\').First())
-                .Distinct()
-                .ToList();
-            args.Children.Text = GetTextForNode;
-            args.Children.HasChildren = (path) => Files
-                .Where(c => c.FullName.Contains($"\\{directory}\\{path}\\"))
-                .Select(c => c.FullName.Split($"\\{directory}\\{path}\\").LastOrDefault())
-                .Any(c => !string.IsNullOrEmpty(c));
-            args.Children.Template = FileOrFolderTemplate;
-        }
-
-        string GetTextForNode(object data)
-        {
-            return Path.GetFileName((string)data);
-        }
-
-        RenderFragment<RadzenTreeItem> FileOrFolderTemplate = (context) => builder =>
-        {
-            string path = context.Value as string;
-            bool isDirectory = Path.GetExtension(path)?.Length < 3;
-
-            builder.OpenComponent<RadzenIcon>(0);
-            builder.AddAttribute(1, nameof(RadzenIcon.Icon), isDirectory ? "folder" : "insert_drive_file");
-            builder.CloseComponent();
-            builder.AddContent(3, context.Text);
-        };
     }
 
     public class FileItem

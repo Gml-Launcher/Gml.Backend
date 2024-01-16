@@ -227,7 +227,12 @@ namespace GmlAdminPanel
         {
             return new List<string>
             {
+                "1.5.2",
+                "1.6.1",
+                "1.6.4",
                 "1.7.10",
+                "1.10",
+                "1.19.4",
                 "1.20.1",
             };;
         }

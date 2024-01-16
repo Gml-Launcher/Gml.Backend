@@ -1,8 +1,7 @@
 using Gml.Core.Launcher;
 using Gml.WebApi.Core.Handlers;
+using Gml.WebApi.Core.SignalRHubs;
 using GmlCore.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Gml.WebApi.Core.Extensions;
 
@@ -20,6 +19,7 @@ public static class ApplicationExtensions
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddSignalR();
 
         return builder;
     }
@@ -50,10 +50,12 @@ public static class ApplicationExtensions
         app.MapPost("/api/file/whitelist", RequestHandler.AddFileToWhiteList);
         app.MapDelete("/api/file/whitelist", RequestHandler.RemoveFileFromWhiteList);
 
-
         #endregion
 
         app.MapGet("/", () => Results.Ok("Hello world!"));
+
+
+        app.MapHub<ProfileHub>("/ws/profiles/restore");
 
 
         return app;
