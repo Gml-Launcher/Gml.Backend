@@ -1,7 +1,6 @@
 using System.Text;
 using Gml.Web.Client.Models.Profiles;
 using Gml.WebApi.Models.Dtos.Profiles;
-using GmlAdminPanel.Models.GmlApi;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;

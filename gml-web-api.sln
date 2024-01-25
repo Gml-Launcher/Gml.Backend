@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.WebApi", "src\Gml.WebApi\Gml.WebApi.csproj", "{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34407.89
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gml.WebApi", "src\Gml.WebApi\Gml.WebApi.csproj", "{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{173407F0-6602-48A5-BF49-E288C6043FE3}"
 EndProject
@@ -9,31 +12,27 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{A2E6D9BD-8CCB-48FC-91B9-D935ED9188D5}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.env = .env
 		.gitignore = .gitignore
 		docker-compose.yml = docker-compose.yml
 		README.md = README.md
-		.env = .env
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore", "src\gml-core\src\GmlCore\GmlCore.csproj", "{9F0244C3-F499-4572-964D-ED30F0E4AC03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GmlCore", "src\gml-core\src\GmlCore\GmlCore.csproj", "{9F0244C3-F499-4572-964D-ED30F0E4AC03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore.Interfaces", "src\gml-core\src\GmlCore.Interfaces\GmlCore.Interfaces.csproj", "{5DC19A4D-EE11-4F49-A1EB-B833E7212655}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GmlCore.Interfaces", "src\gml-core\src\GmlCore.Interfaces\GmlCore.Interfaces.csproj", "{5DC19A4D-EE11-4F49-A1EB-B833E7212655}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmlLib.Core.Installer.Forge", "src\gml-core\src\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge.csproj", "{0B17CE15-825E-419F-B207-036FCFF8D30D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CmlLib.Core.Installer.Forge", "src\gml-core\src\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge.csproj", "{0B17CE15-825E-419F-B207-036FCFF8D30D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.WebApi.Models", "src\Gml.WebApi.Models\Gml.WebApi.Models.csproj", "{4921D185-BE14-41B0-8327-F82F036A7A61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gml.WebApi.Models", "src\Gml.WebApi.Models\Gml.WebApi.Models.csproj", "{4921D185-BE14-41B0-8327-F82F036A7A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Common", "src\Gml.Common\Gml.Common\Gml.Common.csproj", "{410B82AA-FFF6-4CC6-9E30-BB2D79638EAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gml.Common", "src\Gml.Common\Gml.Common\Gml.Common.csproj", "{410B82AA-FFF6-4CC6-9E30-BB2D79638EAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmlLib", "src\CmlLib.Core\CmlLib\CmlLib.csproj", "{57F38D02-0B98-445D-AAC5-71147EF38F41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CmlLib", "src\CmlLib.Core\CmlLib\CmlLib.csproj", "{57F38D02-0B98-445D-AAC5-71147EF38F41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Client", "src\Gml.Client\src\Gml.Client\Gml.Client.csproj", "{10627438-8319-4083-A98E-6ABE228FBAC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gml.WebApi.Tests", "tests\Gml.WebApi.Tests\Gml.WebApi.Tests.csproj", "{C5AEBEE5-A317-4573-9159-5D39662349CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlAdminPanel", "src\Gml.Web.Panel\GmlAdminPanel.csproj", "{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.WebApi.Tests", "tests\Gml.WebApi.Tests\Gml.WebApi.Tests.csproj", "{C5AEBEE5-A317-4573-9159-5D39662349CB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Client", "src\Gml.Web.Client\Gml.Web.Client.csproj", "{404DD124-81DE-47B3-8184-E6ACBC387895}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gml.Web.Client", "src\Gml.Web.Client\Gml.Web.Client.csproj", "{404DD124-81DE-47B3-8184-E6ACBC387895}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,14 +68,6 @@ Global
 		{57F38D02-0B98-445D-AAC5-71147EF38F41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57F38D02-0B98-445D-AAC5-71147EF38F41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57F38D02-0B98-445D-AAC5-71147EF38F41}.Release|Any CPU.Build.0 = Release|Any CPU
-		{10627438-8319-4083-A98E-6ABE228FBAC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{10627438-8319-4083-A98E-6ABE228FBAC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{10627438-8319-4083-A98E-6ABE228FBAC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{10627438-8319-4083-A98E-6ABE228FBAC5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5AEBEE5-A317-4573-9159-5D39662349CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5AEBEE5-A317-4573-9159-5D39662349CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5AEBEE5-A317-4573-9159-5D39662349CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -86,6 +77,9 @@ Global
 		{404DD124-81DE-47B3-8184-E6ACBC387895}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{404DD124-81DE-47B3-8184-E6ACBC387895}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{9F0244C3-F499-4572-964D-ED30F0E4AC03} = {173407F0-6602-48A5-BF49-E288C6043FE3}
@@ -94,8 +88,6 @@ Global
 		{4921D185-BE14-41B0-8327-F82F036A7A61} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{410B82AA-FFF6-4CC6-9E30-BB2D79638EAB} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{57F38D02-0B98-445D-AAC5-71147EF38F41} = {173407F0-6602-48A5-BF49-E288C6043FE3}
-		{10627438-8319-4083-A98E-6ABE228FBAC5} = {173407F0-6602-48A5-BF49-E288C6043FE3}
-		{D6AF584D-D3FD-4CE3-B20C-FB86BD5C7BD4} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{C5AEBEE5-A317-4573-9159-5D39662349CB} = {AA158165-09EE-4338-9FC8-9F172E47F62D}
 		{404DD124-81DE-47B3-8184-E6ACBC387895} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 	EndGlobalSection
