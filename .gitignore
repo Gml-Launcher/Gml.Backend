@@ -456,3 +456,9 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+/src/Gml.Web.Client/Dataapp.db
+/src/Gml.Web.Client/Data/app.db-shm
+/src/Gml.Web.Client/Data/app.db
+/src/Gml.Web.Client/Data/app.db-wal
+/src/Gml.Web.Client/Data/Migrations
+/.env
