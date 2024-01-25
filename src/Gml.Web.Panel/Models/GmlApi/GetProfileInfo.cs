@@ -9,12 +9,17 @@ namespace GmlAdminPanel.Models.GmlApi
     {
         [JsonPropertyName("profileName")]
         public string ProfileName { get; set; }
+        [JsonPropertyName("iconBase64")]
+        public string IconBase64 { get; set; }
 
         [JsonPropertyName("minecraftVersion")]
         public string MinecraftVersion { get; set; }
 
         [JsonPropertyName("clientVersion")]
         public string ClientVersion { get; set; }
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
 
         [JsonPropertyName("arguments")]
         public string Arguments { get; set; }

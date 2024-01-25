@@ -1,77 +1,22 @@
-@inherits LayoutComponentBase
-@* <RadzenDialog/> *@
-@* <RadzenNotification/> *@
-@* <RadzenTooltip/> *@
-@* <RadzenContextMenu/> *@
+﻿@inherits LayoutComponentBase
 
-<RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
-    <RadzenHeader>
-        <div class="container-fluid">
-            <div class="row justify-content-start align-items-center">
-                <div class="col-6 d-flex align-items-center ps-0 pl-0">
-                    <RadzenSidebarToggle Click="@SidebarToggleClick"></RadzenSidebarToggle>
-                </div>
-                <div class="col-6 d-flex align-items-center justify-content-end pr-0 pe-0">
-                    <RadzenProfileMenu>
-                        <ChildContent>
-                            <RadzenProfileMenuItem Text="Logout" Value="Logout" Icon="logout"/>
-                        </ChildContent>
-                        <Template>
-                            <RadzenText Text="Anton" Style="float: left; padding: 5px"/>
-                            <RadzenIcon Icon="account_box" Style="font-size: 30px; font-style: normal"></RadzenIcon>
-                        </Template>
-                    </RadzenProfileMenu>
-                </div>
-            </div>
+@* @Body *@
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu/>
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
-    </RadzenHeader>
-    <RadzenBody Expanded="true">
-        <div class="row">
-            <div class="col">
-                @Body
-            </div>
-        </div>
-    </RadzenBody>
-    <RadzenSidebar Expanded="true" style="z-index: 2">
-        <RadzenLink class="p-3 py-4 d-flex align-items-center gap-2 text-decoration-none">
-            <RadzenStack AlignItems="AlignItems.Center"
-                         Orientation="Orientation.Horizontal">
-                <RadzenImage Style="border-radius: 10px;width: 48px; height: 48px;"
-                             Path="/images/gamervii-logo.png"/>
 
-                <RadzenText Text="Gml Admin Panel"
-                            TextStyle="TextStyle.Subtitle1" class="mb-0"
-                            Style="color: white;"/>
-            </RadzenStack>
-        </RadzenLink>
-        <RadzenPanelMenu Click="OnParentClicked" Multiple="false">
-            <RadzenPanelMenuItem Text="Profiles" Expanded="true">
-                <RadzenPanelMenuItem Text="List profiles" Path="profile-list" Icon="list"/>
-                <RadzenPanelMenuItem Text="Add profile" Path="profile-add" Icon="add"/>
-            </RadzenPanelMenuItem>
-        </RadzenPanelMenu>
-
-
-        <div class="py-3 py-md-4">
-            <RadzenText Text="PIM.Identity.Admin v1.0.0" TextStyle="TextStyle.Caption" TagName="TagName.P" TextAlign="TextAlign.Center"/>
-            <RadzenText Text="Copyright Gml Web Client Ⓒ 2023" TextStyle="TextStyle.Caption" class="mb-0" TagName="TagName.P" TextAlign="TextAlign.Center"/>
-        </div>
-    </RadzenSidebar>
-</RadzenLayout>
-
-@code {
-    // bool multiple = true;
-
-    void OnParentClicked(MenuItemEventArgs args)
-    {
-    }
-
-    void OnChildClicked(MenuItemEventArgs args)
-    {
-    }
-
-}
-
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

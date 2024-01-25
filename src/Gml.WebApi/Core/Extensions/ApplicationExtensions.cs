@@ -1,12 +1,18 @@
+using System.Collections.Immutable;
 using Gml.Core.Launcher;
+using Gml.WebApi.Core.Auth;
 using Gml.WebApi.Core.Handlers;
 using Gml.WebApi.Core.SignalRHubs;
 using GmlCore.Interfaces;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gml.WebApi.Core.Extensions;
 
 public static class ApplicationExtensions
 {
+    private const string BasicAuthSchemeName = "BasicAuthentication";
+
     public static WebApplicationBuilder RegisterServices(this WebApplicationBuilder builder)
     {
         var configuration = builder.Configuration.GetSection("ProjectName").Value
@@ -21,25 +27,37 @@ public static class ApplicationExtensions
         builder.Services.AddSwaggerGen();
         builder.Services.AddSignalR();
 
+        builder.Services.AddAuthentication(BasicAuthSchemeName)
+            .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>(BasicAuthSchemeName, _ => { });
+
+        builder.Services.AddAuthorization(options =>
+            options.AddPolicy(BasicAuthSchemeName,
+                new AuthorizationPolicyBuilder(BasicAuthSchemeName).RequireAuthenticatedUser().Build()
+            ));
+
+
         return builder;
     }
 
     public static WebApplication RegisterRoutes(this WebApplication app)
     {
-
         app.UseSwagger();
         app.UseSwaggerUI();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         // app.UseHttpsRedirection();
 
         #region Profiles
 
-        app.MapGet( "/api/profiles", RequestHandler.GetClients);
+        app.MapGet("/api/profiles", RequestHandler.GetClients);
         app.MapPost("/api/profiles", RequestHandler.CreateProfile);
-        app.MapDelete("/api/profiles", RequestHandler.DeleteProfile);
+        app.MapDelete("/api/profiles/{profileName}", RequestHandler.DeleteProfile);
 
 
         app.MapPost("/api/profiles/info", RequestHandler.GetProfileInfo);
+        app.MapPut("/api/profiles/info", RequestHandler.UpdateProfile);
         app.MapPost("/api/profiles/restore", RequestHandler.RestoreProfileInfo);
         app.MapPost("/api/profiles/pack", RequestHandler.PackProfile);
 

@@ -4,28 +4,43 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-Gml.Web.Client-53E5F052-CF7E-453E-828C-927DE50BB13A</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="Data\app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
 
     <ItemGroup>
       <Content Include="..\..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+      <Content Update="appsettings.Development.json">
+        <DependentUpon>appsettings.json</DependentUpon>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Components\Layout\MainLayout.cs">
-        <DependentUpon>MainLayout.razor</DependentUpon>
-      </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Gml.Client\src\Gml.Client\Gml.Client.csproj" />
+      <ProjectReference Include="..\Gml.Web.Panel\GmlAdminPanel.csproj" />
       <ProjectReference Include="..\Gml.WebApi.Models\Gml.WebApi.Models.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Radzen.Blazor" Version="4.23.4" />
+      <Compile Update="Components\Account\Pages\Profiles.cs">
+        <DependentUpon>Profiles.razor</DependentUpon>
+      </Compile>
+      <Compile Update="Components\Account\Pages\ProfileInfo.cs">
+        <DependentUpon>ProfileInfo.razor</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

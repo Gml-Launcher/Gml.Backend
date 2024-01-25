@@ -1,9 +1,12 @@
 using Gml.Core.Launcher;
 using Gml.Core.User;
+using Gml.Models;
+using Gml.WebApi.Core.Users;
 using Gml.WebApi.Models.Dtos.Profiles;
 using Gml.WebApi.Models.Enums.System;
 using GmlCore.Interfaces;
 using GmlCore.Interfaces.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gml.WebApi.Core.Handlers;
@@ -18,16 +21,19 @@ public class RequestHandler
         {
             Name = c.Name,
             GameVersion = c.GameVersion,
+            Description = c.Description,
             LaunchVersion = c.LaunchVersion,
+            CreateDate = c.CreateDate,
+            IconBase64 = c.IconBase64
         });
 
         return Results.Ok(dto);
     }
 
+    [Authorize]
     public static async Task<IResult> LoadFile(IGmlManager gmlManager, IEnumerable<IFormFile> request)
     {
         return Results.Ok();
-
     }
 
     public static async Task<IResult> DownloadFile(IGmlManager gmlManager, string fileHash)
@@ -40,9 +46,9 @@ public class RequestHandler
         return Results.File(string.Join(string.Empty, gmlManager.LauncherInfo.InstallationDirectory, file.Directory));
     }
 
+    [Authorize]
     public static async Task<IResult> GetProfileWhiteList(IGmlManager gmlManager, string profileName)
     {
-
         var profile = await gmlManager.Profiles.GetProfile(profileName);
 
         return profile == null
@@ -50,6 +56,7 @@ public class RequestHandler
             : Results.Ok(profile.FileWhiteList ??= []);
     }
 
+    [Authorize]
     public static async Task<IResult> AddFileToWhiteList(IGmlManager gmlManager, [FromBody] FileWhiteListDto fileDto)
     {
         var profile = await gmlManager.Profiles.GetProfile(fileDto.ClientName);
@@ -67,7 +74,9 @@ public class RequestHandler
         return Results.Ok(profile.FileWhiteList);
     }
 
-    public static async Task<IResult> RemoveFileFromWhiteList(IGmlManager gmlManager, [FromBody] FileWhiteListDto fileDto)
+    [Authorize]
+    public static async Task<IResult> RemoveFileFromWhiteList(IGmlManager gmlManager,
+        [FromBody] FileWhiteListDto fileDto)
     {
         var profile = await gmlManager.Profiles.GetProfile(fileDto.ClientName);
 
@@ -84,12 +93,13 @@ public class RequestHandler
         return Results.Ok(profile.FileWhiteList);
     }
 
+    [Authorize]
     public static async Task<IResult> PackProfile(IGmlManager gmlManager, PackProfileDto packProfileDto)
     {
-        if (string.IsNullOrEmpty(packProfileDto.ClientName))
+        if (string.IsNullOrEmpty(packProfileDto.Name))
             return Results.BadRequest();
 
-        var profile = await gmlManager.Profiles.GetProfile(packProfileDto.ClientName);
+        var profile = await gmlManager.Profiles.GetProfile(packProfileDto.Name);
 
         if (profile is null)
             return Results.NotFound();
@@ -99,21 +109,25 @@ public class RequestHandler
         return Results.Ok();
     }
 
-    public static async Task<IResult> DeleteProfile(IGmlManager gmlManager, [FromBody] RemoveProfileDto removeProfile)
+
+    [Authorize]
+    public static async Task<IResult> DeleteProfile(IGmlManager gmlManager, string profileName)
     {
-        if (string.IsNullOrEmpty(removeProfile.ClientName))
+        if (string.IsNullOrEmpty(profileName))
             return Results.BadRequest();
 
-        var profile = await gmlManager.Profiles.GetProfile(removeProfile.ClientName);
+        var profile = await gmlManager.Profiles.GetProfile(profileName);
 
         if (profile is null)
             return Results.NotFound();
 
-        await gmlManager.Profiles.RemoveProfile(profile, removeProfile.RemoveFiles);
+        await gmlManager.Profiles.RemoveProfile(profile, true);
 
         return Results.Ok();
     }
 
+
+    [Authorize]
     public static async Task<IResult> RestoreProfileInfo(IGmlManager gmlManager, ProfileCreateInfoDto profile)
     {
         if (string.IsNullOrEmpty(profile.ClientName))
@@ -144,6 +158,23 @@ public class RequestHandler
         });
 
         return Results.Ok(profileInfoRead);
+    }
+
+
+    [Authorize]
+    public static async Task<IResult> UpdateProfile(IGmlManager gmlManager, UpdateProfileDto profile)
+    {
+        if (string.IsNullOrEmpty(profile.OriginalName))
+            return Results.BadRequest();
+
+        var checkProfile = await gmlManager.Profiles.GetProfile(profile.OriginalName);
+
+        if (checkProfile is null)
+            return Results.NotFound();
+
+        await gmlManager.Profiles.UpdateProfile(checkProfile, profile.Name, profile.IconBase64, profile.Description);
+
+        return Results.Ok();
     }
 
     public static async Task<IResult> GetProfileInfo(IGmlManager gmlManager, ProfileCreateInfoDto profile)
@@ -178,6 +209,8 @@ public class RequestHandler
         return Results.Ok(profileInfoRead);
     }
 
+
+    [Authorize]
     public static async Task<IResult> CreateProfile(IGmlManager gmlManager, CreateProfileDto profile)
     {
         var canAddProfile = await gmlManager.Profiles.CanAddProfile(profile.Name, profile.Version);
@@ -188,7 +221,8 @@ public class RequestHandler
         if (!Enum.TryParse(profile.GameLoader.ToString(), out GameLoader gameLoader))
             return Results.BadRequest();
 
-        var newProfile = await gmlManager.Profiles.AddProfile(profile.Name, profile.Version, gameLoader);
+        var newProfile =
+            await gmlManager.Profiles.AddProfile(profile.Name, profile.Version, gameLoader, profile.IconBase64, profile.Description);
 
         if (newProfile == null)
             return Results.BadRequest();
@@ -198,7 +232,8 @@ public class RequestHandler
             Name = newProfile.Name,
             GameVersion = newProfile.GameVersion,
             LaunchVersion = newProfile.LaunchVersion,
+            CreateDate = newProfile.CreateDate,
+            IconBase64 = newProfile.IconBase64
         });
     }
-
 }
