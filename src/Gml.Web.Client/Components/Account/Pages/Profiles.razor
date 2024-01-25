@@ -1,0 +1,208 @@
+@page "/Profiles"
+@using Microsoft.AspNetCore.Authorization
+
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+<div>
+    <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="h6 modal-title mb-0">New profile</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="mb-3" bis_skin_checked="1">
+                            <label class="form-label">Icon</label>
+                            <InputFile id="imageUpload" OnChange="@UploadImage" class="form-control" type="file" accept=".png,.jpg,.ico"/>
+                        </div>
+                        <label for="profileName">Name</label>
+                        <div class="input-group" bis_skin_checked="1">
+                            <span class="input-group-text">
+                                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                                </svg>
+                            </span>
+                            <InputText @bind-Value="CreateProfileDto.Name" data-datepicker="" class="form-control datepicker-input" id="profileName" type="text" required=""/>
+                        </div>
+                        <label for="profileDescription">Description</label>
+                        <div class="input-group" bis_skin_checked="1">
+                            <span class="input-group-text">
+                                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                                </svg>
+                            </span>
+                            <InputText @bind-Value="CreateProfileDto.Description" data-datepicker="" class="form-control datepicker-input" id="profileDescription" type="text" required=""/>
+                        </div>
+                        <label for="profileVersion" class="mt-3">Version</label>
+                        <InputSelect @bind-Value="CreateProfileDto.Version" class="form-select d-flex w-100" id="profileVersion" aria-label="Message select example 2">
+                            <option></option>
+                            @foreach (var version in GameVersions)
+                            {
+                                <option value="@version.Value">@version.Name</option>
+                            }
+                        </InputSelect>
+
+                        <label for="profileLoader" class="mt-3">Game loader</label>
+                        <InputSelect @bind-Value="@CreateProfileDto.GameLoader" class="form-select d-flex w-100" id="profileLoader" aria-label="Message select example 2">
+                            <option></option>
+                            @foreach (var loader in GameLoaders)
+                            {
+                                <option value="@loader.Value">@loader.Name</option>
+                            }
+                        </InputSelect>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button @onclick="CreateProfileCommand" class="btn btn-secondary" data-bs-dismiss="modal">Create profile</button>
+                    <button type="button" class="btn btn-link text-gray ms-auto" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4" bis_skin_checked="1">
+        <div class="d-block mb-4 mb-md-0" bis_skin_checked="1">
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                    <li class="breadcrumb-item">
+                        <a href="/">
+                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Profiles List</li>
+                </ol>
+            </nav>
+            <h2 class="h4 mb-0">Profiles List</h2>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0" bis_skin_checked="1">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#modal-default" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
+                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg> New Profile
+            </button>
+        </div>
+    </div>
+
+    <div class="card card-body shadow border-0 table-wrapper table-responsive" bis_skin_checked="1">
+        @* <div class="d-flex mb-3" bis_skin_checked="1"> *@
+        @*     <select class="form-select fmxw-200" aria-label="Message select example"> *@
+        @*         <option selected="selected">Bulk Action</option><option value="1">Send Email</option><option value="2">Change Group</option><option value="3">Delete User</option> *@
+        @*     </select> <button class="btn btn-sm px-3 btn-secondary ms-3">Apply</button> *@
+        @* </div> *@
+
+        @if (ProfileDtos.Any())
+        {
+            <table class="table user-table table-hover align-items-center">
+            <thead>
+            <tr>
+                <th class="border-bottom w--20">
+                    <div class="form-check dashboard-check" bis_skin_checked="1">
+                        <InputCheckbox class="form-check-input" @bind-Value="IsSelectedAllProfiles"/>
+                    </div>
+                </th><th class="border-bottom">Name</th><th class="border-bottom">Date Created</th><th class="border-bottom">Verified</th><th class="border-bottom">Status</th><th class="border-bottom">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            @foreach (var profile in ProfileDtos)
+            {
+                <tr>
+                    <td>
+                        <div class="form-check dashboard-check" bis_skin_checked="1">
+                            @* <input class="form-check-input" type="checkbox" value="" id="userCheck1"> *@
+                            @* <label class="form-check-label" for="userCheck1"></label> *@
+                            <InputCheckbox class="form-check-input" @bind-Value="@profile.IsSelected"/>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="Profiles/@profile.Name" class="d-flex align-items-center" style="height: 30px;">
+                            <img src="data:image/jpeg;base64,@profile.IconBase64" class="avatar rounded-circle me-3" alt="Avatar">
+                            <div class="d-block" bis_skin_checked="1">
+                                <span class="fw-bold">@profile.Name</span>
+                                <div class="small text-gray" bis_skin_checked="1">@profile.LaunchVersion</div>
+                            </div>
+                        </a>
+                    </td>
+                    <td>
+                        <span class="fw-normal">@profile.CreateDate?.ToString("dd.MM.yyyy HH:mm")</span>
+                    </td>
+                    <td>
+                        <span class="fw-normal d-flex align-items-center">
+                            <svg class="icon icon-xxs text-success me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg> Verified
+                        </span>
+                    </td>
+                    <td>
+                        <span class="fw-normal text-success">Active</span>
+                    </td>
+                    <td>
+                        <div class="btn-group" bis_skin_checked="1">
+                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                </svg> <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 py-1" bis_skin_checked="1">
+                                @* <a class="dropdown-item d-flex align-items-center" href="#"> *@
+                                @*     <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> *@
+                                @*         <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"></path> *@
+                                @*     </svg> Reset Pass *@
+                                @* </a> *@
+                                <a class="dropdown-item d-flex align-items-center" href="/Profiles/@profile.Name">
+                                    <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                                    </svg> View Details
+                                </a>
+                                <button @onclick="() => RemoveProfileCommand(profile)" class="dropdown-item d-flex align-items-center">
+                                    <svg class="dropdown-icon text-danger me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11 6a3 3 0 11-6 0 3 3 0 016 0zM14 17a6 6 0 00-12 0h12zM13 8a1 1 0 100 2h4a1 1 0 100-2h-4z"></path>
+                                    </svg> Remove
+                                </button>
+                            </div>
+                        </div>
+                        @* <svg class="icon icon-xs text-danger ms-1" title="" data-bs-toggle="tooltip" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" data-bs-original-title="Delete" aria-label="Delete"> *@
+                        @*     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path> *@
+                        @* </svg> *@
+                    </td>
+                </tr>
+            }
+
+            @if (IsTableProcessing)
+            {
+                <div class="spinner-border spinner-border-sm mt-3" role="status">
+                    <span class="visually-hidden">Загрузка...</span>
+                </div>
+            }
+            </tbody >
+        </table>
+        }
+        else
+        {
+            <p class="mb-0">Profiles not found</p>
+        }
+
+    </div>
+
+    @if (ProfileDtos.Any(c => c.IsSelected))
+    {
+        <div class="card card-body shadow border-0 mt-3 d-flex gap-3 justify-content-start align-items-start">
+            <button type="button" data-bs-toggle="modal" class="btn btn-sm btn-danger d-inline-flex align-items-center" @onclick="RemoveSelectedCollection">
+                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg> Remove profiles
+            </button>
+        </div>
+    }
+
+</div>
+
+@code {
+
+}

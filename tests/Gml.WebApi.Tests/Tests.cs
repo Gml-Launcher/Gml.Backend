@@ -47,7 +47,7 @@ public class Tests
 
         var forge = new MForge(launcher);
 
-        var forgeVersion = await forge.Install("1.20.1", true);
+        var forgeVersion = await forge.Install("1.19.4", true);
 
         var process = launcher.CreateProcess(forgeVersion, new MLaunchOption
         {

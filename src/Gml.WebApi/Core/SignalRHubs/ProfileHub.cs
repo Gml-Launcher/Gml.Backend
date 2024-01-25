@@ -1,7 +1,8 @@
+
 using System.ComponentModel;
+using CmlLib.Core;
 using Gml.Core.Launcher;
 using Gml.Core.User;
-using Gml.WebApi.Models.Enums.System;
 using GmlCore.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
@@ -62,7 +63,7 @@ public class ProfileHub : Hub
         if (profile == null)
             return;
 
-        if (!Enum.TryParse(osTypeValue, out OsType osType))
+        if (!Enum.TryParse(osTypeValue, out Gml.WebApi.Models.Enums.System.OsType osType))
             return;
 
         await Clients.All.SendAsync("ChangeProgress", 0);

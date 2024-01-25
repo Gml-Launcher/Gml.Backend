@@ -1,18 +1,21 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER $APP_UID
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 8080
+EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/Gml.Web.Client/Gml.Web.Client.csproj", "src/Gml.Web.Client/"]
 RUN dotnet restore "src/Gml.Web.Client/Gml.Web.Client.csproj"
 COPY . .
 WORKDIR "/src/src/Gml.Web.Client"
-RUN dotnet build "Gml.Web.Client.csproj" -c Release -o /app/build
+RUN dotnet build "Gml.Web.Client.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Gml.Web.Client.csproj" -c Release -o /app/publish /p:UseAppHost=false
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "Gml.Web.Client.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

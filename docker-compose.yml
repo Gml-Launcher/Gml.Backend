@@ -7,7 +7,7 @@ services:
     environment:
       - FB_BASEURL=/filebrowser
     volumes:
-      - shared_volume:/srv
+      - shared-volume:/srv
       - /DATA_DIR:/data
       - /CONFIG_DIR:/config
     restart: always
@@ -22,7 +22,7 @@ services:
     build:
       dockerfile: src/Gml.WebApi/Dockerfile
     volumes:
-      - shared_volume:/home/app
+      - shared-volume:/home/app
     ports:
       - "5000:8080"
     networks:
@@ -33,7 +33,7 @@ services:
     container_name: gml-web-admin
     build:
       context: .
-      dockerfile: src/Gml.Web.Panel/Dockerfile
+      dockerfile: src/Gml.Web.Client/Dockerfile
     ports:
       - "5003:8081"
       - "5004:8082"
@@ -52,4 +52,4 @@ networks:
     attachable: true
 
 volumes:
-  shared_volume:
+  shared-volume:
