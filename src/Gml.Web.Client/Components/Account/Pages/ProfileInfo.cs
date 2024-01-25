@@ -1,7 +1,7 @@
+using Gml.Web.Client.Models.Profiles;
 using Gml.Web.Client.Services.Api;
 using Gml.WebApi.Models.Dtos.Profiles;
 using Gml.WebApi.Models.Enums.System;
-using GmlAdminPanel.Models.GmlApi;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using PackProfileDto = Gml.WebApi.Models.Dtos.Profiles.PackProfileDto;
