@@ -5,6 +5,7 @@ using Gml.Web.Client.Components;
 using Gml.Web.Client.Components.Account;
 using Gml.Web.Client.Data;
 using Gml.Web.Client.Services.Api;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,9 @@ builder.Services.AddAuthentication(options =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+{
+    options.UseSqlite(connectionString);
+});
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
     builder.Services.AddHttpClient("GmlApi", client => client.BaseAddress = new Uri("http://gml-web-api:8080"));
