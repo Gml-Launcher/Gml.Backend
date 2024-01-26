@@ -15,7 +15,7 @@ cd gml-web-api
 ### Step 3: Running the Project Using Docker
 Run the following command in your terminal:
 ```
-docker-compose up
+docker compose up
 ```
 
 After executing the command, Docker will download the necessary images and start the project. Once the project is running, you can open it in a browser using the returned address.

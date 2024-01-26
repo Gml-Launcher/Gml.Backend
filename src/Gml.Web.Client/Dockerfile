@@ -17,6 +17,9 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "Gml.Web.Client.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+RUN dotnet ef migrations add InitialCreate
+RUN dotnet ef database update
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
