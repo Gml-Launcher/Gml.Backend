@@ -1,11 +1,14 @@
 using System.Collections.Immutable;
 using Gml.Core.Launcher;
+using Gml.WebApi.Config;
 using Gml.WebApi.Core.Auth;
 using Gml.WebApi.Core.Handlers;
+using Gml.WebApi.Core.Services;
 using Gml.WebApi.Core.SignalRHubs;
 using GmlCore.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Gml.WebApi.Core.Auth;
 
 namespace Gml.WebApi.Core.Extensions;
 
@@ -15,17 +18,20 @@ public static class ApplicationExtensions
 
     public static WebApplicationBuilder RegisterServices(this WebApplicationBuilder builder)
     {
-        var configuration = builder.Configuration.GetSection("ProjectName").Value
-                            ?? throw new Exception("AppSettings error, section 'ProjectName' not found");
+        var settings = builder.Configuration.GetSection("ProjectSettings");
 
-        var directory = builder.Configuration.GetSection("ProjectPath").Value
-                        ?? throw new Exception("AppSettings error, section 'ProjectPath' not found");
+        var projectName = settings.GetSection("ProjectName").Value ?? "GamerVIINet";
+        var projectPath = settings.GetSection("ProjectPath").Value ?? string.Empty;
 
-        builder.Services.AddSingleton<IGmlManager>(_ => new GmlManager(new GmlSettings(configuration, directory)));
-
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-        builder.Services.AddSignalR();
+        builder.Services
+            .Configure<ProjectSettings>(settings)
+            .AddSingleton<IGmlManager>(_ => new GmlManager(new GmlSettings(projectName, projectPath)))
+            .AddScoped<IAuthService, AuthService>()
+            .AddHttpClient()
+            .AddEndpointsApiExplorer()
+            .AddAuthIntegrations()
+            .AddSwaggerGen()
+            .AddSignalR();
 
         builder.Services.AddAuthentication(BasicAuthSchemeName)
             .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>(BasicAuthSchemeName, _ => { });
@@ -34,7 +40,6 @@ public static class ApplicationExtensions
             options.AddPolicy(BasicAuthSchemeName,
                 new AuthorizationPolicyBuilder(BasicAuthSchemeName).RequireAuthenticatedUser().Build()
             ));
-
 
         return builder;
     }
@@ -49,12 +54,20 @@ public static class ApplicationExtensions
 
         // app.UseHttpsRedirection();
 
+        #region auth
+
+        app.MapPost("/api/auth", AuthHandler.Auth);
+        app.MapGet("/api/auth", AuthHandler.GetAuthServices);
+        app.MapGet("/api/auth/active", AuthHandler.GetActiveAuthService);
+        app.MapPut("/api/auth/active", AuthHandler.UpdateActiveAuthService);
+
+        #endregion
+
         #region Profiles
 
         app.MapGet("/api/profiles", RequestHandler.GetClients);
         app.MapPost("/api/profiles", RequestHandler.CreateProfile);
         app.MapDelete("/api/profiles/{profileName}", RequestHandler.DeleteProfile);
-
 
         app.MapPost("/api/profiles/info", RequestHandler.GetProfileInfo);
         app.MapPut("/api/profiles/info", RequestHandler.UpdateProfile);

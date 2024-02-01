@@ -37,6 +37,9 @@
       <Compile Update="Components\Account\Pages\ProfileInfo.cs">
         <DependentUpon>ProfileInfo.razor</DependentUpon>
       </Compile>
+      <Compile Update="Components\Account\Pages\Integration.cs">
+        <DependentUpon>Integration.razor</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

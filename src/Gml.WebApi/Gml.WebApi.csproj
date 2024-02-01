@@ -30,4 +30,20 @@
       <ProjectReference Include="..\Gml.WebApi.Models\Gml.WebApi.Models.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Core\Auth\Platforms\DataLifeEngineAuthService.cs">
+        <DependentUpon>IPlatformAuthService.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Core\Auth\AuthServiceFactory.cs">
+        <DependentUpon>IAuthServiceFactory.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Core\Services\AuthService.cs">
+        <DependentUpon>IAuthService.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
+
 </Project>

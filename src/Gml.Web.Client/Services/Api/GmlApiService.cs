@@ -1,5 +1,6 @@
 using System.Text;
 using Gml.Web.Client.Models.Profiles;
+using Gml.WebApi.Models.Dtos.Auth;
 using Gml.WebApi.Models.Dtos.Profiles;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -11,7 +12,9 @@ using RemoveProfileDto = Gml.WebApi.Models.Dtos.Profiles.RemoveProfileDto;
 namespace Gml.Web.Client.Services.Api;
 
 internal delegate void ProgressChanged(int progress);
+
 internal delegate void Packed(bool isEnded);
+
 internal delegate void Installed();
 
 public class GmlApiService
@@ -38,25 +41,16 @@ public class GmlApiService
                 $"{HttpClient.BaseAddress!.AbsoluteUri}ws/profiles/restore"))
             .Build();
 
-        _hubConnection.On<int>("ChangeProgress", async (progress) =>
-        {
-            ProgressChangedEvent?.Invoke(progress);
-        });
+        _hubConnection.On<int>("ChangeProgress", async (progress) => { ProgressChangedEvent?.Invoke(progress); });
 
         _hubConnection.On<string>("FileChanged", async (fileName) =>
         {
             // ProgressChangedEvent?.Invoke(50);
         });
 
-        _hubConnection.On("SuccessInstalled", async () =>
-        {
-            InstalledEvent?.Invoke();
-        });
+        _hubConnection.On("SuccessInstalled", async () => { InstalledEvent?.Invoke(); });
 
-        _hubConnection.On("SuccessPacked", async () =>
-        {
-            PackedEvent?.Invoke(true);
-        });
+        _hubConnection.On("SuccessPacked", async () => { PackedEvent?.Invoke(true); });
 
 
         _hubConnection.StartAsync();
@@ -71,7 +65,8 @@ public class GmlApiService
 
         var content = await response.Content.ReadAsStringAsync();
 
-        return JsonConvert.DeserializeObject<List<ExtendedReadProfileDto>>(content) ?? Enumerable.Empty<ExtendedReadProfileDto>();
+        return JsonConvert.DeserializeObject<List<ExtendedReadProfileDto>>(content) ??
+               Enumerable.Empty<ExtendedReadProfileDto>();
     }
 
     public async Task<ExtendedReadProfileDto?> CreateProfileAsync(CreateProfileDto profileDto)
@@ -86,7 +81,6 @@ public class GmlApiService
         var content = await response.Content.ReadAsStringAsync();
 
         return JsonConvert.DeserializeObject<ExtendedReadProfileDto>(content);
-
     }
 
     public Task<IEnumerable<VersionInfo>> GetAllowedVersions()
@@ -98,6 +92,7 @@ public class GmlApiService
             new("1.19.4", "1.19.4"),
         }.AsEnumerable());
     }
+
     public Task<IEnumerable<LoaderType>> GetAllowedGameLoaders()
     {
         return Task.FromResult(new List<LoaderType>
@@ -116,7 +111,6 @@ public class GmlApiService
 
     public async Task<GetProfileInfo?> GetProfileInfoAsync(ProfileCreateInfoDto removeProfileDto)
     {
-
         var data = new StringContent(JsonConvert.SerializeObject(removeProfileDto), Encoding.UTF8, "application/json");
 
         var response = await HttpClient.PostAsync("api/profiles/info", data);
@@ -128,7 +122,6 @@ public class GmlApiService
 
     public async Task UpdateProfile(UpdateProfileDto updateProfileDto)
     {
-
         var data = new StringContent(JsonConvert.SerializeObject(updateProfileDto), Encoding.UTF8, "application/json");
 
         var response = await HttpClient.PutAsync("api/profiles/info", data);
@@ -143,5 +136,39 @@ public class GmlApiService
     public async Task DownloadProfile(string profileName, string osType)
     {
         await _hubConnection.SendAsync("Restore", profileName, osType);
+    }
+
+    public async Task<IEnumerable<ReadIntegrationDto>> GetIntegrationServices()
+    {
+        var response = await HttpClient.GetAsync("api/auth");
+
+        if (!response.IsSuccessStatusCode)
+            return Enumerable.Empty<ReadIntegrationDto>();
+
+        var content = await response.Content.ReadAsStringAsync();
+
+        return JsonConvert.DeserializeObject<List<ReadIntegrationDto>>(content) ??
+               Enumerable.Empty<ReadIntegrationDto>();
+    }
+
+    public async Task<ReadIntegrationDto?> GetActiveIntegration()
+    {
+        var response = await HttpClient.GetAsync("/api/auth/active");
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        var content = await response.Content.ReadAsStringAsync();
+
+        return JsonConvert.DeserializeObject<ReadIntegrationDto>(content);
+    }
+
+    public async Task<bool> UpdateIntegration(UpdateIntegrationDto updateIntegrationDto)
+    {
+        var data = new StringContent(JsonConvert.SerializeObject(updateIntegrationDto), Encoding.UTF8, "application/json");
+
+        var response = await HttpClient.PutAsync("api/auth/active", data);
+
+        return response.IsSuccessStatusCode;
     }
 }
