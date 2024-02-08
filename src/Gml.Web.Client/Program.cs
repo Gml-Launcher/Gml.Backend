@@ -32,7 +32,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
-    builder.Services.AddHttpClient("GmlApi", client => client.BaseAddress = new Uri("http://gml-web-api:8080"));
+    builder.Services.AddHttpClient("GmlApi", client => client.BaseAddress = new Uri("http://gml-web-api:8082"));
 else
     builder.Services.AddHttpClient("GmlApi", client => client.BaseAddress = new Uri("https://localhost:5000"));
 builder.Services.AddScoped<GmlApiService>();

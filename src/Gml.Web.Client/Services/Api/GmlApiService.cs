@@ -87,7 +87,10 @@ public class GmlApiService
     {
         return Task.FromResult(new List<VersionInfo>
         {
+            new("1.5.2", "1.5.2"),
+            new("1.6.4", "1.6.4"),
             new("1.7.10", "1.7.10"),
+            new("1.12.2", "1.12.2"),
             new("1.20.1", "1.20.1"),
             new("1.19.4", "1.19.4"),
         }.AsEnumerable());

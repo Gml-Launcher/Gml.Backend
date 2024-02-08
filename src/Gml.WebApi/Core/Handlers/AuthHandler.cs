@@ -22,7 +22,8 @@ public static class AuthHandler
 
             if (string.IsNullOrWhiteSpace(userAgent))
             {
-                return Results.BadRequest(ResponseMessage.Create("Не удалось определить устройство, с которого произошла авторизация",
+                return Results.BadRequest(ResponseMessage.Create(
+                    "Не удалось определить устройство, с которого произошла авторизация",
                     HttpStatusCode.BadRequest));
             }
 
@@ -33,7 +34,13 @@ public static class AuthHandler
             }
 
             if (await authService.CheckAuth(authDto.Login, authDto.Password, authType))
-                return Results.Ok(ResponseMessage.Create(await manager.Users.GetAuthData(authDto.Login, authDto.Password, userAgent), HttpStatusCode.OK, string.Empty));
+                return Results.Ok(ResponseMessage.Create(
+                    await manager.Users.GetAuthData(authDto.Login, authDto.Password, userAgent), HttpStatusCode.OK,
+                    string.Empty));
+        }
+        catch (HttpRequestException exception)
+        {
+            return Results.BadRequest(ResponseMessage.Create("Произошла ошибка при обмене данных с сервисом авторизации.", HttpStatusCode.InternalServerError));
         }
         catch (Exception exception)
         {

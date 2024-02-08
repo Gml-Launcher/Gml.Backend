@@ -27,6 +27,8 @@ public static class ApplicationExtensions
             .Configure<ProjectSettings>(settings)
             .AddSingleton<IGmlManager>(_ => new GmlManager(new GmlSettings(projectName, projectPath)))
             .AddScoped<IAuthService, AuthService>()
+            .AddScoped<IFileService, FileService>()
+            .AddScoped<IAuthLibService, AuthLibService>()
             .AddHttpClient()
             .AddEndpointsApiExplorer()
             .AddAuthIntegrations()
@@ -80,6 +82,15 @@ public static class ApplicationExtensions
         app.MapGet("/api/file/whitelist/{profileName}", RequestHandler.GetProfileWhiteList);
         app.MapPost("/api/file/whitelist", RequestHandler.AddFileToWhiteList);
         app.MapDelete("/api/file/whitelist", RequestHandler.RemoveFileFromWhiteList);
+
+        #endregion
+
+        #region Minecraft
+
+        app.MapGet("/api/minecraft", MinecraftHandler.GetAuthLibMetaData);
+        app.MapGet("api/minecraft/sessionserver/session/minecraft/profile/{uuid}", MinecraftHandler.GetProfileInfo);
+        app.MapPost("api/minecraft/sessionserver/session/minecraft/join", MinecraftHandler.ServerJoin);
+        app.MapGet("api/minecraft/sessionserver/session/minecraft/hasJoined", MinecraftHandler.HasServerJoin);
 
         #endregion
 

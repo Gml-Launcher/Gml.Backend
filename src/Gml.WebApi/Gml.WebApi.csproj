@@ -40,6 +40,9 @@
       <Compile Update="Core\Services\AuthService.cs">
         <DependentUpon>IAuthService.cs</DependentUpon>
       </Compile>
+      <Compile Update="Core\Services\AuthLibService.cs">
+        <DependentUpon>IAuthlibService.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
