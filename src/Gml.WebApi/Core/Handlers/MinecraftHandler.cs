@@ -29,7 +29,7 @@ public class MinecraftHandler
             {
                 Skin = new SkinCape
                 {
-                    Url = "https://recloud.tech/GamerVII2.png"
+                    Url = "http://localhost:5006/skin/GamerVII"
                 },
                 Cape = new SkinCape
                 {
@@ -75,7 +75,7 @@ public class MinecraftHandler
                 ServerName = "GamerVII LaunchServer",
                 ImplementationVersion = "1.0.0"
             },
-            SkinDomains = [".recloud.tech", "recloud.tech"],
+            SkinDomains = [".recloud.tech", "recloud.tech", ".localhost", "localhost"],
             SignaturePublickey = await authLibService.GetPublicKey()
         });
     }
