@@ -82,6 +82,14 @@ internal abstract class TextureRequests
 
         return Task.FromResult(Results.File(image, "image/png"));
     }
+    internal static Task<IResult> GetCloakTexture(HttpRequest request, string userName)
+    {
+        var user = SkinHelper.Create($"http://{request.Host.Value}", userName);
+
+        if (!user.HasCloak) return Task.FromResult(Results.BadRequest("Cloak not exists"));
+
+        return Task.FromResult(Results.File(user.CloakFullPath, "image/png"));
+    }
 
     internal static Task<IResult> GetSkinHead(HttpRequest request, string userName, int size = 128)
     {

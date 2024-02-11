@@ -53,6 +53,7 @@ public static class ApplicationExtensions
         app.MapGet("/skin/{userName}/full-back/{size}", TextureRequests.GetSkinAndCloakBack);
 
         app.MapPost("/cloak/{userName}", TextureRequests.LoadCloak);
+        app.MapGet("/cloak/{userName}", TextureRequests.GetCloakTexture);
         app.MapGet("/cloak/{userName}/{size}", TextureRequests.GetCloak);
 
         app.MapGet("/refresh/{userName}", TextureRequests.RefreshCache);
