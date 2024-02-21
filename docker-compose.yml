@@ -19,7 +19,7 @@ services:
     container_name: gml-web-api
     restart: always
     build:
-      dockerfile: src/Gml.Web.Api/src/Gml.Web.Api/Dockerfile
+      dockerfile: src/Gml.Web.Api/Dockerfile
     volumes:
       - shared-volume:/home/app
     ports:
