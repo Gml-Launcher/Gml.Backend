@@ -4,11 +4,11 @@ services:
     image: filebrowser/filebrowser
     container_name: file-browser
     user: "${UID}:${GID}"
+    restart: always
     environment:
       - FB_BASEURL=/filebrowser
     volumes:
       - shared-volume:/srv
-    restart: always
     ports:
       - 5005:80
     networks:
@@ -17,33 +17,46 @@ services:
   gml-web-api:
     image: gml-web-api-image
     container_name: gml-web-api
+    restart: always
     build:
-      dockerfile: src/Gml.WebApi/Dockerfile
+      dockerfile: src/Gml.Web.Api/src/Gml.Web.Api/Dockerfile
     volumes:
       - shared-volume:/home/app
     ports:
-      - "5000:8080"
+      - "5000:8082"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8082;
     networks:
       - gml-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 20M
 
-  gml-web-admin:
-    image: gml-web-admin-image
-    container_name: gml-web-admin
+  gml-web-skins:
+    image: gml-web-skins-image
+    container_name: gml-web-skins
+    restart: always
     build:
       context: .
-      dockerfile: src/Gml.Web.Client/Dockerfile
+      dockerfile: src/Gml.Web.Skin.Service/Gml.Web.Skin.Service/Dockerfile
     ports:
-      - "5003:8081"
-      - "5004:8082"
+      - "5006:8085"
     networks:
       - gml-network
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8081;http://+:8082;
+      - ASPNETCORE_URLS=http://+:8085;
+    volumes:
+      - shared-volume:/app/Storage
 
 networks:
   gml-network:
-    name: gml-network
     attachable: true
 
 volumes:

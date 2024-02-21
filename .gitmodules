@@ -7,3 +7,6 @@
 [submodule "src/Gml.Client"]
 	path = src/Gml.Client
 	url = https://github.com/GamerVII-NET/Gml.Client.git
+[submodule "src/Gml.Web.Api"]
+	path = src/Gml.Web.Api
+	url = https://github.com/GamerVII-NET/Gml.Web.Api.git

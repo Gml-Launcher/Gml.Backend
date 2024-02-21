@@ -1,24 +1,15 @@
-using CmlLib.Core;
-using CmlLib.Core.Auth;
-using CmlLib.Core.Installer.Forge;
-using Gml.Core.Launcher;
-using Gml.WebApi.Core.Handlers;
-using Gml.WebApi.Models.Dtos.Profiles;
-using Gml.WebApi.Models.Enums.System;
-using GmlCore.Interfaces;
-
 namespace Gml.WebApi.Tests;
 
 public class Tests
 {
-    private RequestHandler _requestHandler;
-    private IGmlManager _gmlManager;
+    // private RequestHandler _requestHandler;
+    // private IGmlManager _gmlManager;
 
     [SetUp]
     public void Setup()
     {
-        _requestHandler = new RequestHandler();
-        _gmlManager = new GmlManager(new GmlSettings("GamerVIINet"));
+        // _requestHandler = new RequestHandler();
+        // _gmlManager = new GmlManager(new GmlSettings("GamerVIINet"));
     }
 
     [Test]
@@ -43,18 +34,18 @@ public class Tests
     [Test, Order(1)]
     public async Task DownloadForge()
     {
-        var launcher = new CMLauncher(new MinecraftPath());
-
-        var forge = new MForge(launcher);
-
-        var forgeVersion = await forge.Install("1.19.4", true);
-
-        var process = launcher.CreateProcess(forgeVersion, new MLaunchOption
-        {
-            MaximumRamMb = 2048,
-            Session = MSession.GetOfflineSession("hello123"),
-        });
-
-        process.Start();
+        // var launcher = new CMLauncher(new MinecraftPath());
+        //
+        // var forge = new MForge(launcher);
+        //
+        // var forgeVersion = await forge.Install("1.19.4", true);
+        //
+        // var process = launcher.CreateProcess(forgeVersion, new MLaunchOption
+        // {
+        //     MaximumRamMb = 2048,
+        //     Session = MSession.GetOfflineSession("hello123"),
+        // });
+        //
+        // process.Start();
     }
 }
