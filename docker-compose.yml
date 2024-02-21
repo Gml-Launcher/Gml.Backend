@@ -38,21 +38,6 @@ services:
           cpus: '0.25'
           memory: 20M
 
-  gml-web-admin:
-    image: gml-web-admin-image
-    container_name: gml-web-admin
-    restart: always
-    build:
-      context: .
-      dockerfile: src/Gml.Web.Client/Dockerfile
-    ports:
-      - "5003:8081"
-    networks:
-      - gml-network
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8081;
-
   gml-web-skins:
     image: gml-web-skins-image
     container_name: gml-web-skins
@@ -60,8 +45,6 @@ services:
     build:
       context: .
       dockerfile: src/Gml.Web.Skin.Service/Gml.Web.Skin.Service/Dockerfile
-    ports:
-      - "5006:8085"
     networks:
       - gml-network
     environment:
