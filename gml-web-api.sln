@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34407.89
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gml.WebApi", "src\Gml.WebApi\Gml.WebApi.csproj", "{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{173407F0-6602-48A5-BF49-E288C6043FE3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{AA158165-09EE-4338-9FC8-9F172E47F62D}"
@@ -12,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{A2E6D9BD-8CCB-48FC-91B9-D935ED9188D5}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		.env = .env
 		.gitignore = .gitignore
 		docker-compose.yml = docker-compose.yml
 		README.md = README.md
@@ -36,16 +33,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gml.Web.Client", "src\Gml.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Skin.Service", "src\Gml.Web.Skin.Service\Gml.Web.Skin.Service\Gml.Web.Skin.Service.csproj", "{6189BF9C-8814-4B87-B24F-9F9A9DC762A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api", "src\Gml.Web.Api\src\Gml.Web.Api\Gml.Web.Api.csproj", "{B5994A47-B872-4E12-9A3B-26B60A711CFF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "domains", "domains", "{D6DE80A2-7856-4C10-A518-E9CF5BC10728}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.Domains", "src\Gml.Web.Api\src\Gml.Web.Api.Domains\Gml.Web.Api.Domains.csproj", "{DA7E93BC-B10F-433C-942E-0274E5AF4035}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.Dto", "src\Gml.Web.Api\src\Gml.Web.Api.Dto\Gml.Web.Api.Dto.csproj", "{FF10341F-DCE5-4BA4-BEBE-C98711F1F08A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9F0244C3-F499-4572-964D-ED30F0E4AC03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9F0244C3-F499-4572-964D-ED30F0E4AC03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F0244C3-F499-4572-964D-ED30F0E4AC03}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -82,12 +83,23 @@ Global
 		{6189BF9C-8814-4B87-B24F-9F9A9DC762A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6189BF9C-8814-4B87-B24F-9F9A9DC762A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6189BF9C-8814-4B87-B24F-9F9A9DC762A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5994A47-B872-4E12-9A3B-26B60A711CFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5994A47-B872-4E12-9A3B-26B60A711CFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5994A47-B872-4E12-9A3B-26B60A711CFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5994A47-B872-4E12-9A3B-26B60A711CFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA7E93BC-B10F-433C-942E-0274E5AF4035}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA7E93BC-B10F-433C-942E-0274E5AF4035}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA7E93BC-B10F-433C-942E-0274E5AF4035}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA7E93BC-B10F-433C-942E-0274E5AF4035}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF10341F-DCE5-4BA4-BEBE-C98711F1F08A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF10341F-DCE5-4BA4-BEBE-C98711F1F08A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF10341F-DCE5-4BA4-BEBE-C98711F1F08A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF10341F-DCE5-4BA4-BEBE-C98711F1F08A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{58DD61F0-C4D8-4506-A643-3FFE2CC5B112} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{9F0244C3-F499-4572-964D-ED30F0E4AC03} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{5DC19A4D-EE11-4F49-A1EB-B833E7212655} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{0B17CE15-825E-419F-B207-036FCFF8D30D} = {173407F0-6602-48A5-BF49-E288C6043FE3}
@@ -97,5 +109,8 @@ Global
 		{C5AEBEE5-A317-4573-9159-5D39662349CB} = {AA158165-09EE-4338-9FC8-9F172E47F62D}
 		{404DD124-81DE-47B3-8184-E6ACBC387895} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{6189BF9C-8814-4B87-B24F-9F9A9DC762A8} = {173407F0-6602-48A5-BF49-E288C6043FE3}
+		{B5994A47-B872-4E12-9A3B-26B60A711CFF} = {173407F0-6602-48A5-BF49-E288C6043FE3}
+		{DA7E93BC-B10F-433C-942E-0274E5AF4035} = {D6DE80A2-7856-4C10-A518-E9CF5BC10728}
+		{FF10341F-DCE5-4BA4-BEBE-C98711F1F08A} = {D6DE80A2-7856-4C10-A518-E9CF5BC10728}
 	EndGlobalSection
 EndGlobal
