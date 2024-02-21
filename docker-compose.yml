@@ -45,6 +45,8 @@ services:
     build:
       context: .
       dockerfile: src/Gml.Web.Skin.Service/Gml.Web.Skin.Service/Dockerfile
+    ports:
+      - "5006:8085"
     networks:
       - gml-network
     environment:
