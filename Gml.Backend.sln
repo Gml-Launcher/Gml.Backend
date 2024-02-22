@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{A2E6D9
 		.gitignore = .gitignore
 		docker-compose.yml = docker-compose.yml
 		README.md = README.md
+		src\Gml.Web.Client\Dockerfile = src\Gml.Web.Client\Dockerfile
+		src\Gml.Web.Client\.env = src\Gml.Web.Client\.env
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gml.WebApi.Tests", "tests\Gml.WebApi.Tests\Gml.WebApi.Tests.csproj", "{C5AEBEE5-A317-4573-9159-5D39662349CB}"

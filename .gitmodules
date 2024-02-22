@@ -10,3 +10,6 @@
 [submodule "src/Gml.Web.Api"]
 	path = src/Gml.Web.Api
 	url = https://github.com/GamerVII-NET/Gml.Web.Api.git
+[submodule "src/Gml.Web.Client"]
+	path = src/Gml.Web.Client
+	url = https://github.com/Scondic/Gml.Web.Client.git

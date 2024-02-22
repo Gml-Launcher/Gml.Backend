@@ -38,6 +38,18 @@ services:
           cpus: '0.25'
           memory: 20M
 
+  gml-web-frontend:
+    image: gml-web-frontend-image
+    container_name: gml-frontend
+    restart: always
+    build:
+      context: src/Gml.Web.Client
+      dockerfile: Dockerfile
+    ports:
+      - 5003:8081
+    networks:
+      - gml-network
+
   gml-web-skins:
     image: gml-web-skins-image
     container_name: gml-web-skins
