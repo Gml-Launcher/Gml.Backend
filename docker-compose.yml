@@ -1,5 +1,7 @@
 ﻿name: gml-core
 services:
+
+
   filebrowser:
     image: filebrowser/filebrowser
     container_name: file-browser
@@ -19,7 +21,8 @@ services:
     container_name: gml-web-api
     restart: always
     build:
-      dockerfile: src/Gml.Web.Api/Dockerfile
+      context: src/Gml.Web.Api
+      dockerfile: Dockerfile
     volumes:
       - shared-volume:/home/app
     ports:
