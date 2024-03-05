@@ -32,14 +32,14 @@ services:
       - ASPNETCORE_URLS=http://+:8082;
     networks:
       - gml-network
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 20M
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.50'
+#          memory: 2048M
+#        reservations:
+#          cpus: '0.25'
+#          memory: 20M
 
   gml-web-frontend:
     image: gml-web-frontend-image

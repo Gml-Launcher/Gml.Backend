@@ -42,7 +42,7 @@ public abstract class SkinHelper
                 Head = $"{requestPathBase}/skin/{userName}/head/128",
                 Front = $"{requestPathBase}/skin/{userName}/front/128",
                 Back = $"{requestPathBase}/skin/{userName}/back/128",
-                CloakBack = $"{requestPathBase}/skin/{userName}/cloak-back/128",
+                CloakBack = $"{requestPathBase}/skin/{userName}/full-back/128",
                 Cloak = $"{requestPathBase}/cloak/{userName}/128"
             }
         };

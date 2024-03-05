@@ -8,14 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{AA158165-09EE-4338-9FC8-9F172E47F62D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{A2E6D9BD-8CCB-48FC-91B9-D935ED9188D5}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		.gitignore = .gitignore
-		docker-compose.yml = docker-compose.yml
-		README.md = README.md
-		src\Gml.Web.Client\Dockerfile = src\Gml.Web.Client\Dockerfile
-		src\Gml.Web.Client\.env = src\Gml.Web.Client\.env
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gml.WebApi.Tests", "tests\Gml.WebApi.Tests\Gml.WebApi.Tests.csproj", "{C5AEBEE5-A317-4573-9159-5D39662349CB}"
 EndProject
@@ -40,6 +32,22 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmlLib.Core.Installer.Forge", "src\Gml.Web.Api\src\Gml.Core\src\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge.csproj", "{C69AE307-E2DC-46EA-9F4F-C8088770DB71}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmlLib", "src\Gml.Web.Api\src\Gml.Core\src\CmlLib.ExtendedCore\CmlLib\CmlLib.csproj", "{D69E990F-FFF3-4179-8F1E-9AC9C7FAAE34}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{56218D6F-5687-41CF-9D34-B76E0D1FB33B}"
+	ProjectSection(SolutionItems) = preProject
+		src\Gml.Web.Client\Dockerfile = src\Gml.Web.Client\Dockerfile
+		src\Gml.Web.Client\.env.example = src\Gml.Web.Client\.env.example
+		src\Gml.Web.Client\.gitignore = src\Gml.Web.Client\.gitignore
+		src\Gml.Web.Client\.env = src\Gml.Web.Client\.env
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{C8F55A92-E612-4AAE-9586-8E33D170A266}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		docker-compose.yml = docker-compose.yml
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,5 +110,7 @@ Global
 		{EB7BED73-75A8-48D9-A208-361A4B41A7E7} = {E2ED9D08-3137-4328-8544-CE413F2B73B8}
 		{C69AE307-E2DC-46EA-9F4F-C8088770DB71} = {E2ED9D08-3137-4328-8544-CE413F2B73B8}
 		{D69E990F-FFF3-4179-8F1E-9AC9C7FAAE34} = {E2ED9D08-3137-4328-8544-CE413F2B73B8}
+		{56218D6F-5687-41CF-9D34-B76E0D1FB33B} = {A2E6D9BD-8CCB-48FC-91B9-D935ED9188D5}
+		{C8F55A92-E612-4AAE-9586-8E33D170A266} = {A2E6D9BD-8CCB-48FC-91B9-D935ED9188D5}
 	EndGlobalSection
 EndGlobal

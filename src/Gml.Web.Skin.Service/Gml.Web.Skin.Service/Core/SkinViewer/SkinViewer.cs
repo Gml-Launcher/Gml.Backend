@@ -27,7 +27,6 @@ public abstract class SkinViewer
 
     public static byte[] GetCloak(string cloakPath, UserTexture user, int size)
     {
-
         using var inputImage = Image.Load(cloakPath);
 
         var scaleFactor = inputImage.Width / 64;
