@@ -1,6 +1,22 @@
 ﻿name: gml-core
-services:
 
+x-environment:
+  &default-environment
+  DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+  SECRET_KEY: ${GLITCHTIP_SECRET_KEY} # best to run openssl rand -hex 32
+  PORT: 8000
+  EMAIL_URL: consolemail:// # Example smtp://email:password@smtp_url:port https://glitchtip.com/documentation/install#configuration
+  GLITCHTIP_DOMAIN: ${GLITCHTIP_DOMAIN}
+  DEFAULT_FROM_EMAIL: ${ADMIN_EMAIL}
+  CELERY_WORKER_AUTOSCALE: "1,3"  # Scale between 1 and 3 to prevent excessive memory usage. Change it or remove to set it to the number of cpu cores.
+  CELERY_WORKER_MAX_TASKS_PER_CHILD: "10000"
+
+x-depends_on:
+  &default-depends_on
+  - postgres
+  - redis
+
+services:
 
   filebrowser:
     image: filebrowser/filebrowser
@@ -12,7 +28,58 @@ services:
     volumes:
       - shared-volume:/srv
     ports:
-      - 5005:80
+      - ${PORT_GML_FILES}:80
+    networks:
+      - gml-network
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: unless-stopped
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  redis:
+      image: redis
+      restart: unless-stopped
+
+  web:
+      image: glitchtip/glitchtip
+      depends_on: *default-depends_on
+      ports:
+        - "${PORT_GML_SENTRY}:8000"
+      environment: *default-environment
+      restart: unless-stopped
+      volumes:
+        - uploads:/code/uploads
+
+  worker:
+      image: glitchtip/glitchtip
+      command: ./bin/run-celery-with-beat.sh
+      depends_on: *default-depends_on
+      environment: *default-environment
+      restart: unless-stopped
+      volumes:
+        - uploads:/code/uploads
+
+  migrate:
+      image: glitchtip/glitchtip
+      depends_on: *default-depends_on
+      command: "./manage.py migrate"
+      environment: *default-environment
+
+  gml-web-frontend:
+    image: gml-web-frontend-image
+    container_name: gml-frontend
+    restart: always
+    build:
+      context: src/Gml.Web.Client
+      dockerfile: Dockerfile
+    ports:
+      - ${PORT_GML_FRONTEND}:8081
     networks:
       - gml-network
 
@@ -26,30 +93,10 @@ services:
     volumes:
       - shared-volume:/home/app
     ports:
-      - "5000:8082"
+      - "${PORT_GML_BACKEND}:8082"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8082;
-    networks:
-      - gml-network
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.50'
-#          memory: 2048M
-#        reservations:
-#          cpus: '0.25'
-#          memory: 20M
-
-  gml-web-frontend:
-    image: gml-web-frontend-image
-    container_name: gml-frontend
-    restart: always
-    build:
-      context: src/Gml.Web.Client
-      dockerfile: Dockerfile
-    ports:
-      - 5003:8081
     networks:
       - gml-network
 
@@ -61,7 +108,7 @@ services:
       context: .
       dockerfile: src/Gml.Web.Skin.Service/Gml.Web.Skin.Service/Dockerfile
     ports:
-      - "5006:8085"
+      - "${PORT_GML_SKINS}:8085"
     networks:
       - gml-network
     environment:
@@ -76,3 +123,5 @@ networks:
 
 volumes:
   shared-volume:
+  pg-data:
+  uploads:
