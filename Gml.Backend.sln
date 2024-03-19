@@ -36,9 +36,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{56218D6F-5687-41CF-9D34-B76E0D1FB33B}"
 	ProjectSection(SolutionItems) = preProject
 		src\Gml.Web.Client\Dockerfile = src\Gml.Web.Client\Dockerfile
-		src\Gml.Web.Client\.env.example = src\Gml.Web.Client\.env.example
 		src\Gml.Web.Client\.gitignore = src\Gml.Web.Client\.gitignore
 		src\Gml.Web.Client\.env = src\Gml.Web.Client\.env
+		src\Gml.Web.Client\.env.template = src\Gml.Web.Client\.env.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{C8F55A92-E612-4AAE-9586-8E33D170A266}"

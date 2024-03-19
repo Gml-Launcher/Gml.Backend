@@ -3,7 +3,7 @@
 x-environment:
   &default-environment
   DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-  SECRET_KEY: b5cec1d86c0faae7e99467fa9602b993ac190bc3e126395e5b46cb76e34628fd # best to run openssl rand -hex 32
+  SECRET_KEY: ${GLITCHTIP_SECRET_KEY} # best to run openssl rand -hex 32
   PORT: 8000
   EMAIL_URL: consolemail:// # Example smtp://email:password@smtp_url:port https://glitchtip.com/documentation/install#configuration
   GLITCHTIP_DOMAIN: ${GLITCHTIP_DOMAIN}
