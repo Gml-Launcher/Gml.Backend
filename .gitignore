@@ -462,3 +462,4 @@ $RECYCLE.BIN/
 /src/Gml.Web.Client/Data/app.db-wal
 /src/Gml.Web.Client/Data/Migrations
 /.env
+/src/Gml.Web.Client/.env
