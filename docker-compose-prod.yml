@@ -46,7 +46,7 @@ services:
       image: redis
       restart: unless-stopped
 
-  web:
+  glitchtip-web:
       image: glitchtip/glitchtip
       depends_on: *default-depends_on
       ports:
@@ -56,7 +56,7 @@ services:
       volumes:
         - uploads:/code/uploads
 
-  worker:
+  glitchtip-worker:
       image: glitchtip/glitchtip
       command: ./bin/run-celery-with-beat.sh
       depends_on: *default-depends_on
@@ -65,7 +65,7 @@ services:
       volumes:
         - uploads:/code/uploads
 
-  migrate:
+  glitchtip-migrate:
       image: glitchtip/glitchtip
       depends_on: *default-depends_on
       command: "./manage.py migrate"
@@ -84,29 +84,23 @@ services:
       - gml-network
 
   gml-web-api:
-    image: gml-web-api-image
+    image: ghcr.io/gamervii-net/gml.web.api:master
     container_name: gml-web-api
     restart: always
-    build:
-      context: src/Gml.Web.Api
-      dockerfile: Dockerfile
     volumes:
       - shared-volume:/home/app
     ports:
       - "${PORT_GML_BACKEND}:8082"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8082;
+      - ASPNETCORE_URLS=http://+:8082
     networks:
       - gml-network
 
   gml-web-skins:
-    image: gml-web-skins-image
+    image: ghcr.io/gamervii-net/gml.web.skin.service:master
     container_name: gml-web-skins
     restart: always
-    build:
-      context: .
-      dockerfile: src/Gml.Web.Skin.Service/Dockerfile
     ports:
       - "${PORT_GML_SKINS}:8085"
     networks:
