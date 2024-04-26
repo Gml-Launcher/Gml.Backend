@@ -72,12 +72,13 @@ services:
       environment: *default-environment
 
   gml-web-frontend:
-    image: gml-web-frontend-image
+    image: ghcr.io/scondic/gml.web.client:master
     container_name: gml-frontend
     restart: always
-    build:
-      context: src/Gml.Web.Client
-      dockerfile: Dockerfile
+    environment:
+      - NEXT_PUBLIC_BASE_URL=${API_URL}
+      - NEXT_PUBLIC_PREFIX_API=api
+      - NEXT_PUBLIC_VERSION_API=v1
     ports:
       - ${PORT_GML_FRONTEND}:8081
     networks:
