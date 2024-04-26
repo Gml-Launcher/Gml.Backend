@@ -1,37 +1,61 @@
+using GmlCore.Interfaces;
+
 namespace Gml.WebApi.Tests;
 
 public class Tests
 {
-    // private RequestHandler _requestHandler;
-    // private IGmlManager _gmlManager;
+    // private WebApplicationFactory<Program> _webApplicationFactory;
+    private IGmlManager _gmlManager;
 
     [SetUp]
     public void Setup()
     {
-        // _requestHandler = new RequestHandler();
-        // _gmlManager = new GmlManager(new GmlSettings("GamerVIINet"));
+        // _webApplicationFactory = new WebApplicationFactory<Program>();
     }
 
-    [Test]
-    public async Task GetProfileInfo()
-    {
-        // await RequestHandler.GetProfileInfo(_gmlManager, new ProfileCreateInfoDto
-        // {
-        //     ClientName = "AztexCraft",
-        //     GameAddress = "192.168.0.1",
-        //     GamePort = 25565,
-        //     RamSize = 4096,
-        //     SizeX = 1500,
-        //     SizeY = 900,
-        //     IsFullScreen = false,
-        //     UserAccessToken = "sergsecgrfsecgriseuhcygrshecngrysicugrbn7csewgrfcsercgser",
-        //     UserName = "GamerVII",
-        //     OsType = (int)OsType.Windows,
-        //     UserUuid = "31f5f477-53db-4afd-b88d-2e01815f4887"
-        // });
-    }
+
 
     [Test, Order(1)]
+    public async Task CreateProfile()
+    {
+
+    }
+
+    [Test, Order(2)]
+    public async Task GetProfileInfo()
+    {
+        // var httpClient = _webApplicationFactory.CreateClient();
+        //
+        // var profile = new ProfileCreateInfoDto
+        // {
+        //     ProfileName = "OntaCraft",
+        //     GameAddress = "192.168.1.1",
+        //     GamePort = 25565,
+        //     RamSize = 4096,
+        //     WindowWidth = 900,
+        //     WindowHeight = 600,
+        //     IsFullScreen = true,
+        //     OsType = ((int)OsType.Windows).ToString(),
+        //     OsArchitecture = Environment.Is64BitOperatingSystem ? "64" : "32",
+        //     UserAccessToken = "sergsecgrfsecgriseuhcygrshecngrysicugrbn7csewgrfcsercgser",
+        //     UserName = "GamerVII",
+        //     UserUuid = "userUuid"
+        // };
+        //
+        // var data = JsonSerializer.Serialize(profile);
+        //
+        // var response = await httpClient.PostAsync("/", new StringContent(data, Encoding.UTF8, MediaTypeHeaderValue.Parse("application/json")));
+        //
+        // response.EnsureSuccessStatusCode();
+        //
+        // var content = await response.Content.ReadAsStringAsync();
+        //
+        // var model = JsonSerializer.Deserialize<ResponseMessage<ProfileReadInfoDto>>(content);
+        //
+        // Assert.IsNotNull(model);
+    }
+
+    [Test, Order(3)]
     public async Task DownloadForge()
     {
         // var launcher = new CMLauncher(new MinecraftPath());
@@ -48,4 +72,5 @@ public class Tests
         //
         // process.Start();
     }
+
 }
