@@ -13,3 +13,6 @@
 [submodule "src/Gml.Web.Client"]
 	path = src/Gml.Web.Client
 	url = https://github.com/Scondic/Gml.Web.Client.git
+[submodule "src/Gml.Web.Skin.Service"]
+	path = src/Gml.Web.Skin.Service
+	url = https://github.com/GamerVII-NET/Gml.Web.Skin.Service.git
