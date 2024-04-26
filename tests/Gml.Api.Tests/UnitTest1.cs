@@ -1,10 +1,3 @@
-using System.Text;
-using Gml.Web.Api.Domains.System;
-using Gml.Web.Api.Dto.Messages;
-using Gml.Web.Api.Dto.Profile;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Newtonsoft.Json;
-
 namespace Gml.Api.Tests;
 
 public class UnitTest1
