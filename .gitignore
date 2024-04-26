@@ -463,3 +463,4 @@ $RECYCLE.BIN/
 /src/Gml.Web.Client/Data/Migrations
 /.env
 /src/Gml.Web.Client/.env
+/tests/Gml.Api.Tests/.env
