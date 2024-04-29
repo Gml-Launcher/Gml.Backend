@@ -105,8 +105,8 @@ services:
     container_name: gml-web-skins
     restart: always
     build:
-      context: .
-      dockerfile: src/Gml.Web.Skin.Service/Dockerfile
+      context: src/Gml.Web.Skin.Service
+      dockerfile: Dockerfile
     ports:
       - "${PORT_GML_SKINS}:8085"
     networks:
