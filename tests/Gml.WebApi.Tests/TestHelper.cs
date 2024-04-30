@@ -1,6 +1,4 @@
 using System.Text;
-using Gml.Web.Api.Dto.Profile;
-using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 
 namespace Gml.WebApi.Tests;

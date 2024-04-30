@@ -43,33 +43,33 @@ services:
       - pg-data:/var/lib/postgresql/data
 
   redis:
-      image: redis
-      restart: unless-stopped
+    image: redis
+    restart: unless-stopped
 
   glitchtip-web:
-      image: glitchtip/glitchtip
-      depends_on: *default-depends_on
-      ports:
-        - "${PORT_GML_SENTRY}:8000"
-      environment: *default-environment
-      restart: unless-stopped
-      volumes:
-        - uploads:/code/uploads
+    image: glitchtip/glitchtip
+    depends_on: *default-depends_on
+    ports:
+      - "${PORT_GML_SENTRY}:8000"
+    environment: *default-environment
+    restart: unless-stopped
+    volumes:
+      - uploads:/code/uploads
 
   glitchtip-worker:
-      image: glitchtip/glitchtip
-      command: ./bin/run-celery-with-beat.sh
-      depends_on: *default-depends_on
-      environment: *default-environment
-      restart: unless-stopped
-      volumes:
-        - uploads:/code/uploads
+    image: glitchtip/glitchtip
+    command: ./bin/run-celery-with-beat.sh
+    depends_on: *default-depends_on
+    environment: *default-environment
+    restart: unless-stopped
+    volumes:
+      - uploads:/code/uploads
 
   glitchtip-migrate:
-      image: glitchtip/glitchtip
-      depends_on: *default-depends_on
-      command: "./manage.py migrate"
-      environment: *default-environment
+    image: glitchtip/glitchtip
+    depends_on: *default-depends_on
+    command: "./manage.py migrate"
+    environment: *default-environment
 
   gml-web-frontend:
     image: ghcr.io/scondic/gml.web.client:master

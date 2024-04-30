@@ -1,4 +1,5 @@
 using System.Net;
+using Faker;
 using Gml.Web.Api.Domains.System;
 using Gml.Web.Api.Dto.Messages;
 using Gml.Web.Api.Dto.Profile;
@@ -11,10 +12,10 @@ namespace Gml.WebApi.Tests;
 
 public class Tests
 {
-    private WebApplicationFactory<Program> _webApplicationFactory;
     private IGmlManager _gmlManager;
     private HttpClient _httpClient;
     private string _profileName;
+    private WebApplicationFactory<Program> _webApplicationFactory;
 
     [SetUp]
     public void Setup()
@@ -23,7 +24,8 @@ public class Tests
         _httpClient = _webApplicationFactory.CreateClient();
     }
 
-    [Test, Order(1)]
+    [Test]
+    [Order(1)]
     public async Task RemoveAllProfilesEndFiles()
     {
         var httpClient = _webApplicationFactory.CreateClient();
@@ -48,14 +50,15 @@ public class Tests
         });
     }
 
-    [Test, Order(2)]
+    [Test]
+    [Order(2)]
     public async Task CreateProfile()
     {
-        _profileName = Faker.Name.First();
+        _profileName = Name.First();
 
         var profile = new MultipartFormDataContent();
         profile.Add(new StringContent(_profileName), "Name");
-        profile.Add(new StringContent(Faker.Address.StreetAddress()), "Description");
+        profile.Add(new StringContent(Address.StreetAddress()), "Description");
         profile.Add(new StringContent("1.19.4"), "Version");
         profile.Add(new StringContent(((int)GameLoader.Forge).ToString()), "GameLoader");
 
@@ -73,10 +76,10 @@ public class Tests
         });
     }
 
-    [Test, Order(3)]
+    [Test]
+    [Order(3)]
     public async Task GetProfileInfo()
     {
-
         var profile = TestHelper.CreateJsonObject(new ProfileCreateInfoDto
         {
             ProfileName = _profileName,
@@ -107,12 +110,13 @@ public class Tests
         });
     }
 
-    [Test, Order(4)]
+    [Test]
+    [Order(4)]
     public async Task CompileProfile()
     {
         var profile = TestHelper.CreateJsonObject(new ProfileCompileDto
         {
-            Name = _profileName,
+            Name = _profileName
         });
 
         var response = await _httpClient.PostAsync("/api/v1/profiles/compile", profile);
@@ -126,5 +130,4 @@ public class Tests
             Assert.IsTrue(response.IsSuccessStatusCode);
         });
     }
-
 }
