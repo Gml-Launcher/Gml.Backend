@@ -76,7 +76,7 @@ services:
     container_name: gml-frontend
     restart: always
     build:
-      context: frontend/Gml.Web.Api
+      context: frontend/Gml.Web.Client
       dockerfile: Dockerfile
     ports:
       - ${PORT_GML_FRONTEND}:8081
