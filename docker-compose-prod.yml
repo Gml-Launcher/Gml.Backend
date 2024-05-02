@@ -72,7 +72,7 @@ services:
     environment: *default-environment
 
   gml-web-frontend:
-    image: ghcr.io/scondic/gml.web.client:master
+    image: gml-web-frontend
     container_name: gml-frontend
     restart: always
     build:
