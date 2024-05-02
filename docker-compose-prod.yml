@@ -21,7 +21,6 @@ services:
   filebrowser:
     image: filebrowser/filebrowser
     container_name: file-browser
-    user: "${UID}:${GID}"
     restart: always
     environment:
       - FB_BASEURL=/filebrowser
