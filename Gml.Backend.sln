@@ -52,6 +52,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{C8F5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Skin.Service", "src\Gml.Web.Skin.Service\src\Gml.Web.Skin.Service\Gml.Web.Skin.Service.csproj", "{0ABC8234-6062-4EEE-81E4-D8051C14C4E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore.Tests", "src\Gml.Web.Api\src\Gml.Core\tests\GmlCore.Tests\GmlCore.Tests.csproj", "{788E438F-32D9-42B8-BAF3-87C8A6A35717}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,10 @@ Global
 		{0ABC8234-6062-4EEE-81E4-D8051C14C4E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ABC8234-6062-4EEE-81E4-D8051C14C4E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ABC8234-6062-4EEE-81E4-D8051C14C4E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{788E438F-32D9-42B8-BAF3-87C8A6A35717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{788E438F-32D9-42B8-BAF3-87C8A6A35717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{788E438F-32D9-42B8-BAF3-87C8A6A35717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{788E438F-32D9-42B8-BAF3-87C8A6A35717}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,5 +121,6 @@ Global
 		{C8F55A92-E612-4AAE-9586-8E33D170A266} = {A2E6D9BD-8CCB-48FC-91B9-D935ED9188D5}
 		{0ABC8234-6062-4EEE-81E4-D8051C14C4E6} = {E2ED9D08-3137-4328-8544-CE413F2B73B8}
 		{130C2B3D-FD2F-4AAD-A89F-15F009A7B106} = {D6DE80A2-7856-4C10-A518-E9CF5BC10728}
+		{788E438F-32D9-42B8-BAF3-87C8A6A35717} = {AA158165-09EE-4338-9FC8-9F172E47F62D}
 	EndGlobalSection
 EndGlobal
