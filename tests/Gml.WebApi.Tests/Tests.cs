@@ -15,11 +15,11 @@ namespace Gml.WebApi.Tests;
 
 public class Tests
 {
-    private HttpClient _httpClient;
-    private readonly string _profileName = Name.First();
-    private WebApplicationFactory<Program> _webApplicationFactory;
-    private readonly string _newTextureUrl = "https://test.ru";
     private readonly string _newSenryUrl = "https://sentry.test.ru";
+    private readonly string _newTextureUrl = "https://test.ru";
+    private readonly string _profileName = Name.First();
+    private HttpClient _httpClient;
+    private WebApplicationFactory<Program> _webApplicationFactory;
 
     [SetUp]
     public void Setup()
@@ -126,7 +126,7 @@ public class Tests
 
         var response = await _httpClient.PutAsync("/api/v1/profiles", profileUpdateData);
 
-        string content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync();
         var model = JsonConvert.DeserializeObject<ResponseMessage<SettingsReadDto>>(content);
 
         Assert.Multiple(() =>
@@ -161,7 +161,6 @@ public class Tests
     [Order(6)]
     public async Task GetSettings()
     {
-
         var response = await _httpClient.GetAsync("/api/v1/settings/platform");
         var content = await response.Content.ReadAsStringAsync();
 
