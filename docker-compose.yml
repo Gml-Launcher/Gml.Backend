@@ -33,7 +33,7 @@ services:
     command: minio server /data
 
   filebrowser:
-    image: filebrowser/filebrowser
+    image: filebrowser/filebrowser:v2.27.0
     container_name: file-browser
     restart: always
     environment:
