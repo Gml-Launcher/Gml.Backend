@@ -59,7 +59,7 @@ services:
     image: redis
     restart: unless-stopped
 
-  web:
+  glitchtip-web:
     image: glitchtip/glitchtip
     depends_on: *default-depends_on
     ports:
@@ -69,7 +69,7 @@ services:
     volumes:
       - uploads:/code/uploads
 
-  worker:
+  glitchtip-worker:
     image: glitchtip/glitchtip
     command: ./bin/run-celery-with-beat.sh
     depends_on: *default-depends_on
@@ -78,7 +78,7 @@ services:
     volumes:
       - uploads:/code/uploads
 
-  migrate:
+  glitchtip-migrate:
     image: glitchtip/glitchtip
     depends_on: *default-depends_on
     command: "./manage.py migrate"
