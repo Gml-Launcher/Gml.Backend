@@ -21,9 +21,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.Dto", "src\Gml.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "submodules", "submodules", "{E2ED9D08-3137-4328-8544-CE413F2B73B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore", "src\Gml.Web.Api\src\Gml.Core\src\GmlCore\GmlCore.csproj", "{4DAD3C4C-1B64-4EAA-96EF-1C60D145A743}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Core", "src\Gml.Web.Api\src\Gml.Core\src\Gml.Core\Gml.Core.csproj", "{4DAD3C4C-1B64-4EAA-96EF-1C60D145A743}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore.Interfaces", "src\Gml.Web.Api\src\Gml.Core\src\GmlCore.Interfaces\GmlCore.Interfaces.csproj", "{130C2B3D-FD2F-4AAD-A89F-15F009A7B106}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Core.Interfaces", "src\Gml.Web.Api\src\Gml.Core\src\Gml.Core.Interfaces\Gml.Core.Interfaces.csproj", "{130C2B3D-FD2F-4AAD-A89F-15F009A7B106}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Common", "src\Gml.Web.Api\src\Gml.Common\Gml.Common\Gml.Common.csproj", "{EB7BED73-75A8-48D9-A208-361A4B41A7E7}"
 EndProject
@@ -48,6 +48,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{C8F5
 		.env = .env
 		.env.example = .env.example
 		docker-compose-prod.yml = docker-compose-prod.yml
+		src\Gml.Web.Skin.Service\Dockerfile = src\Gml.Web.Skin.Service\Dockerfile
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Skin.Service", "src\Gml.Web.Skin.Service\src\Gml.Web.Skin.Service\Gml.Web.Skin.Service.csproj", "{0ABC8234-6062-4EEE-81E4-D8051C14C4E6}"
@@ -63,6 +64,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.Plugins.Template", "src\Gml.Web.Api\src\Gml.Web.Api.Plugins.Template\Gml.Web.Api.Plugins.Template.csproj", "{C9C22A97-52FC-422D-A701-6EF8188CBFC1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.EndpointSDK", "src\Gml.Web.Api\src\Gml.Web.Api.EndpointSDK\Gml.Web.Api.EndpointSDK.csproj", "{43EC3DDB-741E-4ACF-A347-042A137D79E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.Plugins.Servers", "Gml.Web.Api.Plugins.Servers\Gml.Web.Api.Plugins.Servers.csproj", "{80B07A43-89C8-41A4-963A-F122F3D9D7B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -122,6 +125,10 @@ Global
 		{43EC3DDB-741E-4ACF-A347-042A137D79E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43EC3DDB-741E-4ACF-A347-042A137D79E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43EC3DDB-741E-4ACF-A347-042A137D79E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80B07A43-89C8-41A4-963A-F122F3D9D7B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80B07A43-89C8-41A4-963A-F122F3D9D7B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80B07A43-89C8-41A4-963A-F122F3D9D7B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80B07A43-89C8-41A4-963A-F122F3D9D7B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -144,5 +151,6 @@ Global
 		{3A539442-8520-4AC1-9AF6-26FC960C2E9C} = {D88B8B9C-307C-4A15-BCED-6AF8CD79B688}
 		{C9C22A97-52FC-422D-A701-6EF8188CBFC1} = {14CCAE0C-9728-4937-B902-4DC2C0B0BF69}
 		{43EC3DDB-741E-4ACF-A347-042A137D79E3} = {D88B8B9C-307C-4A15-BCED-6AF8CD79B688}
+		{80B07A43-89C8-41A4-963A-F122F3D9D7B6} = {14CCAE0C-9728-4937-B902-4DC2C0B0BF69}
 	EndGlobalSection
 EndGlobal
