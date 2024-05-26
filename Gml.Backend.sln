@@ -47,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{C8F5
 		.env.example = .env.example
 		docker-compose-prod.yml = docker-compose-prod.yml
 		src\Gml.Web.Skin.Service\Dockerfile = src\Gml.Web.Skin.Service\Dockerfile
+		src\Gml.Web.Api\.github\workflows\docker-package-publish.yml = src\Gml.Web.Api\.github\workflows\docker-package-publish.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Skin.Service", "src\Gml.Web.Skin.Service\src\Gml.Web.Skin.Service\Gml.Web.Skin.Service.csproj", "{0ABC8234-6062-4EEE-81E4-D8051C14C4E6}"
