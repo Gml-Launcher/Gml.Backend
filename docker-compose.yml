@@ -20,19 +20,19 @@ services:
     networks:
       - gml-network
 
-  gml-kubek:
-    image: ghcr.io/gamervii-net/kubek-minecraft-dashboard:main
-    container_name: gml-kubek
-    restart: always
-    build:
-      context: src/Gml.Web.Client
-      dockerfile: Dockerfile
-    ports:
-      - ${PORT_GML_KUBEK}:3000
-    networks:
-      - gml-network
-    volumes:
-      - shared-volume:/root
+#  gml-kubek:
+#    image: ghcr.io/gamervii-net/kubek-minecraft-dashboard:main
+#    container_name: gml-kubek
+#    restart: always
+#    build:
+#      context: src/Gml.Web.Client
+#      dockerfile: Dockerfile
+#    ports:
+#      - ${PORT_GML_KUBEK}:3000
+#    networks:
+#      - gml-network
+#    volumes:
+#      - shared-volume:/root
 
   gml-web-frontend:
     image: gml-web-frontend-image
