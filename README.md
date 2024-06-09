@@ -53,7 +53,7 @@ configuration and a breakdown of what each field means:
     }
   },
   "ServerSettings": {
-    "ProjectName": "GmlServer1",
+    "ProjectName": "GmlServer",
     "ProjectPath": "",
     "ProjectVersion": "1.0.0-alpha",
     "SkinDomains": ["recloud.tech", ".recloud.tech"],

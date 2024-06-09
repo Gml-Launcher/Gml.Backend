@@ -16,6 +16,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8082;
+      - SECURITY_KEY=${SECURITY_KEY}
+      - PROJECT_NAME=${PROJECT_NAME}
+      - PROJECT_DESCRIPTION=${PROJECT_DESCRIPTION}
+      - PROJECT_POLICYNAME=${PROJECT_POLICYNAME}
+      - PROJECT_PATH=${PROJECT_PATH}
     user: "${UID}:${GID}"
     networks:
       - gml-network
