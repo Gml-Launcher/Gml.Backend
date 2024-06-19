@@ -67,9 +67,6 @@ services:
     image: ghcr.io/gml-launcher/gml.web.skin.service:master
     container_name: gml-web-skins
     restart: always
-    build:
-      context: src/Gml.Web.Skin.Service
-      dockerfile: Dockerfile
     ports:
       - "${PORT_GML_SKINS}:8085"
     networks:
