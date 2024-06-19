@@ -6,9 +6,6 @@ services:
     image: ghcr.io/gml-launcher/gml.web.api:master
     container_name: gml-web-api
     restart: always
-    build:
-      context: src/Gml.Web.Api
-      dockerfile: Dockerfile
     volumes:
       - shared-volume:/root
     ports:
