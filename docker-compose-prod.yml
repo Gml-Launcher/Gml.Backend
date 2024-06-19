@@ -3,7 +3,7 @@
 services:
 
   gml-web-api:
-    image: ghcr.io/gamervii-net/gml.web.api:master
+    image: ghcr.io/gml-launcher/gml.web.api:master
     container_name: gml-web-api
     restart: always
     build:
@@ -67,7 +67,7 @@ services:
       - gml-network
 
   gml-web-skins:
-    image: ghcr.io/gamervii-net/gml.web.skin.service:master
+    image: ghcr.io/gml-launcher/gml.web.skin.service:master
     container_name: gml-web-skins
     restart: always
     build:
