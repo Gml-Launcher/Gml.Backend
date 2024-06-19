@@ -67,7 +67,7 @@ services:
     command: minio server /data
 
   filebrowser:
-    image: filebrowser/filebrowser:v2.27.0
+    image: filebrowser/filebrowser:v2.30.0
     container_name: gml-filebrowser
     restart: always
     environment:
