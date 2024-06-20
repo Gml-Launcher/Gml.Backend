@@ -1,95 +1,26 @@
-![image](https://github.com/GamerVII-NET/Gml.Backend/assets/111225722/3f09a2fb-74b1-4f9c-bf90-0e8d06970480)
+![Frame 39240](https://github.com/Gml-Launcher/Gml.Backend/assets/111225722/da7955a9-7c18-481b-9102-10139b37d365)
 
-# Gml Web API Setup and Configuration Guide
 
-This guide will walk you through the necessary steps to clone, set up, and configure the Gml Web API.
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Gml-Launcher/Gml.Web.Api/docker-package-publish.yml?label=Tests&style=for-the-badge&branch=master)
+![GitHub contributors](https://img.shields.io/github/contributors/Gml-Launcher/Gml.Backend?style=for-the-badge)
+![Size](https://img.shields.io/github/repo-size/Gml-Launcher/Gml.Backend?style=for-the-badge)
+![License](https://img.shields.io/github/license/Gml-Launcher/Gml.Backend?style=for-the-badge)
 
-## Setup
+# Gml.Backend 
 
-### Step 1: Cloning the Repository
+Gml.Backend is a comprehensive project, designed to facilitate rapid deployment of server infrastructure for Minecraft game profiles: Forge, Fabric, LiteLoader.
+This product suite encompasses three integral services:
 
-Clone the repository by running the following command in your terminal:
-Run the following command in your terminal:
+[Gml.Web.Api:](https://github.com/Gml-Launcher/Gml.Web.Api) This is a RESTful API that provides an interface for interaction with server data.
 
-```
-git clone --recursive https://github.com/GamerVII-NET/Gml.Backend.git
-```
+[Gml.Web.Client:](https://github.com/Scondic/Gml.Web.Client) Commonly referred to as the Monitoring Dashboard, this component offers a user-friendly interface for monitoring and administrating game profiles and the launcher.
 
-### Step 2: Navigating into the Project Directory
+[Gml.Web.Skin.Service:](https://github.com/Gml-Launcher/Gml.Web.Skin.Service) This service is specifically dedicated to the management of textures, allowing for customization and personalization for each player.
 
-To navigate to the project directory, run the command below in your terminal:
+Together, these services offer a robust foundation for managing Minecraft game profiles with mods.
 
-```
-cd Gml.Backend
-```
+# Documentation
+[Official documentation](https://wiki.recloud.tech)
 
-### Step 3: Creation of the .env File
+[Official wiki mirror](https://gml-launcher.github.io/Gml.Docs/home.html)
 
-You need to create a .env file in src/Gml.Web.Client/ according to the template provided in
-src/Gml.Web.Client/.env.example.
-
-### Step 4: Running the Project Using Docker
-
-Start the project by running the following command in your terminal:
-
-```
-docker compose up
-```
-
-Please ensure that Docker is installed and running on your computer. Once the project is running, you can access it in a
-browser using the address provided by Docker.
-
-## Detailed Settings
-
-The appsettings.json configuration file is located in the src/Gml.Web.Api/src/Gml.Web.Api/ directory. Here is an example
-configuration and a breakdown of what each field means:
-
-```json 
-{
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
-  },
-  "ServerSettings": {
-    "ProjectName": "GmlServer",
-    "ProjectPath": "",
-    "ProjectVersion": "1.0.0-alpha",
-    "SkinDomains": ["recloud.tech", ".recloud.tech"],
-    "ProjectDescription": "Gml (GamerVII Minecraft Launcher) is a cross-platform software infrastructure for creating and managing client-server Minecraft gaming systems.",
-    "SecretKey": "SecretGmlKey1!@#&#^Tb786t^vb786hn8",
-    "PolicyName": "GmlPolicy"
-  },
-  "ConnectionStrings": {
-    "SQLite": "Data Source=data.db"
-  }
-}
-```
-
-### Logging
-
-• Defines how system events are logged. </br>
-• **LogLevel:** Specifies logging level based on the namespace of the logged item. </br>
-• **Default:** Default level for all log items. </br>
-• **Microsoft.AspNetCore:** Specific logging level for items from the Microsoft.AspNetCore namespace. </br>
-
-### ServerSettings
-
-• **Basic server** settings. </br>
-• **ProjectName:** The name of your project. </br>
-• **ProjectPath:** The path where the project is located. </br>
-• **ProjectVersion:** The version of your project. </br>
-• **SkinDomains:** Domains from which the server will serve requested skins. </br>
-• **ProjectDescription:** The description of your project. </br>
-• **SecretKey:** Secret key used for authentication. </br>
-
-• **PolicyName:** Policy name for authorisation.
-
-### ConnectionStrings
-
-Database connection strings. </br>
-
-• **SQLite:** SQLite database connection string. </br>
-
-**Important:** Always keep your SecretKey and SQLite connection string confidential.
