@@ -464,3 +464,5 @@ $RECYCLE.BIN/
 /.env
 /src/Gml.Web.Client/.env
 /tests/Gml.Api.Tests/.env
+/src/Gml.Web.Api/src/Gml.Web.Api/private.key
+/src/Gml.Web.Api/src/Gml.Web.Api/public.key
