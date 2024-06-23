@@ -70,6 +70,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmlLib.Core.Installer.Forge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmlLib.Core", "src\Gml.Web.Api\src\Gml.Core\src\CmlLib.ExtendedCore\src\CmlLib.Core.csproj", "{CE12BAF5-2A63-476D-ADEE-94C76CA0B044}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmlLib.Core.Installer.NeoForge", "src\Gml.Web.Api\src\Gml.Core\src\CmlLib.Core.Installer.NeoForge\CmlLib.Core.Installer.NeoForge\CmlLib.Core.Installer.NeoForge.csproj", "{E926A1D4-3232-4000-8889-C0990EB3C61A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +138,10 @@ Global
 		{CE12BAF5-2A63-476D-ADEE-94C76CA0B044}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE12BAF5-2A63-476D-ADEE-94C76CA0B044}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE12BAF5-2A63-476D-ADEE-94C76CA0B044}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E926A1D4-3232-4000-8889-C0990EB3C61A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E926A1D4-3232-4000-8889-C0990EB3C61A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E926A1D4-3232-4000-8889-C0990EB3C61A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E926A1D4-3232-4000-8889-C0990EB3C61A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,5 +166,6 @@ Global
 		{D407DF32-DAF1-4F30-9786-AD8C967C2162} = {AA158165-09EE-4338-9FC8-9F172E47F62D}
 		{DE19CEC4-A188-4BB6-B4AE-48022887337B} = {E2ED9D08-3137-4328-8544-CE413F2B73B8}
 		{CE12BAF5-2A63-476D-ADEE-94C76CA0B044} = {E2ED9D08-3137-4328-8544-CE413F2B73B8}
+		{E926A1D4-3232-4000-8889-C0990EB3C61A} = {E2ED9D08-3137-4328-8544-CE413F2B73B8}
 	EndGlobalSection
 EndGlobal
