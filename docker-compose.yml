@@ -88,7 +88,7 @@ services:
       context: src/Gml.Web.Skin.Service
       dockerfile: Dockerfile
     ports:
-      - "${PORT_GML_SKINS}:8085"
+      - ${PORT_GML_SKINS}:8085
     networks:
       - gml-network
     environment:
