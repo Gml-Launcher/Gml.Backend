@@ -1,18 +1,18 @@
 [submodule "src/gml-core"]
 	path = src/gml-core
-	url = https://github.com/GamerVII-NET/gml-core.git
+	url = https://github.com/Gml-Launcher/Gml.Core.git
 [submodule "src/CmlLib.Core"]
 	path = src/CmlLib.Core
 	url = https://github.com/GamerVII-NET/CmlLib.Core.git
 [submodule "src/Gml.Client"]
 	path = src/Gml.Client
-	url = https://github.com/GamerVII-NET/Gml.Client.git
+	url = https://github.com/Gml-Launcher/Gml.Client.git
 [submodule "src/Gml.Web.Api"]
 	path = src/Gml.Web.Api
-	url = https://github.com/GamerVII-NET/Gml.Web.Api.git
+	url = https://github.com/Gml-Launcher/Gml.Web.Api.git
 [submodule "src/Gml.Web.Client"]
 	path = src/Gml.Web.Client
 	url = https://github.com/Scondic/Gml.Web.Client.git
 [submodule "src/Gml.Web.Skin.Service"]
 	path = src/Gml.Web.Skin.Service
-	url = https://github.com/GamerVII-NET/Gml.Web.Skin.Service.git
+	url = https://github.com/Gml-Launcher/Gml.Web.Skin.Service.git

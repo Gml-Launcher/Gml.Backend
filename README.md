@@ -1,4 +1,4 @@
-![Frame 39240](https://github.com/Gml-Launcher/Gml.Backend/assets/111225722/da7955a9-7c18-481b-9102-10139b37d365)
+![Banner](https://github.com/user-attachments/assets/7a2671d6-76a1-406d-9294-8d3a754f0398)
 
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Gml-Launcher/Gml.Web.Api/docker-package-publish.yml?label=Tests&style=for-the-badge&branch=master)
