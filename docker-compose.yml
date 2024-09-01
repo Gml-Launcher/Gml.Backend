@@ -45,6 +45,7 @@ services:
     ports:
       - ${MINIO_ADDRESS_PORT}:${MINIO_ADDRESS_PORT}
       - ${MINIO_CONSOLE_ADDRESS_PORT}:${MINIO_CONSOLE_ADDRESS_PORT}
+    user: "${UID}:${GID}"
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
