@@ -12,11 +12,12 @@ namespace Gml.Backend.Tests;
 
 public class Tests
 {
-    private HubConnection _profileHub;
-    private HubConnection _launcherHub;
     private HttpClient _httpClient;
     private WebApplicationFactory<Program> _webApplicationFactory;
     private readonly string _profileName = "UnitTestProfile";
+
+    private HubConnection _profileHub;
+    private HubConnection _launcherHub;
 
     [SetUp]
     public async Task Setup()
@@ -31,10 +32,20 @@ public class Tests
 
         _webApplicationFactory = new GmlApiApplicationFactory();
         _httpClient = _webApplicationFactory.CreateClient();
+
         _profileHub = new HubConnectionBuilder()
-            .WithUrl("ws://localhost/ws/profiles/restore")
+            .WithUrl($"{_httpClient.BaseAddress}ws/profiles/restore", options =>
+            {
+                options.HttpMessageHandlerFactory = _ => _webApplicationFactory.Server.CreateHandler();
+            })
             .Build();
-        _launcherHub = new HubConnectionBuilder().WithUrl("ws://localhost/ws/launcher/build").Build();
+
+        _launcherHub = new HubConnectionBuilder()
+            .WithUrl($"{_httpClient.BaseAddress}ws/launcher/build", options =>
+            {
+                options.HttpMessageHandlerFactory = _ => _webApplicationFactory.Server.CreateHandler();
+            })
+            .Build();
     }
 
     [TearDown]
@@ -97,19 +108,21 @@ public class Tests
     [Order(3)]
     public async Task RestoreProfileTest()
     {
-        await _profileHub.StartAsync();
+        if (_profileHub.State != HubConnectionState.Connected)
+            await _profileHub.StartAsync();
 
         var messageReceived = new TaskCompletionSource<string>();
 
-        _profileHub.On<string, string>("Log", (message, profileName) =>
+        await _profileHub.SendCoreAsync("Restore", [_profileName]);
+
+        _profileHub.On<string, string>("Log", (profileName, message) =>
         {
-            if (profileName == _profileName)
-                Debug.WriteLine(message);
+            Debug.WriteLine($"Profile name: {profileName}\nMessage: {message}");
         });
 
-        _profileHub.On("SuccessInstalled", () =>
+        _profileHub.On<string>("SuccessInstalled", (profileName) =>
         {
-            messageReceived.SetResult("Restore Profile Success");
+            messageReceived.SetResult($"Restore Profile Success. Profile name: {profileName}");
         });
 
         var message = await messageReceived.Task;
@@ -124,21 +137,28 @@ public class Tests
     [Order(4)]
     public async Task CompileProfileTest()
     {
-        var compileDto = TestHelper.CreateJsonObject(new ProfileRestoreDto
+        if (_profileHub.State != HubConnectionState.Connected)
+            await _profileHub.StartAsync();
+
+        var messageReceived = new TaskCompletionSource<string>();
+
+        await _profileHub.SendCoreAsync("Build", [_profileName]);
+
+        _profileHub.On<string, string>("Log", (profileName, message) =>
         {
-            Name = _profileName
+            Debug.WriteLine($"Profile name: {profileName}\nMessage: {message}");
         });
 
-        var response = await _httpClient.PostAsync("/api/v1/profiles/compile", compileDto);
+        _profileHub.On<string>("SuccessPacked", (profileName) =>
+        {
+            messageReceived.SetResult($"Packaging Profile Success. Profile name: {profileName}");
+        });
 
-        var content = await response.Content.ReadAsStringAsync();
-
-        var model = JsonConvert.DeserializeObject<ResponseMessage>(content);
+        var message = await messageReceived.Task;
 
         Assert.Multiple(() =>
         {
-            Assert.That(model, Is.Not.Null);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(message, Is.Not.Null);
         });
     }
 }
