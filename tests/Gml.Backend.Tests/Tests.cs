@@ -1,6 +1,9 @@
 using System.Diagnostics;
 using System.Net;
 using Faker;
+using Gml.Core.Launcher;
+using Gml.Web.Api.Domains.LauncherDto;
+using Gml.Web.Api.Dto.Launcher;
 using Gml.Web.Api.Dto.Messages;
 using Gml.Web.Api.Dto.Profile;
 using GmlCore.Interfaces.Enums;
@@ -12,6 +15,12 @@ namespace Gml.Backend.Tests;
 
 public class Tests
 {
+    private GmlManager GmlManager { get; } =
+        new(new GmlSettings("GamerVIILauncher", "gfweagertghuysergfbsuyerbgiuyserg", httpClient: new HttpClient())
+        {
+            TextureServiceEndpoint = "http://gml-web-skins:8085"
+        });
+
     private HttpClient _httpClient;
     private WebApplicationFactory<Program> _webApplicationFactory;
     private readonly string _profileName = "UnitTestProfile";
@@ -20,7 +29,7 @@ public class Tests
     private HubConnection _launcherHub;
 
     [SetUp]
-    public async Task Setup()
+    public void Setup()
     {
         Environment.SetEnvironmentVariable("SECURITY_KEY", "jkuhbsfgvuk4gfikhn8i7wa34rkbqw23");
         Environment.SetEnvironmentVariable("PROJECT_NAME", "GmlServer");
@@ -159,6 +168,144 @@ public class Tests
         Assert.Multiple(() =>
         {
             Assert.That(message, Is.Not.Null);
+        });
+    }
+
+    [Test]
+    [Order(5)]
+    public async Task DownloadLauncherTest()
+    {
+        if (_launcherHub.State != HubConnectionState.Connected)
+            await _launcherHub.StartAsync();
+
+        var response = await _httpClient.GetAsync("api/v1/integrations/github/launcher/versions");
+
+        if (response.StatusCode != HttpStatusCode.OK)
+            Assert.Fail();
+
+        var versions = JsonConvert.DeserializeObject<ResponseMessage<List<LauncherVersionReadDto>>>(await response.Content.ReadAsStringAsync());
+
+        var messageReceived = new TaskCompletionSource<string>();
+
+        await _launcherHub.SendCoreAsync("Download", [versions.Data[0].Version, _httpClient.BaseAddress, _profileName]);
+
+        _launcherHub.On("LauncherDownloadEnded", () =>
+        {
+            messageReceived.SetResult("Download Launcher Success.");
+        });
+
+        var message = await messageReceived.Task;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(message, Is.Not.Null);
+        });
+    }
+
+    [Test]
+    [Order(6)]
+    public async Task DownloadLibLauncherTest()
+    {
+        var response = await _httpClient.GetAsync("api/v1/integrations/github/launcher/versions");
+
+        if (response.StatusCode != HttpStatusCode.OK)
+            Assert.Fail();
+
+        var versions = JsonConvert.DeserializeObject<ResponseMessage<List<LauncherVersionReadDto>>>(await response.Content.ReadAsStringAsync());
+
+        var newVersion = versions.Data[0].Version;
+
+        var projectPath = Path.Combine(GmlManager.System.DefaultInstallation, "GmlServer", "Launcher", newVersion, $"Gml.Launcher-{newVersion.Replace("v", "")}", "src");
+
+        var gmlClient = await TestHelper.GetFilesFolder(Path.Combine(projectPath, "Gml.Client"));
+        var notificationLib = await TestHelper.GetFilesFolder(Path.Combine(projectPath, "GamerVII.Notification.Avalonia"));
+
+        Assert.Multiple(() =>
+        {
+            // Скачивание Gml.Client
+            if (gmlClient.Length <= 0)
+            {
+
+                Assert.That(TestHelper.DownloadGithubProject(projectPath, "Gml-Launcher", "Gml.Client", newVersion), Is.Not.Null);
+            }
+            else
+            {
+                Assert.Pass("Gml.Client is already downloaded");
+            }
+
+            // Скачивание GamerVII.Notification.Avalonia
+            if (notificationLib.Length <= 0)
+            {
+                Assert.That(TestHelper.DownloadGithubProject(projectPath, "GamerVII-NET", "GamerVII.Notification.Avalonia", "master", false), Is.Not.Null);
+            }
+            else
+            {
+                Assert.Pass("GamerVII.Notification.Avalonia is already downloaded");
+            }
+        });
+    }
+
+    [Test]
+    [Order(7)]
+    public async Task BuildLauncherTest()
+    {
+        if (_launcherHub.State != HubConnectionState.Connected)
+            await _launcherHub.StartAsync();
+
+        var response = await _httpClient.GetAsync("api/v1/integrations/github/launcher/versions");
+
+        if (response.StatusCode != HttpStatusCode.OK)
+            Assert.Fail();
+
+        var versions = JsonConvert.DeserializeObject<ResponseMessage<List<LauncherVersionReadDto>>>(await response.Content.ReadAsStringAsync());
+
+        var messageReceived = new TaskCompletionSource<string>();
+
+        await _launcherHub.SendCoreAsync("Compile", [versions.Data[0].Version, new [] { "win-x64" }]);
+
+        _launcherHub.On("LauncherBuildEnded", () =>
+        {
+            messageReceived.SetResult("Compile Launcher Success.");
+        });
+
+        _launcherHub.On<string>("Log", (message) =>
+        {
+            Debug.WriteLine(message);
+        });
+
+        var message = await messageReceived.Task;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(message, Is.Not.Null);
+        });
+    }
+
+    [Test]
+    [Order(8)]
+    public async Task UpdateLauncherTest()
+    {
+        var responseBuilds = await _httpClient.GetAsync("api/v1/launcher/builds");
+
+        if (responseBuilds.StatusCode != HttpStatusCode.OK)
+            Assert.Fail();
+
+        var launcherBuilds = JsonConvert.DeserializeObject<ResponseMessage<List<LauncherBuildReadDto>>>(await responseBuilds.Content.ReadAsStringAsync());
+
+        var launcherUpdate = new MultipartFormDataContent();
+        launcherUpdate.Add(new StringContent("2.1.0.0"), "Version");
+        launcherUpdate.Add(new StringContent(Name.FullName()), "Title");
+        launcherUpdate.Add(new StringContent(Address.StreetAddress()), "Description");
+        launcherUpdate.Add(new StringContent(launcherBuilds.Data[0].Name), "LauncherBuild");
+
+        var response = await _httpClient.PostAsync("/api/v1/launcher/upload", launcherUpdate);
+
+        var content = await response.Content.ReadAsStringAsync();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(content, Is.Not.Null);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         });
     }
 }
