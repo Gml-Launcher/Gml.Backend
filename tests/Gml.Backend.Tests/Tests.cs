@@ -27,22 +27,21 @@ public class Tests
         Environment.SetEnvironmentVariable("PROJECT_POLICYNAME", "GmlPolicy");
         Environment.SetEnvironmentVariable("PROJECT_PATH", "");
         Environment.SetEnvironmentVariable("SERVICE_TEXTURE_ENDPOINT", "http://gml-web-skins:8085");
+        Environment.SetEnvironmentVariable("DOTNET_HOST_FACTORY_RESOLVER_DEFAULT_TIMEOUT_IN_SECONDS", "100");
 
         _webApplicationFactory = new GmlApiApplicationFactory();
         _httpClient = _webApplicationFactory.CreateClient();
         _profileHub = new HubConnectionBuilder()
             .WithUrl("ws://localhost/ws/profiles/restore")
             .Build();
-
+        _launcherHub = new HubConnectionBuilder().WithUrl("ws://localhost/ws/launcher/build").Build();
     }
 
     [TearDown]
-    public void TearDown()
+    public async Task TearDown()
     {
         _httpClient.Dispose();
-        _webApplicationFactory.Dispose();
-        _profileHub.DisposeAsync();
-        _launcherHub.DisposeAsync();
+        await _webApplicationFactory.DisposeAsync();
     }
 
     [Test]
@@ -110,7 +109,7 @@ public class Tests
 
         _profileHub.On("SuccessInstalled", () =>
         {
-            messageReceived.SetResult(_profileName);
+            messageReceived.SetResult("Restore Profile Success");
         });
 
         var message = await messageReceived.Task;

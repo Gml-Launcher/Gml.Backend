@@ -12,10 +12,6 @@ internal class GmlApiApplicationFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureServices(services =>
         {
-            //
-            // services.AddAuthentication("TestScheme")
-            //     .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>("TestScheme", options => { });
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = "TestScheme";
