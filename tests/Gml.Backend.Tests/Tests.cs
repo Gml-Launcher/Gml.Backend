@@ -1,11 +1,15 @@
 using System.Diagnostics;
 using System.Net;
+using System.Text;
 using Faker;
 using Gml.Core.Launcher;
 using Gml.Web.Api.Domains.LauncherDto;
+using Gml.Web.Api.Dto.Integration;
 using Gml.Web.Api.Dto.Launcher;
 using Gml.Web.Api.Dto.Messages;
 using Gml.Web.Api.Dto.Profile;
+using Gml.Web.Api.Dto.Texture;
+using Gml.Web.Api.Dto.User;
 using GmlCore.Interfaces.Enums;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -24,6 +28,7 @@ public class Tests
     private HttpClient _httpClient;
     private WebApplicationFactory<Program> _webApplicationFactory;
     private readonly string _profileName = "UnitTestProfile";
+    private readonly string _newTextureUrl = "https://test.ru";
 
     private HubConnection _profileHub;
     private HubConnection _launcherHub;
@@ -220,28 +225,16 @@ public class Tests
         var gmlClient = await TestHelper.GetFilesFolder(Path.Combine(projectPath, "Gml.Client"));
         var notificationLib = await TestHelper.GetFilesFolder(Path.Combine(projectPath, "GamerVII.Notification.Avalonia"));
 
+        // Скачивание Gml.Client
+        var downloadGmlClient = await TestHelper.DownloadGithubProject(projectPath, "Gml-Launcher", "Gml.Client", newVersion);
+        // Скачивание GamerVII.Notification.Avalonia
+        var downloadNotificationLib = await TestHelper.DownloadGithubProject(projectPath, "GamerVII-NET",
+            "GamerVII.Notification.Avalonia", "master", false);
+
         Assert.Multiple(() =>
         {
-            // Скачивание Gml.Client
-            if (gmlClient.Length <= 0)
-            {
-
-                Assert.That(TestHelper.DownloadGithubProject(projectPath, "Gml-Launcher", "Gml.Client", newVersion), Is.Not.Null);
-            }
-            else
-            {
-                Assert.Pass("Gml.Client is already downloaded");
-            }
-
-            // Скачивание GamerVII.Notification.Avalonia
-            if (notificationLib.Length <= 0)
-            {
-                Assert.That(TestHelper.DownloadGithubProject(projectPath, "GamerVII-NET", "GamerVII.Notification.Avalonia", "master", false), Is.Not.Null);
-            }
-            else
-            {
-                Assert.Pass("GamerVII.Notification.Avalonia is already downloaded");
-            }
+            Assert.That(downloadNotificationLib, Is.Not.Null);
+            Assert.That(downloadGmlClient, Is.Not.Null);
         });
     }
 
@@ -301,6 +294,87 @@ public class Tests
         var response = await _httpClient.PostAsync("/api/v1/launcher/upload", launcherUpdate);
 
         var content = await response.Content.ReadAsStringAsync();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(content, Is.Not.Null);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+        });
+    }
+
+    [Test]
+    [Order(9)]
+    public async Task UpdateAuthMethodTest()
+    {
+        var httpContent = TestHelper.CreateJsonObject(new
+        {
+            AuthType = 2,
+            Endpoint = "http://recloud.tech/auth.php"
+        });
+
+        var response = await _httpClient.PutAsync("/api/v1/integrations/auth", httpContent);
+
+        var content = await response.Content.ReadAsStringAsync();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(content, Is.Not.Null);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+        });
+    }
+
+    [Test]
+    [Order(10)]
+    public async Task UpdateSkinsUrl()
+    {
+        var httpContent = TestHelper.CreateJsonObject(new UrlServiceDto(_newTextureUrl));
+
+        var response = await _httpClient.PutAsync("/api/v1/integrations/texture/skins", httpContent);
+        var content = await response.Content.ReadAsStringAsync();
+
+        var model = JsonConvert.DeserializeObject<ResponseMessage<UrlServiceDto>>(content);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(model, Is.Not.Null);
+            Assert.IsTrue(response.IsSuccessStatusCode);
+        });
+    }
+
+    [Test]
+    [Order(11)]
+    public async Task UpdateCloaksUrl()
+    {
+        var httpContent = TestHelper.CreateJsonObject(new UrlServiceDto(_newTextureUrl));
+
+        var response = await _httpClient.PutAsync("/api/v1/integrations/texture/cloaks", httpContent);
+        var content = await response.Content.ReadAsStringAsync();
+
+        var model = JsonConvert.DeserializeObject<ResponseMessage<UrlServiceDto>>(content);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(model, Is.Not.Null);
+            Assert.That(response.IsSuccessStatusCode, Is.True);
+        });
+    }
+
+    [Test]
+    [Order(12)]
+    public async Task AuthForLauncherTest()
+    {
+        var model = JsonConvert.SerializeObject(new BaseUserPassword
+        {
+            Login = "test",
+            Password = "test"
+        });
+
+        var data = new StringContent(model, Encoding.UTF8, "application/json");
+
+        _httpClient.DefaultRequestHeaders.Add("X-HWID", "hwid");
+        var response = await _httpClient.PostAsync("/api/v1/integrations/auth/signin", data);
+
+        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
         Assert.Multiple(() =>
         {
