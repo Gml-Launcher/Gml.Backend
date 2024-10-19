@@ -371,7 +371,9 @@ public class Tests
 
         var data = new StringContent(model, Encoding.UTF8, "application/json");
 
-        _httpClient.DefaultRequestHeaders.Add("X-HWID", "hwid");
+        _httpClient.DefaultRequestHeaders.Add("X-HWID", "NOT_FOUND_NOT_SUPPORTED");
+        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
+            $"Gml.Launcher-Client-GmlClientManager/1.0 (OS: {Environment.OSVersion};)");
         var response = await _httpClient.PostAsync("/api/v1/integrations/auth/signin", data);
 
         var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
