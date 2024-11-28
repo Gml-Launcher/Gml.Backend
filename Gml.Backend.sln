@@ -28,7 +28,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{56
 		src\Gml.Web.Client\Dockerfile = src\Gml.Web.Client\Dockerfile
 		src\Gml.Web.Client\.gitignore = src\Gml.Web.Client\.gitignore
 		src\Gml.Web.Client\.env = src\Gml.Web.Client\.env
-		src\Gml.Web.Client\.env.template = src\Gml.Web.Client\.env.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{C8F55A92-E612-4AAE-9586-8E33D170A266}"
@@ -40,7 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{C8F5
 		.env = .env
 		.env.example = .env.example
 		docker-compose-prod.yml = docker-compose-prod.yml
-		src\Gml.Web.Skin.Service\Dockerfile = src\Gml.Web.Skin.Service\Dockerfile
 		src\Gml.Web.Api\.github\workflows\docker-package-publish.yml = src\Gml.Web.Api\.github\workflows\docker-package-publish.yml
 	EndProjectSection
 EndProject
@@ -73,6 +71,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modrinth.Api", "src\Gml.Web.Api\src\Gml.Core\src\Modrinth.Api\src\Modrinth.Api\Modrinth.Api.csproj", "{1810C95B-E7A2-4C34-A091-522EE3E75C25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modrinth.Api.Domains", "src\Gml.Web.Api\src\Gml.Core\src\Modrinth.Api\src\Modrinth.Api.Domains\Modrinth.Api.Domains.csproj", "{3E7FC536-9C83-40C8-95AA-D221930756FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Backend.Tests", "tests\Gml.Backend.Tests\Gml.Backend.Tests.csproj", "{13D5F0F1-77B7-4415-BE69-2C1109E96348}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,6 +148,10 @@ Global
 		{3E7FC536-9C83-40C8-95AA-D221930756FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E7FC536-9C83-40C8-95AA-D221930756FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E7FC536-9C83-40C8-95AA-D221930756FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13D5F0F1-77B7-4415-BE69-2C1109E96348}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13D5F0F1-77B7-4415-BE69-2C1109E96348}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13D5F0F1-77B7-4415-BE69-2C1109E96348}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13D5F0F1-77B7-4415-BE69-2C1109E96348}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -174,5 +178,6 @@ Global
 		{E926A1D4-3232-4000-8889-C0990EB3C61A} = {E2ED9D08-3137-4328-8544-CE413F2B73B8}
 		{1810C95B-E7A2-4C34-A091-522EE3E75C25} = {E2ED9D08-3137-4328-8544-CE413F2B73B8}
 		{3E7FC536-9C83-40C8-95AA-D221930756FB} = {E2ED9D08-3137-4328-8544-CE413F2B73B8}
+		{13D5F0F1-77B7-4415-BE69-2C1109E96348} = {AA158165-09EE-4338-9FC8-9F172E47F62D}
 	EndGlobalSection
 EndGlobal
