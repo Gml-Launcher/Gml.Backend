@@ -39,7 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{C8F5
 		.env = .env
 		.env.example = .env.example
 		docker-compose-prod.yml = docker-compose-prod.yml
-		src\Gml.Web.Skin.Service\Dockerfile = src\Gml.Web.Skin.Service\Dockerfile
 		src\Gml.Web.Api\.github\workflows\docker-package-publish.yml = src\Gml.Web.Api\.github\workflows\docker-package-publish.yml
 	EndProjectSection
 EndProject
