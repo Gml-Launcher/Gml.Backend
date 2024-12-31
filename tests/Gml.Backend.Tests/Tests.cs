@@ -242,36 +242,36 @@ public class Tests
     [Order(7)]
     public async Task BuildLauncherTest()
     {
-        // if (_launcherHub.State != HubConnectionState.Connected)
-        //     await _launcherHub.StartAsync();
-        //
-        // var response = await _httpClient.GetAsync("api/v1/integrations/github/launcher/versions");
-        //
-        // if (response.StatusCode != HttpStatusCode.OK)
-        //     Assert.Fail();
-        //
-        // var versions = JsonConvert.DeserializeObject<ResponseMessage<List<LauncherVersionReadDto>>>(await response.Content.ReadAsStringAsync());
-        //
-        // var messageReceived = new TaskCompletionSource<string>();
-        //
-        // await _launcherHub.SendCoreAsync("Compile", [versions.Data[0].Version, new [] { "win-x64" }]);
-        //
-        // _launcherHub.On("LauncherBuildEnded", () =>
-        // {
-        //     messageReceived.SetResult("Compile Launcher Success.");
-        // });
-        //
-        // _launcherHub.On<string>("Log", (message) =>
-        // {
-        //     Debug.WriteLine(message);
-        // });
-        //
-        // var message = await messageReceived.Task;
-        //
-        // Assert.Multiple(() =>
-        // {
-        //     Assert.That(message, Is.Not.Null);
-        // });
+        if (_launcherHub.State != HubConnectionState.Connected)
+            await _launcherHub.StartAsync();
+
+        var response = await _httpClient.GetAsync("api/v1/integrations/github/launcher/versions");
+
+        if (response.StatusCode != HttpStatusCode.OK)
+            Assert.Fail();
+
+        var versions = JsonConvert.DeserializeObject<ResponseMessage<List<LauncherVersionReadDto>>>(await response.Content.ReadAsStringAsync());
+
+        var messageReceived = new TaskCompletionSource<string>();
+
+        await _launcherHub.SendCoreAsync("Compile", [versions.Data[0].Version, new [] { "win-x64" }]);
+
+        _launcherHub.On("LauncherBuildEnded", () =>
+        {
+            messageReceived.SetResult("Compile Launcher Success.");
+        });
+
+        _launcherHub.On<string>("Log", (message) =>
+        {
+            Debug.WriteLine(message);
+        });
+
+        var message = await messageReceived.Task;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(message, Is.Not.Null);
+        });
     }
 
     [Test]
