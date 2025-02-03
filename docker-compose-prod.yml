@@ -19,6 +19,7 @@ services:
       - PROJECT_POLICYNAME=${PROJECT_POLICYNAME}
       - PROJECT_PATH=${PROJECT_PATH}
       - SERVICE_TEXTURE_ENDPOINT=${SERVICE_TEXTURE_ENDPOINT}
+      - TZ=Europe/Moscow
     user: "${UID}:${GID}"
     networks:
       - gml-network
@@ -34,6 +35,8 @@ services:
       - ${PORT_GML_FRONTEND}:8081
     networks:
       - gml-network
+    environment:
+      - TZ=Europe/Moscow
 
   gml-web-skins:
     image: ghcr.io/gml-launcher/gml.web.skin.service:master
@@ -46,6 +49,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8085;
+      - TZ=Europe/Moscow
     user: "${UID}:${GID}"
     volumes:
       - ./data/TextureService:/app/Storage
