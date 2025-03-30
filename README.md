@@ -20,7 +20,9 @@ This product suite encompasses three integral services:
 Together, these services offer a robust foundation for managing Minecraft game profiles with mods.
 
 # Documentation
+[Official Website](https://gml.recloud.tech)
+
 [Official documentation](https://wiki.recloud.tech)
 
-[Official wiki mirror](https://gml-launcher.github.io/Gml.Docs/home.html)
+[Wiki mirror](https://gml-launcher.github.io/Gml.Docs/home.html)
 
