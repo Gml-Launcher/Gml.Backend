@@ -99,6 +99,7 @@ public class Tests
     {
         var profile = new MultipartFormDataContent();
         profile.Add(new StringContent(_profileName), "Name");
+        profile.Add(new StringContent(_profileName), "DisplayName");
         profile.Add(new StringContent(Address.StreetAddress()), "Description");
         profile.Add(new StringContent("1.7.10"), "Version");
         profile.Add(new StringContent(((int)GameLoader.Forge).ToString()), "GameLoader");
