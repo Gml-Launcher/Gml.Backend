@@ -13,7 +13,7 @@ Together, these services offer a robust foundation for managing Minecraft game p
 ## Documentation
 - [Official Website](https://gml.recloud.tech)
 - [Official Documentation](https://wiki.recloud.tech)
-- [Wiki Mirror](ttps://gml-launcher.github.io/Gml.Docs)
+- [Wiki Mirror](https://gml-launcher.github.io/Gml.Docs)
 
 ## Installation Instructions
 
