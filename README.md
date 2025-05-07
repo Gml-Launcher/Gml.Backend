@@ -11,9 +11,9 @@ Gml.Backend is a comprehensive project designed to facilitate rapid deployment o
 Together, these services offer a robust foundation for managing Minecraft game profiles with mods.
 
 ## Documentation
-- [Official Website](https://gml-launcher.github.io)
-- [Official Documentation](https://gml-launcher.github.io/Gml.Docs)
-- [Wiki Mirror](#)
+- [Official Website](https://gml.recloud.tech)
+- [Official Documentation](https://wiki.recloud.tech)
+- [Wiki Mirror](ttps://gml-launcher.github.io/Gml.Docs)
 
 ## Installation Instructions
 
