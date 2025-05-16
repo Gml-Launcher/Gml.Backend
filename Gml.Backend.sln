@@ -82,6 +82,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{079E0363-D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gml.Core", "Gml.Core", "{065BF79A-E3D4-48E2-9675-02C1A3974182}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modrinth", "modrinth", "{71792E05-B97A-4861-87D4-2B176A004FA3}"
+	ProjectSection(SolutionItems) = preProject
+		src\Gml.Web.Api\src\Gml.Core\src\Modrinth.Api\README.md = src\Gml.Web.Api\src\Gml.Core\src\Modrinth.Api\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -189,5 +194,6 @@ Global
 		{13D5F0F1-77B7-4415-BE69-2C1109E96348} = {AA158165-09EE-4338-9FC8-9F172E47F62D}
 		{079E0363-DE4D-43DD-86BB-99D921E6D2EE} = {C8F55A92-E612-4AAE-9586-8E33D170A266}
 		{065BF79A-E3D4-48E2-9675-02C1A3974182} = {079E0363-DE4D-43DD-86BB-99D921E6D2EE}
+		{71792E05-B97A-4861-87D4-2B176A004FA3} = {079E0363-DE4D-43DD-86BB-99D921E6D2EE}
 	EndGlobalSection
 EndGlobal
