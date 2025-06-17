@@ -18,7 +18,7 @@ COPY ["src/Gml.Web.Api/src/Gml.Core/src/Modrinth.Api/src/Modrinth.Api/Modrinth.A
 COPY ["src/Gml.Web.Api/src/Gml.Core/src/Pingo/Pingo/Pingo.csproj", "src/Gml.Web.Api/src/Gml.Core/src/Pingo/Pingo/"]
 COPY ["src/Gml.Web.Api/src/Gml.Web.Api.Domains/Gml.Web.Api.Domains.csproj", "src/Gml.Web.Api/src/Gml.Web.Api.Domains/"]
 COPY ["src/Gml.Web.Api/src/Gml.Web.Api.Dto/Gml.Web.Api.Dto.csproj", "src/Gml.Web.Api/src/Gml.Web.Api.Dto/"]
-COPY ["src/Gml.Web.Api/src/Gml.Web.Api.EndpointSDK/Gml.Web.Api.EndpointSDK.csproj", "src/Gml.Web.Api/src/Gml.Web.Api.EndpointSDK/"]
+COPY ["src/Gml.Web.Api/src/plugins/Gml.Web.Api.EndpointSDK/Gml.Web.Api.EndpointSDK.csproj", "src/plugins/Gml.Web.Api/src/Gml.Web.Api.EndpointSDK/"]
 RUN dotnet restore "src/Gml.Web.Api/src/Gml.Web.Api/Gml.Web.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Gml.Web.Api/src/Gml.Web.Api"
