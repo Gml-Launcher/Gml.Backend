@@ -1,0 +1,32 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Gml+Skins" type="com.intellij.execution.configurations.multilaunch" factoryName="MultiLaunchConfiguration">
+    <rows>
+      <ExecutableRowSnapshot>
+        <option name="condition">
+          <ConditionSnapshot>
+            <option name="type" value="immediately" />
+          </ConditionSnapshot>
+        </option>
+        <option name="executable">
+          <ExecutableSnapshot>
+            <option name="id" value="runConfig:.NET Launch Settings Profile.Gml.Web.Api: https" />
+          </ExecutableSnapshot>
+        </option>
+      </ExecutableRowSnapshot>
+      <ExecutableRowSnapshot>
+        <option name="condition">
+          <ConditionSnapshot>
+            <option name="type" value="immediately" />
+          </ConditionSnapshot>
+        </option>
+        <option name="disableDebugging" value="true" />
+        <option name="executable">
+          <ExecutableSnapshot>
+            <option name="id" value="runConfig:.NET Launch Settings Profile.Gml.Web.Skin.Service: http" />
+          </ExecutableSnapshot>
+        </option>
+      </ExecutableRowSnapshot>
+    </rows>
+    <method v="2" />
+  </configuration>
+</component>
