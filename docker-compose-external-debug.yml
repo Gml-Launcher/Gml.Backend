@@ -3,11 +3,12 @@
 services:
 
   gml-web-api:
-    image: ghcr.io/gml-launcher/gml.web.api:master
+    image: gml-web-api-image
     container_name: gml-web-api
     restart: always
-    volumes:
-      - ./data/GmlBackend:/root/${PROJECT_NAME}
+    build:
+      context: src/Gml.Web.Api
+      dockerfile: Dockerfile
     ports:
       - "${PORT_GML_BACKEND}:8082"
     environment:
@@ -30,7 +31,7 @@ services:
     container_name: gml-frontend
     restart: always
     build:
-      context: frontend/Gml.Web.Client
+      context: src/Gml.Web.Client
       dockerfile: Dockerfile
     ports:
       - ${PORT_GML_FRONTEND}:8081
@@ -40,11 +41,14 @@ services:
       - TZ=Europe/Moscow
 
   gml-web-skins:
-    image: ghcr.io/gml-launcher/gml.web.skin.service:master
+    image: gml-web-skins-image
     container_name: gml-web-skins
     restart: always
+    build:
+      context: src/Gml.Web.Skin.Service
+      dockerfile: Dockerfile
     ports:
-      - "${PORT_GML_SKINS}:8085"
+      - ${PORT_GML_SKINS}:8085
     networks:
       - gml-network
     environment:
@@ -52,8 +56,6 @@ services:
       - ASPNETCORE_URLS=http://+:8085;
       - TZ=Europe/Moscow
     user: "${UID}:${GID}"
-    volumes:
-      - ./data/TextureService:/app/Storage
 
 networks:
   gml-network:

@@ -38,6 +38,7 @@ public class Tests
     {
         Environment.SetEnvironmentVariable("SECURITY_KEY", "jkuhbsfgvuk4gfikhn8i7wa34rkbqw23");
         Environment.SetEnvironmentVariable("PROJECT_NAME", "GmlServer");
+        Environment.SetEnvironmentVariable("MARKET_ENDPOINT", "https://gml-market.recloud.tech");
         Environment.SetEnvironmentVariable("PROJECT_DESCRIPTION", "GmlServer Description");
         Environment.SetEnvironmentVariable("PROJECT_POLICYNAME", "GmlPolicy");
         Environment.SetEnvironmentVariable("PROJECT_PATH", "");
