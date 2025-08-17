@@ -32,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{56
 		src\Gml.Web.Client\.gitignore = src\Gml.Web.Client\.gitignore
 		src\Gml.Web.Client\.env = src\Gml.Web.Client\.env
 		src\Gml.Web.Client\.env.example = src\Gml.Web.Client\.env.example
+		src\Gml.Web.Client\package.json = src\Gml.Web.Client\package.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{C8F55A92-E612-4AAE-9586-8E33D170A266}"
@@ -46,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{C8F5
 		src\Gml.Web.Api\.github\workflows\docker-package-publish.yml = src\Gml.Web.Api\.github\workflows\docker-package-publish.yml
 		Dockerfile = Dockerfile
 		src\Gml.Web.Api\.gitignore = src\Gml.Web.Api\.gitignore
+		docker-compose-external-debug.yml = docker-compose-external-debug.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Skin.Service", "src\Gml.Web.Skin.Service\src\Gml.Web.Skin.Service\Gml.Web.Skin.Service.csproj", "{0ABC8234-6062-4EEE-81E4-D8051C14C4E6}"

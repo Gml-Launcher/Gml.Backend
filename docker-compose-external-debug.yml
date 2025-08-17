@@ -1,0 +1,62 @@
+﻿name: gml-core
+
+services:
+
+  gml-web-api:
+    image: gml-web-api-image
+    container_name: gml-web-api
+    restart: always
+    build:
+      context: src/Gml.Web.Api
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT_GML_BACKEND}:8082"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8082;
+      - SECURITY_KEY=${SECURITY_KEY}
+      - PROJECT_NAME=${PROJECT_NAME}
+      - MARKET_ENDPOINT=${MARKET_ENDPOINT}
+      - PROJECT_DESCRIPTION=${PROJECT_DESCRIPTION}
+      - PROJECT_POLICYNAME=${PROJECT_POLICYNAME}
+      - PROJECT_PATH=${PROJECT_PATH}
+      - SERVICE_TEXTURE_ENDPOINT=${SERVICE_TEXTURE_ENDPOINT}
+      - TZ=Europe/Moscow
+    user: "${UID}:${GID}"
+    networks:
+      - gml-network
+
+  gml-web-frontend:
+    image: gml-web-frontend-image
+    container_name: gml-frontend
+    restart: always
+    build:
+      context: src/Gml.Web.Client
+      dockerfile: Dockerfile
+    ports:
+      - ${PORT_GML_FRONTEND}:8081
+    networks:
+      - gml-network
+    environment:
+      - TZ=Europe/Moscow
+
+  gml-web-skins:
+    image: gml-web-skins-image
+    container_name: gml-web-skins
+    restart: always
+    build:
+      context: src/Gml.Web.Skin.Service
+      dockerfile: Dockerfile
+    ports:
+      - ${PORT_GML_SKINS}:8085
+    networks:
+      - gml-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8085;
+      - TZ=Europe/Moscow
+    user: "${UID}:${GID}"
+
+networks:
+  gml-network:
+    attachable: true
