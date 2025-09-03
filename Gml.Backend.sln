@@ -95,6 +95,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.OAuth2", "src\G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.ModrinthPack", "src\Gml.Web.Api\src\plugins\commercial\Gml.Web.Api.ModrinthPack\Gml.Web.Api.ModrinthPack.csproj", "{7EF4C98F-37EB-4B11-84B5-AA77CF2527D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.FriendSystem", "src\Gml.Web.Api\src\plugins\commercial\Gml.Web.Api.FriendSystem\Gml.Web.Api.FriendSystem.csproj", "{48CC6656-5CFD-4763-9D7B-ADEA421AA63B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,6 +183,10 @@ Global
 		{7EF4C98F-37EB-4B11-84B5-AA77CF2527D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EF4C98F-37EB-4B11-84B5-AA77CF2527D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EF4C98F-37EB-4B11-84B5-AA77CF2527D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48CC6656-5CFD-4763-9D7B-ADEA421AA63B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48CC6656-5CFD-4763-9D7B-ADEA421AA63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48CC6656-5CFD-4763-9D7B-ADEA421AA63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48CC6656-5CFD-4763-9D7B-ADEA421AA63B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -213,5 +219,6 @@ Global
 		{3F58FC4F-5ED3-4B63-8657-B2DB76711F0F} = {D88B8B9C-307C-4A15-BCED-6AF8CD79B688}
 		{9B3A8084-4E03-4EF0-93F8-4F366ED80766} = {3A539442-8520-4AC1-9AF6-26FC960C2E9C}
 		{7EF4C98F-37EB-4B11-84B5-AA77CF2527D3} = {3A539442-8520-4AC1-9AF6-26FC960C2E9C}
+		{48CC6656-5CFD-4763-9D7B-ADEA421AA63B} = {3A539442-8520-4AC1-9AF6-26FC960C2E9C}
 	EndGlobalSection
 EndGlobal
