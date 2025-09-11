@@ -74,6 +74,7 @@ Create or edit the `.env` file in the `src/Gml.Web.Client/` directory:
 ```plaintext
 # Web API address
 NEXT_PUBLIC_BACKEND_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_MARKETPLACE_URL=https://gml-market.recloud.tech
 ```
 
 ### Step 5: Launch the Project with Docker
