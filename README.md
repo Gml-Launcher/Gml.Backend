@@ -65,6 +65,7 @@ PORT_GML_SKINS=5006
 
 # Microservices
 SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085
+MARKET_ENDPOINT=https://gml-market.recloud.tech
 ```
 
 ### Step 4: Configure the Client `.env` File
