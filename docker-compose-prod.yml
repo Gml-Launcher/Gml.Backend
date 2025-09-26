@@ -3,13 +3,13 @@
 services:
 
   gml-web-api:
-    image: ghcr.io/gml-launcher/gml.web.api:master
+    image: ghcr.io/gml-launcher/gml.web.api:develop
     container_name: gml-web-api
     restart: always
     volumes:
       - ./data/GmlBackend:/root/${PROJECT_NAME}
     ports:
-      - "${PORT_GML_BACKEND}:8082"
+      - ":8082"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8082;
@@ -25,15 +25,25 @@ services:
     networks:
       - gml-network
 
-  gml-web-frontend:
-    image: gml-web-frontend-image
-    container_name: gml-frontend
+  gml-web-proxy:
+    image: ghcr.io/gml-launcher/gml.web.proxy:master
+    container_name: gml-web-proxy
     restart: always
-    build:
-      context: frontend/Gml.Web.Client
-      dockerfile: Dockerfile
     ports:
-      - ${PORT_GML_FRONTEND}:8081
+      - "${PORT_GML_FRONTEND}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080;
+    user: "${UID}:${GID}"
+    networks:
+      - gml-network
+
+  gml-web-frontend:
+    image: ghcr.io/gml-launcher/gml.web.client:develop
+    container_name: gml-web-frontend
+    restart: always
+    ports:
+      - ":8081"
     networks:
       - gml-network
     environment:
@@ -44,7 +54,7 @@ services:
     container_name: gml-web-skins
     restart: always
     ports:
-      - "${PORT_GML_SKINS}:8085"
+      - ":8085"
     networks:
       - gml-network
     environment:
