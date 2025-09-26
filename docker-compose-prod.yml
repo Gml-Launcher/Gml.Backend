@@ -3,7 +3,7 @@
 services:
 
   gml-web-api:
-    image: ghcr.io/gml-launcher/gml.web.api:develop
+    image: ghcr.io/gml-launcher/gml.web.api:master
     container_name: gml-web-api
     restart: always
     volumes:
@@ -39,7 +39,7 @@ services:
       - gml-network
 
   gml-web-frontend:
-    image: ghcr.io/gml-launcher/gml.web.client:develop
+    image: ghcr.io/gml-launcher/gml.web.client:master
     container_name: gml-web-frontend
     restart: always
     ports:
