@@ -9,7 +9,19 @@
         </option>
         <option name="executable">
           <ExecutableSnapshot>
-            <option name="id" value="runConfig:.NET Launch Settings Profile.Gml.Web.Api: https" />
+            <option name="id" value="runConfig:.NET Launch Settings Profile.Gml.Web.Api: http" />
+          </ExecutableSnapshot>
+        </option>
+      </ExecutableRowSnapshot>
+      <ExecutableRowSnapshot>
+        <option name="condition">
+          <ConditionSnapshot>
+            <option name="type" value="immediately" />
+          </ConditionSnapshot>
+        </option>
+        <option name="executable">
+          <ExecutableSnapshot>
+            <option name="id" value="runConfig:.NET Launch Settings Profile.Gml.Web.Proxy: https" />
           </ExecutableSnapshot>
         </option>
       </ExecutableRowSnapshot>
@@ -23,18 +35,6 @@
         <option name="executable">
           <ExecutableSnapshot>
             <option name="id" value="runConfig:.NET Launch Settings Profile.Gml.Web.Skin.Service: http" />
-          </ExecutableSnapshot>
-        </option>
-      </ExecutableRowSnapshot>
-      <ExecutableRowSnapshot>
-        <option name="condition">
-          <ConditionSnapshot>
-            <option name="type" value="immediately" />
-          </ConditionSnapshot>
-        </option>
-        <option name="executable">
-          <ExecutableSnapshot>
-            <option name="id" value="runConfig:.NET Launch Settings Profile.Gml.Web.Proxy: https" />
           </ExecutableSnapshot>
         </option>
       </ExecutableRowSnapshot>
