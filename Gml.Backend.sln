@@ -98,6 +98,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.ModrinthPack", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Api.FriendSystem", "src\Gml.Web.Api\src\plugins\commercial\Gml.Web.Api.FriendSystem\Gml.Web.Api.FriendSystem.csproj", "{48CC6656-5CFD-4763-9D7B-ADEA421AA63B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Web.Proxy", "src\Gml.Web.Proxy\src\Gml.Web.Proxy\Gml.Web.Proxy.csproj", "{9A414B25-CCB8-4E2D-BEBA-B57C82266950}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -188,6 +190,10 @@ Global
 		{48CC6656-5CFD-4763-9D7B-ADEA421AA63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48CC6656-5CFD-4763-9D7B-ADEA421AA63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48CC6656-5CFD-4763-9D7B-ADEA421AA63B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A414B25-CCB8-4E2D-BEBA-B57C82266950}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A414B25-CCB8-4E2D-BEBA-B57C82266950}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A414B25-CCB8-4E2D-BEBA-B57C82266950}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A414B25-CCB8-4E2D-BEBA-B57C82266950}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -221,5 +227,6 @@ Global
 		{9B3A8084-4E03-4EF0-93F8-4F366ED80766} = {3A539442-8520-4AC1-9AF6-26FC960C2E9C}
 		{7EF4C98F-37EB-4B11-84B5-AA77CF2527D3} = {3A539442-8520-4AC1-9AF6-26FC960C2E9C}
 		{48CC6656-5CFD-4763-9D7B-ADEA421AA63B} = {3A539442-8520-4AC1-9AF6-26FC960C2E9C}
+		{9A414B25-CCB8-4E2D-BEBA-B57C82266950} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 	EndGlobalSection
 EndGlobal
