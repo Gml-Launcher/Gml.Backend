@@ -19,6 +19,7 @@
             <option name="type" value="immediately" />
           </ConditionSnapshot>
         </option>
+        <option name="disableDebugging" value="true" />
         <option name="executable">
           <ExecutableSnapshot>
             <option name="id" value="runConfig:.NET Launch Settings Profile.Gml.Web.Proxy: https" />
