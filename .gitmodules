@@ -16,3 +16,6 @@
 [submodule "src/Gml.Web.Skin.Service"]
 	path = src/Gml.Web.Skin.Service
 	url = https://github.com/Gml-Launcher/Gml.Web.Skin.Service.git
+[submodule "src/Gml.Web.Proxy"]
+	path = src/Gml.Web.Proxy
+	url = git@github.com:Gml-Launcher/Gml.Web.Proxy.git

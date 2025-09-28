@@ -9,6 +9,8 @@ services:
     build:
       context: src/Gml.Web.Api
       dockerfile: Dockerfile
+    volumes:
+      - ./data/GmlBackend:/root/${PROJECT_NAME}
     ports:
       - "${PORT_GML_BACKEND}:8082"
     environment:
@@ -21,6 +23,23 @@ services:
       - PROJECT_POLICYNAME=${PROJECT_POLICYNAME}
       - PROJECT_PATH=${PROJECT_PATH}
       - SERVICE_TEXTURE_ENDPOINT=${SERVICE_TEXTURE_ENDPOINT}
+      - TZ=Europe/Moscow
+    user: "${UID}:${GID}"
+    networks:
+      - gml-network
+
+  gml-web-proxy:
+    image: gml-web-proxy-image
+    container_name: gml-web-proxy
+    restart: always
+    build:
+      context: src/Gml.Web.Proxy.
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT_GML_FRONTEND}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080;
       - TZ=Europe/Moscow
     user: "${UID}:${GID}"
     networks:
@@ -53,9 +72,13 @@ services:
       - gml-network
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - NEXT_PUBLIC_MARKETPLACE_URL=${MARKET_ENDPOINT}
+      - NEXT_PUBLIC_BACKEND_URL=${BACKEND_ENDPOINT}
       - ASPNETCORE_URLS=http://+:8085;
       - TZ=Europe/Moscow
     user: "${UID}:${GID}"
+    volumes:
+      - ./data/TextureService:/app/Storage
 
 networks:
   gml-network:
