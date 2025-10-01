@@ -33,7 +33,7 @@ services:
     container_name: gml-web-proxy
     restart: always
     build:
-      context: src/Gml.Web.Proxy.
+      context: src/Gml.Web.Proxy
       dockerfile: Dockerfile
     ports:
       - "${PORT_GML_FRONTEND}:8080"
