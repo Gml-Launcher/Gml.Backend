@@ -65,6 +65,7 @@ PORT_GML_SKINS=5006
 
 # Microservices
 SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085
+MARKET_ENDPOINT=https://gml-market.recloud.tech
 ```
 
 ### Step 4: Configure the Client `.env` File
@@ -73,6 +74,7 @@ Create or edit the `.env` file in the `src/Gml.Web.Client/` directory:
 ```plaintext
 # Web API address
 NEXT_PUBLIC_BACKEND_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_MARKETPLACE_URL=https://gml-market.recloud.tech
 ```
 
 ### Step 5: Launch the Project with Docker
