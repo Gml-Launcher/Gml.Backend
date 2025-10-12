@@ -11,6 +11,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./data/GmlBackend:/root/${PROJECT_NAME}
+      - gml-system-data:/app/database
     ports:
       - ":8082"
     environment:
@@ -79,6 +80,9 @@ services:
     user: "${UID}:${GID}"
     volumes:
       - ./data/TextureService:/app/Storage
+
+volumes:
+  gml-system-data:
 
 networks:
   gml-network:
