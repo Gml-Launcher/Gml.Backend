@@ -31,7 +31,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Gml.Web.Api\src\Gml.Web.Api.Dto\Gml.Web.Api.Dto.csproj" />
       <ProjectReference Include="..\..\src\Gml.Web.Api\src\Gml.Web.Api\Gml.Web.Api.csproj" />
     </ItemGroup>
 
