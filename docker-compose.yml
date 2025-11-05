@@ -39,7 +39,7 @@ services:
     ports:
       - "${PORT_GML_FRONTEND}:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=DockerDevelopment
       - ASPNETCORE_URLS=http://+:8080;
       - TZ=Europe/Moscow
     user: "${UID}:${GID}"
