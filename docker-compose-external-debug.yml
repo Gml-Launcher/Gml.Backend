@@ -11,6 +11,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./data/GmlBackend:/root/${PROJECT_NAME}
+      - ./data/backups:/root/${PROJECT_NAME}/backups
+      - gml-system-data:/app/database
     ports:
       - "${PORT_GML_BACKEND}:8082"
     environment:
