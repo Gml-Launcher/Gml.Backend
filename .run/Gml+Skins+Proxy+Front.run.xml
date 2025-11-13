@@ -36,19 +36,6 @@
         <option name="disableDebugging" value="true"/>
         <option name="executable">
           <ExecutableSnapshot>
-            <option name="id" value="runConfig:.NET Launch Settings Profile.Gml.Web.Skin.Service: http"/>
-          </ExecutableSnapshot>
-        </option>
-      </ExecutableRowSnapshot>
-      <ExecutableRowSnapshot>
-        <option name="condition">
-          <ConditionSnapshot>
-            <option name="type" value="immediately"/>
-          </ConditionSnapshot>
-        </option>
-        <option name="disableDebugging" value="true"/>
-        <option name="executable">
-          <ExecutableSnapshot>
             <option name="id" value="runConfig:npm.Install"/>
           </ExecutableSnapshot>
         </option>
@@ -63,6 +50,22 @@
         <option name="executable">
           <ExecutableSnapshot>
             <option name="id" value="runConfig:npm.Frontend"/>
+          </ExecutableSnapshot>
+        </option>
+      </ExecutableRowSnapshot>
+      <ExecutableRowSnapshot>
+        <option name="condition">
+          <ConditionSnapshot>
+            <attributes>
+              <entry key="port" value="5002"/>
+            </attributes>
+            <option name="type" value="waitPortOpened"/>
+          </ConditionSnapshot>
+        </option>
+        <option name="disableDebugging" value="true"/>
+        <option name="executable">
+          <ExecutableSnapshot>
+            <option name="id" value="runConfig:.NET Launch Settings Profile.Gml.Web.Skin.Service: http"/>
           </ExecutableSnapshot>
         </option>
       </ExecutableRowSnapshot>
