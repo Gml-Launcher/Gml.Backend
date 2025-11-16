@@ -17,7 +17,7 @@ internal class GmlApiApplicationFactory : WebApplicationFactory<Program>
                 options.DefaultAuthenticateScheme = "TestScheme";
                 options.DefaultScheme = "TestScheme";
                 options.DefaultChallengeScheme = "TestScheme";
-            }).AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>("TestScheme", options => { });
+            }).AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>("TestScheme", _ => { });
         });
     }
 }
