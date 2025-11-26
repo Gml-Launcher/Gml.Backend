@@ -23,6 +23,11 @@ services:
       - SERVICE_TEXTURE_ENDPOINT=${SERVICE_TEXTURE_ENDPOINT}
       - TZ=Europe/Moscow
     user: "${UID}:${GID}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
     networks:
       - gml-network
 
@@ -36,6 +41,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080;
     user: "${UID}:${GID}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
     networks:
       - gml-network
 
@@ -47,6 +57,11 @@ services:
       - ":8081"
     networks:
       - gml-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       - TZ=Europe/Moscow
 
@@ -63,6 +78,11 @@ services:
       - ASPNETCORE_URLS=http://+:8085;
       - TZ=Europe/Moscow
     user: "${UID}:${GID}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - ./data/TextureService:/app/Storage
 
