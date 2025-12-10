@@ -89,6 +89,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Domains", "src\Gml.Web.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Dto", "src\Gml.Web.Api\src\Gml.Core\src\Gml.Dto\Gml.Dto.csproj", "{3EEF8185-5231-4C8A-B7F5-A04FB6CF7D83}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "servers", "servers", "{BD9C6DD8-C558-43D5-9960-8B7DD7979FF2}"
+	ProjectSection(SolutionItems) = preProject
+		servers\docker-compose-prod.yml = servers\docker-compose-prod.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,5 +192,6 @@ Global
 		{0ABC8234-6062-4EEE-81E4-D8051C14C4E6} = {173407F0-6602-48A5-BF49-E288C6043FE3}
 		{F5AFD6E3-7E94-4BF0-88B0-B564A36F5F43} = {D6DE80A2-7856-4C10-A518-E9CF5BC10728}
 		{3EEF8185-5231-4C8A-B7F5-A04FB6CF7D83} = {D6DE80A2-7856-4C10-A518-E9CF5BC10728}
+		{BD9C6DD8-C558-43D5-9960-8B7DD7979FF2} = {C8F55A92-E612-4AAE-9586-8E33D170A266}
 	EndGlobalSection
 EndGlobal
