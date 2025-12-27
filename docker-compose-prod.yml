@@ -8,6 +8,7 @@ services:
     restart: always
     volumes:
       - ./data/GmlBackend:/root/${PROJECT_NAME}
+      - ./data/backups:/root/${PROJECT_NAME}/backups
       - gml-system-data:/app/database
     ports:
       - ":8082"
@@ -19,6 +20,7 @@ services:
       - MARKET_ENDPOINT=${MARKET_ENDPOINT}
       - PROJECT_DESCRIPTION=${PROJECT_DESCRIPTION}
       - PROJECT_POLICYNAME=${PROJECT_POLICYNAME}
+      - SWAGGER_ENABLED=${SWAGGER_ENABLED}
       - PROJECT_PATH=${PROJECT_PATH}
       - SERVICE_TEXTURE_ENDPOINT=${SERVICE_TEXTURE_ENDPOINT}
       - TZ=Europe/Moscow

@@ -1,0 +1,23 @@
+﻿version: '3.8'
+services:
+  mc:
+    image: itzg/minecraft-server:java8
+    tty: true
+    stdin_open: true
+    network_mode: host
+    ports:
+      - "25565:25565"
+    environment:
+      # Версия ядра
+      TYPE: SPIGOT
+      # Версию сервера
+      VERSION: 1.16.5
+      EULA: "TRUE"
+      ONLINE_MODE: "FALSE"
+      ENFORCE_SECURE_PROFILE: "FALSE"
+      # Объем оперативной памяти
+      MEMORY: 4G
+      JVM_OPTS: "-javaagent:authlib-injector-1.2.5-alpha-1.jar=http://10.0.10.244:5002/api/v1/integrations/authlib/minecraft -Dauthlibinjector.debug"
+    volumes:
+      # Создаём volume для сохранения данных сервера
+      - ./data:/data

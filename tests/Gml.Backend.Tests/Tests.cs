@@ -18,19 +18,20 @@ namespace Gml.Backend.Tests;
 
 public class Tests
 {
+    private readonly string _newTextureUrl = "https://test.ru";
+    private readonly string _profileName = "UnitTestProfile";
+
+    private HttpClient _httpClient;
+    private HubConnection _launcherHub;
+
+    private HubConnection _profileHub;
+    private WebApplicationFactory<Program> _webApplicationFactory;
+
     private GmlManager GmlManager { get; } =
         new(new GmlSettings("GamerVIILauncher", "gfweagertghuysergfbsuyerbgiuyserg", httpClient: new HttpClient())
         {
             TextureServiceEndpoint = "http://gml-web-skins:8085"
         });
-
-    private HttpClient _httpClient;
-    private WebApplicationFactory<Program> _webApplicationFactory;
-    private readonly string _profileName = "UnitTestProfile";
-    private readonly string _newTextureUrl = "https://test.ru";
-
-    private HubConnection _profileHub;
-    private HubConnection _launcherHub;
 
     [SetUp]
     public void Setup()
@@ -48,17 +49,13 @@ public class Tests
         _httpClient = _webApplicationFactory.CreateClient();
 
         _profileHub = new HubConnectionBuilder()
-            .WithUrl($"{_httpClient.BaseAddress}ws/profiles/restore", options =>
-            {
-                options.HttpMessageHandlerFactory = _ => _webApplicationFactory.Server.CreateHandler();
-            })
+            .WithUrl($"{_httpClient.BaseAddress}ws/profiles/restore",
+                options => { options.HttpMessageHandlerFactory = _ => _webApplicationFactory.Server.CreateHandler(); })
             .Build();
 
         _launcherHub = new HubConnectionBuilder()
-            .WithUrl($"{_httpClient.BaseAddress}ws/launcher/build", options =>
-            {
-                options.HttpMessageHandlerFactory = _ => _webApplicationFactory.Server.CreateHandler();
-            })
+            .WithUrl($"{_httpClient.BaseAddress}ws/launcher/build",
+                options => { options.HttpMessageHandlerFactory = _ => _webApplicationFactory.Server.CreateHandler(); })
             .Build();
     }
 
@@ -66,6 +63,8 @@ public class Tests
     public async Task TearDown()
     {
         _httpClient.Dispose();
+        await _profileHub.DisposeAsync();
+        await _launcherHub.DisposeAsync();
         await _webApplicationFactory.DisposeAsync();
     }
 
@@ -159,22 +158,15 @@ public class Tests
 
         await _profileHub.SendCoreAsync("Build", [_profileName]);
 
-        _profileHub.On<string, string>("Log", (profileName, message) =>
-        {
-            Debug.WriteLine($"Profile name: {profileName}\nMessage: {message}");
-        });
+        _profileHub.On<string, string>("Log",
+            (profileName, message) => { Debug.WriteLine($"Profile name: {profileName}\nMessage: {message}"); });
 
-        _profileHub.On<string>("SuccessPacked", (profileName) =>
-        {
-            messageReceived.SetResult($"Packaging Profile Success. Profile name: {profileName}");
-        });
+        _profileHub.On<string>("SuccessPacked",
+            (profileName) => { messageReceived.SetResult($"Packaging Profile Success. Profile name: {profileName}"); });
 
         var message = await messageReceived.Task;
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(message, Is.Not.Null);
-        });
+        Assert.Multiple(() => { Assert.That(message, Is.Not.Null); });
     }
 
     [Test]
@@ -189,23 +181,19 @@ public class Tests
         if (response.StatusCode != HttpStatusCode.OK)
             Assert.Fail();
 
-        var versions = JsonConvert.DeserializeObject<ResponseMessage<List<LauncherVersionReadDto>>>(await response.Content.ReadAsStringAsync());
+        var versions =
+            JsonConvert.DeserializeObject<ResponseMessage<List<LauncherVersionReadDto>>>(
+                await response.Content.ReadAsStringAsync());
 
         var messageReceived = new TaskCompletionSource<string>();
 
         await _launcherHub.SendCoreAsync("Download", [versions.Data[0].Version, _httpClient.BaseAddress, _profileName]);
 
-        _launcherHub.On("LauncherDownloadEnded", () =>
-        {
-            messageReceived.SetResult("Download Launcher Success.");
-        });
+        _launcherHub.On("LauncherDownloadEnded", () => { messageReceived.SetResult("Download Launcher Success."); });
 
         var message = await messageReceived.Task;
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(message, Is.Not.Null);
-        });
+        Assert.Multiple(() => { Assert.That(message, Is.Not.Null); });
     }
 
     [Test]
@@ -251,28 +239,21 @@ public class Tests
         if (response.StatusCode != HttpStatusCode.OK)
             Assert.Fail();
 
-        var versions = JsonConvert.DeserializeObject<ResponseMessage<List<LauncherVersionReadDto>>>(await response.Content.ReadAsStringAsync());
+        var versions =
+            JsonConvert.DeserializeObject<ResponseMessage<List<LauncherVersionReadDto>>>(
+                await response.Content.ReadAsStringAsync());
 
         var messageReceived = new TaskCompletionSource<string>();
 
-        await _launcherHub.SendCoreAsync("Compile", [versions.Data[0].Version, new [] { "win-x64" }]);
+        await _launcherHub.SendCoreAsync("Compile", [versions.Data[0].Version, new[] { "win-x64" }]);
 
-        _launcherHub.On("LauncherBuildEnded", () =>
-        {
-            messageReceived.SetResult("Compile Launcher Success.");
-        });
+        _launcherHub.On("LauncherBuildEnded", () => { messageReceived.SetResult("Compile Launcher Success."); });
 
-        _launcherHub.On<string>("Log", (message) =>
-        {
-            Debug.WriteLine(message);
-        });
+        _launcherHub.On<string>("Log", (message) => { Debug.WriteLine(message); });
 
         var message = await messageReceived.Task;
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(message, Is.Not.Null);
-        });
+        Assert.Multiple(() => { Assert.That(message, Is.Not.Null); });
     }
 
     [Test]
@@ -284,7 +265,9 @@ public class Tests
         if (responseBuilds.StatusCode != HttpStatusCode.OK)
             Assert.Fail();
 
-        var launcherBuilds = JsonConvert.DeserializeObject<ResponseMessage<List<LauncherBuildReadDto>>>(await responseBuilds.Content.ReadAsStringAsync());
+        var launcherBuilds =
+            JsonConvert.DeserializeObject<ResponseMessage<List<LauncherBuildReadDto>>>(
+                await responseBuilds.Content.ReadAsStringAsync());
 
         var launcherUpdate = new MultipartFormDataContent();
         launcherUpdate.Add(new StringContent("2.1.0.0"), "Version");
@@ -338,7 +321,7 @@ public class Tests
         Assert.Multiple(() =>
         {
             Assert.That(model, Is.Not.Null);
-            Assert.IsTrue(response.IsSuccessStatusCode);
+            Assert.That(response.IsSuccessStatusCode, Is.True);
         });
     }
 
