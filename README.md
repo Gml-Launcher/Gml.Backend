@@ -6,6 +6,7 @@
 
 - Removed the YARP proxy and replaced it with Nginx.
 - Updated the installation and configuration documentation.
+- Added the installer to this repository, excluding Windows scripts.
 
 # Gml.Backend
 
@@ -28,7 +29,7 @@ Together, these services offer a robust foundation for managing Minecraft game p
 Clone the stable version of the repository using the following command:
 
 ```bash
-git clone --recursive https://github.com/GamerVII-NET/Gml.Backend.git
+git clone --recursive https://github.com/serega404/ReGml.Backend.git
 ```
 
 ### Step 2: Navigate to the Project Directory

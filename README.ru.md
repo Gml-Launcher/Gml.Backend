@@ -6,6 +6,7 @@
 
 - Удалён Yarp proxy, заменён на Nginx.
 - Обновлена документация по установке и настройке.
+- Добавил инсталлер в этот репозиторий (за исключением скриптов для Windows).
 
 # Gml.Backend
 
@@ -29,7 +30,7 @@ Gml.Backend - комплексный проект для быстрого раз
 Клонируйте стабильную версию репозитория:
 
 ```bash
-git clone --recursive https://github.com/GamerVII-NET/Gml.Backend.git
+git clone --recursive https://github.com/serega404/ReGml.Backend.git
 ```
 
 ### Шаг 2: Перейдите в директорию проекта
