@@ -1,0 +1,96 @@
+name: gml-core
+
+services:
+
+  gml-web-api:
+    image: ghcr.io/gml-launcher/gml.web.api:master
+    container_name: gml-web-api
+    restart: always
+    volumes:
+      - ./data/GmlBackend:/root/${PROJECT_NAME}
+      - ./data/backups:/root/${PROJECT_NAME}/backups
+      - gml-system-data:/app/database
+    ports:
+      - ":8082"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8082;
+      - SECURITY_KEY=${SECURITY_KEY}
+      - PROJECT_NAME=${PROJECT_NAME}
+      - MARKET_ENDPOINT=${MARKET_ENDPOINT}
+      - PROJECT_DESCRIPTION=${PROJECT_DESCRIPTION}
+      - PROJECT_POLICYNAME=${PROJECT_POLICYNAME}
+      - SWAGGER_ENABLED=${SWAGGER_ENABLED}
+      - PROJECT_PATH=${PROJECT_PATH}
+      - SERVICE_TEXTURE_ENDPOINT=${SERVICE_TEXTURE_ENDPOINT}
+      - TZ=Europe/Moscow
+    user: "${UID}:${GID}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - gml-network
+
+  gml-web-nginx:
+    image: nginx:alpine
+    container_name: gml-web-nginx
+    restart: always
+    ports:
+      - "${PORT_GML_FRONTEND}:8080"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    environment:
+      - TZ=Europe/Moscow
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - gml-network
+
+  gml-web-frontend:
+    image: ghcr.io/gml-launcher/gml.web.client:master
+    container_name: gml-web-frontend
+    restart: always
+    ports:
+      - ":8081"
+    networks:
+      - gml-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    environment:
+      - TZ=Europe/Moscow
+
+  gml-web-skins:
+    image: ghcr.io/gml-launcher/gml.web.skin.service:master
+    container_name: gml-web-skins
+    restart: always
+    ports:
+      - ":8085"
+    networks:
+      - gml-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8085;
+      - TZ=Europe/Moscow
+    user: "${UID}:${GID}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    volumes:
+      - ./data/TextureService:/app/Storage
+
+networks:
+  gml-network:
+    attachable: true
+
+volumes:
+  gml-system-data:
