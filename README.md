@@ -1,5 +1,12 @@
 ![Frame 39262](https://github.com/user-attachments/assets/4ac0a227-a246-474a-8aab-1af34b6f8497)
 
+**Switch language:** [Русский](README.ru.md)
+
+# What Changed In ReGML
+
+- Removed the YARP proxy and replaced it with Nginx.
+- Updated the installation and configuration documentation.
+
 # Gml.Backend
 
 Gml.Backend is a comprehensive project designed to facilitate rapid deployment of server infrastructure for Minecraft game profiles, including Forge, Fabric, and LiteLoader. This product suite encompasses three integral services:
@@ -11,9 +18,9 @@ Gml.Backend is a comprehensive project designed to facilitate rapid deployment o
 Together, these services offer a robust foundation for managing Minecraft game profiles with mods.
 
 ## Documentation
-- [Official Website](https://gml.recloud.tech)
-- [Official Documentation](https://wiki.recloud.tech)
-- [Wiki Mirror](https://gml-launcher.github.io/Gml.Docs)
+
+- [Official Website](https://gml-launcher.ru)
+- [Official Documentation](https://gml-launcher.ru/docs/welcome)
 
 ## Installation Instructions
 
@@ -48,23 +55,14 @@ PROJECT_DESCRIPTION=
 PROJECT_POLICYNAME=GmlServerPolicy
 PROJECT_PATH=
 
-# S3 Configuration
-S3_ENABLED=true
-MINIO_ROOT_USER=GamerVII
-MINIO_ROOT_PASSWORD=waefawegferyjerthdrthrtrdthdr
-
 # External Access Settings
-MINIO_ADDRESS=:5009
-MINIO_ADDRESS_PORT=5009
-MINIO_CONSOLE_ADDRESS=:5010
-MINIO_CONSOLE_ADDRESS_PORT=5010
 PORT_GML_BACKEND=5000
 PORT_GML_FRONTEND=5003
-PORT_GML_FILES=5005
 PORT_GML_SKINS=5006
 
 # Microservices
 SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085
+BACKEND_ENDPOINT=http://localhost:5000/api/v1
 MARKET_ENDPOINT=https://gml-market.recloud.tech
 ```
 
@@ -95,6 +93,5 @@ Docker will download the necessary images and launch the project. Once the conta
 - **Gml.Web.Skin.Service**: `http://localhost:5006` (Accessible only within the container)
 
 ## Important Notes
-- **FileBrowser** has been removed starting from version `0.1.0-rc1`. [Details](#).
-- **Minio** has been removed starting from version `1.0.3`. [Details](#).
+
 - Ensure the `.env` files are correctly configured before launching the project. Update the configurations as needed based on your requirements.
