@@ -131,13 +131,13 @@ Docker will download the necessary images and launch the project. Once the conta
 
 ## Roadmap
 
-[] Try to integrate Gml.Web.Skin.Service on the server.
-[] Try to build the frontend in static mode and run it with Nginx.
-[] Rewrite the installer as a single file with all scripts for Linux.
-[] Add alpine linux support for the installer.
-[] Add auto tests for regml-manager.
-[] Maybe add offical version of GML.Backend to installer.
-[] Add anti downgrade feature to regml-manager.
-[] Find out why the volume is needed.
-[] Add tested versions and linux distributions to the installer.
-[] Add auto version check to regml-manager.
+[ ] Try to integrate Gml.Web.Skin.Service on the server.
+[ ] Try to build the frontend in static mode and run it with Nginx.
+[x] Rewrite the installer as a single file with all scripts for Linux.
+[ ] Add alpine linux support for the installer.
+[x] Add auto tests for regml-manager.
+[ ] Maybe add offical version of GML.Backend to installer.
+[ ] Find out why the volume is needed.
+[ ] Add tested versions and linux distributions to the installer.
+[ ] Add auto last version check to regml-manager.
+[ ] Try add another distros for regml manager tests
