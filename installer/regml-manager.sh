@@ -7,6 +7,7 @@ COMPOSE_URL="https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/head
 ACTION=""
 BASE_DIR=""
 VERSION=""
+PROMPT_ANSWER=""
 
 # Print command-line usage for both scripted and interactive workflows.
 print_usage() {
@@ -88,34 +89,42 @@ parse_args() {
     done
 }
 
-# Read a value from stdin while keeping a safe default for empty input.
+# Read an answer from the terminal even when the script body is piped through stdin.
+read_prompt_answer() {
+    PROMPT_ANSWER=""
+
+    if [ -e /dev/tty ] && { IFS= read -r PROMPT_ANSWER < /dev/tty; } 2>/dev/null; then
+        return 0
+    fi
+
+    if [ -t 0 ]; then
+        IFS= read -r PROMPT_ANSWER || PROMPT_ANSWER=""
+    fi
+}
+
+# Read a value while keeping a safe default for empty input.
 prompt_with_default() {
     prompt="$1"
     default="$2"
-    answer=""
 
     printf "%s [%s]: " "$prompt" "$default" >&2
-    IFS= read -r answer || answer=""
+    read_prompt_answer
 
-    if [ -z "$answer" ]; then
-        answer="$default"
+    if [ -z "$PROMPT_ANSWER" ]; then
+        PROMPT_ANSWER="$default"
     fi
-
-    printf "%s\n" "$answer"
 }
 
 # Interactive action selector used when the script is launched without a command.
 prompt_action() {
-    choice=""
-
     echo "Select action:" >&2
     echo "  1) install" >&2
     echo "  2) update" >&2
     echo "  3) delete" >&2
     printf "Action [1]: " >&2
-    IFS= read -r choice || choice=""
+    read_prompt_answer
 
-    case "${choice:-1}" in
+    case "${PROMPT_ANSWER:-1}" in
         1|install)
             ACTION="install"
             ;;
@@ -126,7 +135,7 @@ prompt_action() {
             ACTION="delete"
             ;;
         *)
-            error "Unknown action: $choice"
+            error "Unknown action: $PROMPT_ANSWER"
             ;;
     esac
 }
@@ -150,14 +159,16 @@ resolve_inputs() {
     fi
 
     if [ -z "$BASE_DIR" ]; then
-        BASE_DIR=$(prompt_with_default "Installation directory" "$DEFAULT_BASE_DIR")
+        prompt_with_default "Installation directory" "$DEFAULT_BASE_DIR"
+        BASE_DIR="$PROMPT_ANSWER"
     fi
 
     case "$ACTION" in
         install|update)
             if [ -z "$VERSION" ]; then
                 current_version=$(get_env_value "$BASE_DIR/.env" "GML_VERSION")
-                VERSION=$(prompt_with_default "Gml version" "${current_version:-$DEFAULT_VERSION}")
+                prompt_with_default "Gml version" "${current_version:-$DEFAULT_VERSION}"
+                VERSION="$PROMPT_ANSWER"
             fi
             ;;
         delete)
@@ -207,7 +218,7 @@ show_spinner() {
 run_step() {
     text="$1"
     shift
-    log_file=$(mktemp "${TMPDIR:-/tmp}/gml-manager.XXXXXX") || exit 1
+    log_file=$(mktemp "${TMPDIR:-/tmp}/regml-manager.XXXXXX") || exit 1
 
     (
         "$@"
@@ -295,6 +306,19 @@ install_docker() {
 # Create the selected installation directory.
 prepare_directory() {
     mkdir -p "$BASE_DIR"
+}
+
+# New installations must start from an empty or missing directory.
+ensure_install_directory_empty() {
+    if [ ! -d "$BASE_DIR" ]; then
+        return 0
+    fi
+
+    if find "$BASE_DIR" -mindepth 1 -maxdepth 1 | grep -q .; then
+        echo "Installation directory is not empty: $BASE_DIR" >&2
+        echo "Choose an empty directory or remove the existing contents before installing." >&2
+        return 1
+    fi
 }
 
 # Updates and removals must target an existing installation directory.
@@ -462,6 +486,7 @@ run_install() {
     run_step "[Gml] Installing curl" ensure_command curl curl
     run_step "[Gml] Installing openssl" ensure_command openssl openssl
     run_step "[Gml] Installing Docker" install_docker
+    run_step "[Gml] Checking installation directory is empty" ensure_install_directory_empty
     run_step "[Gml] Creating installation directory" prepare_directory
     run_step "[Gml] Downloading docker-compose.yml" download_compose
     run_step "[Gml] Creating or updating .env" ensure_env

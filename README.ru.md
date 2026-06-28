@@ -2,7 +2,7 @@
 
 **Сменить язык:** [English](README.md)
 
-# Что изменено в ReGML
+# Что изменено в ReGml
 
 - Удалён Yarp proxy, заменён на Nginx.
 - Обновлена документация по установке и настройке.
@@ -25,6 +25,35 @@ Gml.Backend - комплексный проект для быстрого раз
 - [Официальная документация](https://gml-launcher.ru/docs/welcome)
 
 ## Установка
+
+### Быстрая установка через ReGml Manager
+
+Самый простой способ запустить менеджер установки:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh
+```
+
+ReGml Manager интерактивно спросит действие, папку установки и версию. Папка по умолчанию: `/srv/gml`.
+
+Если вы уже работаете под `root`, можно использовать `sh` без `sudo`:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sh
+```
+
+Для установки без интерактивного выбора передайте аргументы через `sh -s --`:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- install --version v2025.3.2 --dir /srv/gml
+```
+
+Для обновления или удаления используйте:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- update --version v2025.3.2 --dir /srv/gml
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- delete --dir /srv/gml
+```
 
 ### Шаг 1: Клонируйте репозиторий
 

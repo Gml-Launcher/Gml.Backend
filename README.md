@@ -2,7 +2,7 @@
 
 **Switch language:** [Русский](README.ru.md)
 
-# What Changed In ReGML
+# What Changed In ReGml
 
 - Removed the YARP proxy and replaced it with Nginx.
 - Updated the installation and configuration documentation.
@@ -24,9 +24,39 @@ Together, these services offer a robust foundation for managing Minecraft game p
 - [Official Website](https://gml-launcher.ru)
 - [Official Documentation](https://gml-launcher.ru/docs/welcome)
 
-## Installation Instructions
+## Installation
+
+### Quick Install With ReGml Manager
+
+The easiest way to start the installation manager:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh
+```
+
+ReGml Manager will ask for the action, installation directory, and version interactively. The default installation directory is `/srv/gml`.
+
+If you are already running as `root`, you can use `sh` without `sudo`:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sh
+```
+
+For a non-interactive installation, pass arguments through `sh -s --`:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- install --version v2025.3.2 --dir /srv/gml
+```
+
+Use these commands to update or remove the installation:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- update --version v2025.3.2 --dir /srv/gml
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- delete --dir /srv/gml
+```
 
 ### Step 1: Clone the Repository
+
 Clone the stable version of the repository using the following command:
 
 ```bash
@@ -107,3 +137,4 @@ Docker will download the necessary images and launch the project. Once the conta
 [] Add auto tests for regml-manager.
 [] Maybe add offical version of GML.Backend to installer.
 [] Add anti downgrade feature to regml-manager.
+[] Find out why the volume is needed.
