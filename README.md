@@ -9,6 +9,9 @@
 - Added a custom installer and version manager.
 - Added Russian localization of the documentation.
 - Supported version start 2025.3 and newer of Gml.Backend.
+- Added alpine linux support for the installer.
+
+Tested on Ubuntu 22.04+ ([ci](https://github.com/serega404/ReGml.Backend/actions/workflows/regml-manager-tests.yml)), Debian 13, and Alpine Linux 3.23.
 
 # Gml.Backend
 
@@ -134,7 +137,7 @@ Docker will download the necessary images and launch the project. Once the conta
 [ ] Try to integrate Gml.Web.Skin.Service on the server.
 [ ] Try to build the frontend in static mode and run it with Nginx.
 [x] Rewrite the installer as a single file with all scripts for Linux.
-[ ] Add alpine linux support for the installer.
+[x] Add alpine linux support for the installer.
 [x] Add auto tests for regml-manager.
 [ ] Maybe add offical version of GML.Backend to installer.
 [ ] Find out why the volume is needed.

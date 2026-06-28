@@ -9,6 +9,9 @@
 - Сделан кастомный установщик и менеджер версий.
 - Добавлена русская локализация документации.
 - Поддержка версий Gml.Backend начиная с 2025.3 и новее.
+- Добавлена поддержка Alpine Linux для установщика.
+
+Протестировано на Ubuntu 22.04+ ([ci](https://github.com/serega404/ReGml.Backend/actions/workflows/regml-manager-tests.yml)), Debian 13, и Alpine Linux 3.23.
 
 # Gml.Backend
 

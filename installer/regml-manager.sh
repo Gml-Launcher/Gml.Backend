@@ -257,11 +257,24 @@ detect_os() {
     fi
 }
 
+# Detect Alpine because Docker is installed from Alpine packages there.
+is_alpine() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        [ "${ID:-}" = "alpine" ]
+        return "$?"
+    fi
+
+    return 1
+}
+
 # Install a package through the first supported package manager found.
 install_package() {
     package="$1"
 
-    if command -v apt-get >/dev/null 2>&1; then
+    if command -v apk >/dev/null 2>&1; then
+        apk add --no-cache "$package"
+    elif command -v apt-get >/dev/null 2>&1; then
         apt-get update
         apt-get install -y "$package"
     elif command -v dnf >/dev/null 2>&1; then
@@ -278,6 +291,11 @@ install_package() {
     fi
 }
 
+# Confirm the Docker Compose plugin exists.
+docker_compose_available() {
+    docker compose version >/dev/null 2>&1
+}
+
 # Ensure a command exists, installing its package when needed.
 ensure_command() {
     command_name="$1"
@@ -288,19 +306,38 @@ ensure_command() {
     fi
 }
 
-# Install Docker through the official convenience script and start the service.
-install_docker() {
-    if command -v docker >/dev/null 2>&1; then
-        return 0
-    fi
-
-    sh -c "$(curl -fsSL https://get.docker.com)"
-
+# Start Docker across common Linux init systems.
+start_docker_service() {
     if command -v systemctl >/dev/null 2>&1; then
         systemctl enable --now docker
+    elif command -v rc-update >/dev/null 2>&1 && command -v rc-service >/dev/null 2>&1; then
+        rc-update add docker default
+        rc-service docker start
     elif command -v service >/dev/null 2>&1; then
         service docker start
     fi
+}
+
+# Install Docker from Alpine packages, including the Compose plugin.
+install_alpine_docker() {
+    apk add --no-cache docker docker-cli-compose || return 1
+    start_docker_service
+}
+
+# Install Docker through the official convenience script and start the service.
+install_docker() {
+    if command -v docker >/dev/null 2>&1 && docker_compose_available; then
+        return 0
+    fi
+
+    if is_alpine; then
+        install_alpine_docker
+    else
+        sh -c "$(curl -fsSL https://get.docker.com)"
+        start_docker_service
+    fi
+
+    docker_compose_available
 }
 
 # Create the selected installation directory.
