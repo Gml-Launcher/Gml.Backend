@@ -1,20 +1,21 @@
 #!/bin/sh
 
 DEFAULT_BASE_DIR="/srv/gml"
-DEFAULT_VERSION="v2025.3.2"
 COMPOSE_URL="https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/docker-compose-prod.yml"
+DEFAULT_TAGS_URL="https://api.github.com/repos/serega404/ReGml.Backend/tags?per_page=100"
 
 ACTION=""
 BASE_DIR=""
 VERSION=""
 PROMPT_ANSWER=""
+INTERACTIVE_MODE=0
 
 # Print command-line usage for both scripted and interactive workflows.
 print_usage() {
     cat <<EOF
 Usage:
-  $0 install --version <version> [--dir <path>]
-  $0 update --version <version> [--dir <path>]
+  $0 install [--version <version>] [--dir <path>]
+  $0 update [--version <version>] [--dir <path>]
   $0 delete [--dir <path>]
   $0
 
@@ -24,7 +25,7 @@ Commands:
   delete     Stop containers and move the install directory to a backup
 
 Options:
-  --version  Docker image version tag. Used by install and update.
+  --version  Override Docker image version tag. Used by install and update.
   --dir      Installation directory. Defaults to $DEFAULT_BASE_DIR.
   -h, --help Show this help.
 EOF
@@ -49,6 +50,7 @@ require_value() {
 # Parse the optional command and flags before any privileged work starts.
 parse_args() {
     if [ "$#" -eq 0 ]; then
+        INTERACTIVE_MODE=1
         return 0
     fi
 
@@ -87,6 +89,85 @@ parse_args() {
                 ;;
         esac
     done
+}
+
+# Extract the greatest stable vN.N or vN.N.N tag from GitHub tags JSON.
+extract_latest_stable_tag() {
+    sed -n 's/.*"name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | awk '
+        {
+            tag = $0
+
+            if (tag !~ /^v/) {
+                next
+            }
+
+            version = tag
+            sub(/^v/, "", version)
+            part_count = split(version, parts, ".")
+
+            if (part_count < 2 || part_count > 3) {
+                next
+            }
+
+            valid = 1
+            for (i = 1; i <= part_count; i++) {
+                if (parts[i] !~ /^[0-9][0-9]*$/) {
+                    valid = 0
+                }
+            }
+
+            if (valid == 0) {
+                next
+            }
+
+            major = parts[1] + 0
+            minor = parts[2] + 0
+            patch = part_count == 3 ? parts[3] + 0 : 0
+
+            is_better = 0
+
+            if (found == 0) {
+                is_better = 1
+            } else if (major > best_major) {
+                is_better = 1
+            } else if (major == best_major && minor > best_minor) {
+                is_better = 1
+            } else if (major == best_major && minor == best_minor && patch > best_patch) {
+                is_better = 1
+            } else if (major == best_major && minor == best_minor && patch == best_patch && part_count > best_part_count) {
+                is_better = 1
+            }
+
+            if (is_better == 1) {
+                found = 1
+                best_tag = tag
+                best_major = major
+                best_minor = minor
+                best_patch = patch
+                best_part_count = part_count
+            }
+        }
+        END {
+            if (found == 1) {
+                print best_tag
+            } else {
+                exit 1
+            }
+        }
+    '
+}
+
+# Fetch the latest stable release tag from GitHub, or from an override URL in tests.
+fetch_latest_stable_version() {
+    tags_url="${GML_MANAGER_TAGS_URL:-$DEFAULT_TAGS_URL}"
+    latest_version=$(curl -fsSL "$tags_url" | extract_latest_stable_tag)
+
+    if [ -z "$latest_version" ]; then
+        echo "No stable version tags found at $tags_url" >&2
+        return 1
+    fi
+
+    printf "%s\n" "$latest_version"
 }
 
 # Read an answer from the terminal even when the script body is piped through stdin.
@@ -152,8 +233,8 @@ get_env_value() {
     sed -n "s/^${key}=//p" "$env_file" | tail -n 1
 }
 
-# Resolve missing command-line inputs through interactive prompts.
-resolve_inputs() {
+# Resolve missing action and directory inputs through interactive prompts.
+resolve_action_and_base_dir() {
     if [ -z "$ACTION" ]; then
         prompt_action
     fi
@@ -162,13 +243,22 @@ resolve_inputs() {
         prompt_with_default "Installation directory" "$DEFAULT_BASE_DIR"
         BASE_DIR="$PROMPT_ANSWER"
     fi
+}
 
+# Resolve the version through GitHub unless the user provided an explicit override.
+resolve_version_input() {
     case "$ACTION" in
         install|update)
             if [ -z "$VERSION" ]; then
-                current_version=$(get_env_value "$BASE_DIR/.env" "GML_VERSION")
-                prompt_with_default "Gml version" "${current_version:-$DEFAULT_VERSION}"
-                VERSION="$PROMPT_ANSWER"
+                latest_version=$(fetch_latest_stable_version) || error "Unable to resolve the latest stable version from GitHub. Pass --version to use a specific version."
+
+                if [ "$INTERACTIVE_MODE" -eq 1 ]; then
+                    prompt_with_default "Gml version" "$latest_version"
+                    VERSION="$PROMPT_ANSWER"
+                else
+                    VERSION="$latest_version"
+                    echo "[Gml] Using latest stable version: $VERSION" >&2
+                fi
             fi
             ;;
         delete)
@@ -177,6 +267,12 @@ resolve_inputs() {
             error "Unknown action: $ACTION"
             ;;
     esac
+}
+
+# Resolve missing command-line inputs.
+resolve_inputs() {
+    resolve_action_and_base_dir
+    resolve_version_input
 }
 
 # Root is required because the script installs packages and controls Docker.
@@ -556,7 +652,17 @@ run_delete() {
 main() {
     parse_args "$@"
     require_root
-    resolve_inputs
+    resolve_action_and_base_dir
+
+    case "$ACTION" in
+        install|update)
+            if [ -z "$VERSION" ]; then
+                run_step "[Gml] Installing curl" ensure_command curl curl
+            fi
+            ;;
+    esac
+
+    resolve_version_input
 
     case "$ACTION" in
         install)

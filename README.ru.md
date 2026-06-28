@@ -38,7 +38,7 @@ Gml.Backend - комплексный проект для быстрого раз
 curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh
 ```
 
-ReGml Manager интерактивно спросит действие, папку установки и версию. Папка по умолчанию: `/srv/gml`.
+ReGml Manager интерактивно спросит действие, папку установки и версию. По умолчанию для версии используется последний стабильный GitHub-тег. Папка по умолчанию: `/srv/gml`.
 
 Если вы уже работаете под `root`, можно использовать `sh` без `sudo`:
 
@@ -49,13 +49,19 @@ curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/m
 Для установки без интерактивного выбора передайте аргументы через `sh -s --`:
 
 ```bash
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- install --dir /srv/gml
+```
+
+Передавайте `--version` только если нужно закрепить конкретный тег Docker-образов:
+
+```bash
 curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- install --version v2025.3.2 --dir /srv/gml
 ```
 
 Для обновления или удаления используйте:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- update --version v2025.3.2 --dir /srv/gml
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- update --dir /srv/gml
 curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- delete --dir /srv/gml
 ```
 

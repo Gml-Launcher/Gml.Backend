@@ -38,7 +38,7 @@ The easiest way to start the installation manager:
 curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh
 ```
 
-ReGml Manager will ask for the action, installation directory, and version interactively. The default installation directory is `/srv/gml`.
+ReGml Manager will ask for the action, installation directory, and version interactively. The version prompt defaults to the latest stable GitHub tag. The default installation directory is `/srv/gml`.
 
 If you are already running as `root`, you can use `sh` without `sudo`:
 
@@ -49,13 +49,19 @@ curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/m
 For a non-interactive installation, pass arguments through `sh -s --`:
 
 ```bash
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- install --dir /srv/gml
+```
+
+Pass `--version` only when you want to pin a specific Docker image tag:
+
+```bash
 curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- install --version v2025.3.2 --dir /srv/gml
 ```
 
 Use these commands to update or remove the installation:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- update --version v2025.3.2 --dir /srv/gml
+curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- update --dir /srv/gml
 curl -sSL https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/regml-manager.sh | sudo sh -s -- delete --dir /srv/gml
 ```
 
@@ -142,5 +148,5 @@ Docker will download the necessary images and launch the project. Once the conta
 - [ ] Maybe add offical version of GML.Backend to installer.  
 - [ ] Find out why the volume is needed.  
 - [x] Add tested versions and linux distributions to the installer.  
-- [ ] Add auto last version check to regml-manager.  
+- [x] Add auto last version check to regml-manager.
 - [ ] Try add another distros for regml manager tests  
