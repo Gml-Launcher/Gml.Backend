@@ -1,0 +1,103 @@
+---
+name: ReGml Manager VM Tests
+
+"on":
+  workflow_dispatch:
+    inputs:
+      install_version:
+        description: Docker image tag to install
+        required: true
+        default: v2025.3.1
+        type: string
+      update_version:
+        description: Docker image tag to update to
+        required: true
+        default: v2025.3.2
+        type: string
+  pull_request:
+    paths:
+      - "installer/regml-manager.sh"
+      - "docker-compose-prod.yml"
+      - ".github/workflows/regml-manager-vm-tests.yml"
+      - "tests/regml-manager/**"
+  push:
+    branches:
+      - master
+    paths:
+      - "installer/regml-manager.sh"
+      - "docker-compose-prod.yml"
+      - ".github/workflows/regml-manager-vm-tests.yml"
+      - "tests/regml-manager/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: regml-manager-vm-tests-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  install-update-delete:
+    name: ${{ matrix.distro }} / ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 180
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: debian-13
+            arch: amd64
+            runner: ubuntu-26.04
+            cache_key: debian-13-amd64
+          - distro: debian-13
+            arch: arm64
+            runner: ubuntu-26.04-arm
+            cache_key: debian-13-arm64
+          - distro: alpine-3.23
+            arch: x86_64
+            runner: ubuntu-26.04
+            cache_key: alpine-3.23-x86_64
+          - distro: alpine-3.23
+            arch: aarch64
+            runner: ubuntu-26.04-arm
+            cache_key: alpine-3.23-aarch64
+
+    env:
+      INSTALL_VERSION: >-
+        ${{ github.event_name == 'workflow_dispatch' && inputs.install_version
+        || 'v2025.3.1' }}
+      UPDATE_VERSION: >-
+        ${{ github.event_name == 'workflow_dispatch' && inputs.update_version
+        || 'v2025.3.2' }}
+      VM_IMAGE_CACHE: /tmp/regml-manager-vm-image-cache
+      DIAGNOSTICS_DIR: >-
+        /tmp/regml-manager-vm-diagnostics-${{ github.run_id }}-${{
+        github.run_attempt }}-${{ matrix.distro }}-${{ matrix.arch }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache VM image
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.VM_IMAGE_CACHE }}
+          key: regml-manager-vm-image-${{ matrix.cache_key }}-v1
+
+      - name: Run ReGml Manager VM scenario
+        env:
+          VM_DISTRO: ${{ matrix.distro }}
+          VM_ARCH: ${{ matrix.arch }}
+        run: |
+          set -eux
+          sh tests/regml-manager/run-qemu-vm.sh
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: >-
+            regml-manager-vm-diagnostics-${{ matrix.distro }}-${{ matrix.arch }}
+          path: ${{ env.DIAGNOSTICS_DIR }}
+          if-no-files-found: ignore
