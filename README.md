@@ -7,6 +7,7 @@
 - Removed the YARP proxy and replaced it with Nginx.
 - Updated the installation and configuration documentation.
 - Added the installer to this repository, excluding Windows scripts.
+- Added Russian localization of the documentation.
 
 # Gml.Backend
 
@@ -96,3 +97,9 @@ Docker will download the necessary images and launch the project. Once the conta
 ## Important Notes
 
 - Ensure the `.env` files are correctly configured before launching the project. Update the configurations as needed based on your requirements.
+
+## Roadmap
+
+[] Try to integrate Gml.Web.Skin.Service on the server.
+[] Try to build the frontend in static mode and run it with Nginx.
+[] Rewrite the installer as a single file with all scripts for Linux.
