@@ -30,7 +30,7 @@ concurrency:
 
 jobs:
   install-update-delete:
-    name: ${{ matrix.distro }}
+    name: ${{ matrix.distro }} / ${{ matrix.arch }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 90
 
@@ -39,14 +39,26 @@ jobs:
       matrix:
         include:
           - distro: ubuntu-26.04
+            arch: x64
             runner: ubuntu-26.04
           - distro: ubuntu-24.04
+            arch: x64
             runner: ubuntu-24.04
           - distro: ubuntu-22.04
+            arch: x64
             runner: ubuntu-22.04
+          - distro: ubuntu-26.04
+            arch: arm64
+            runner: ubuntu-26.04-arm
+          - distro: ubuntu-24.04
+            arch: arm64
+            runner: ubuntu-24.04-arm
+          - distro: ubuntu-22.04
+            arch: arm64
+            runner: ubuntu-22.04-arm
 
     env:
-      INSTALL_DIR: /tmp/regml-manager-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.distro }}
+      INSTALL_DIR: /tmp/regml-manager-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.distro }}-${{ matrix.arch }}
       INSTALL_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.install_version || 'v2025.3.2' }}
       UPDATE_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.update_version || 'v2025.3.1' }}
 
@@ -59,6 +71,7 @@ jobs:
           set -eux
           id
           uname -a
+          uname -m
           cat /etc/os-release
           command -v sudo
 
@@ -85,16 +98,45 @@ jobs:
           sudo env INSTALL_DIR="$INSTALL_DIR" sh -c '
             cd "$INSTALL_DIR"
             for attempt in $(seq 1 60); do
-              exited_services="$(docker compose ps --services --status exited)"
-              if [ -n "$exited_services" ]; then
-                echo "Exited services detected:"
-                echo "$exited_services"
+              services="$(docker compose ps --services)"
+              total_services=0
+              running_services=0
+              bad_services=""
+
+              for service in $services; do
+                total_services=$((total_services + 1))
+                container_id="$(docker compose ps -q "$service" | head -n 1)"
+
+                if [ -z "$container_id" ]; then
+                  echo "$service: container is not created yet"
+                  continue
+                fi
+
+                state="$(docker inspect -f "{{.State.Status}} {{.State.Restarting}} {{.State.ExitCode}}" "$container_id" 2>/dev/null || echo "missing false 0")"
+                set -- $state
+                status="$1"
+                restarting="$2"
+                exit_code="$3"
+
+                echo "$service: status=$status restarting=$restarting exit_code=$exit_code"
+
+                if [ "$restarting" = "true" ] || [ "$status" = "exited" ] || [ "$status" = "dead" ] || [ "$status" = "missing" ]; then
+                  bad_services="$bad_services $service"
+                  continue
+                fi
+
+                if [ "$status" = "running" ]; then
+                  running_services=$((running_services + 1))
+                fi
+              done
+
+              if [ -n "$bad_services" ]; then
+                echo "Failed services detected:$bad_services"
                 docker compose ps
+                docker compose logs --tail=120 $bad_services
                 exit 1
               fi
 
-              total_services="$(docker compose ps --services | wc -l)"
-              running_services="$(docker compose ps --services --status running | wc -l)"
               if [ "$total_services" -gt 0 ] && [ "$running_services" -eq "$total_services" ]; then
                 docker compose ps
                 exit 0
@@ -106,6 +148,7 @@ jobs:
 
             echo "Timed out waiting for all services to run"
             docker compose ps
+            docker compose logs --tail=120
             exit 1
           '
 
@@ -121,16 +164,45 @@ jobs:
           sudo env INSTALL_DIR="$INSTALL_DIR" sh -c '
             cd "$INSTALL_DIR"
             for attempt in $(seq 1 60); do
-              exited_services="$(docker compose ps --services --status exited)"
-              if [ -n "$exited_services" ]; then
-                echo "Exited services detected after update:"
-                echo "$exited_services"
+              services="$(docker compose ps --services)"
+              total_services=0
+              running_services=0
+              bad_services=""
+
+              for service in $services; do
+                total_services=$((total_services + 1))
+                container_id="$(docker compose ps -q "$service" | head -n 1)"
+
+                if [ -z "$container_id" ]; then
+                  echo "$service: container is not created yet"
+                  continue
+                fi
+
+                state="$(docker inspect -f "{{.State.Status}} {{.State.Restarting}} {{.State.ExitCode}}" "$container_id" 2>/dev/null || echo "missing false 0")"
+                set -- $state
+                status="$1"
+                restarting="$2"
+                exit_code="$3"
+
+                echo "$service: status=$status restarting=$restarting exit_code=$exit_code"
+
+                if [ "$restarting" = "true" ] || [ "$status" = "exited" ] || [ "$status" = "dead" ] || [ "$status" = "missing" ]; then
+                  bad_services="$bad_services $service"
+                  continue
+                fi
+
+                if [ "$status" = "running" ]; then
+                  running_services=$((running_services + 1))
+                fi
+              done
+
+              if [ -n "$bad_services" ]; then
+                echo "Failed services detected after update:$bad_services"
                 docker compose ps
+                docker compose logs --tail=120 $bad_services
                 exit 1
               fi
 
-              total_services="$(docker compose ps --services | wc -l)"
-              running_services="$(docker compose ps --services --status running | wc -l)"
               if [ "$total_services" -gt 0 ] && [ "$running_services" -eq "$total_services" ]; then
                 docker compose ps
                 exit 0
@@ -142,6 +214,7 @@ jobs:
 
             echo "Timed out waiting for all services to run after update"
             docker compose ps
+            docker compose logs --tail=120
             exit 1
           '
 
@@ -160,7 +233,10 @@ jobs:
         run: |
           set +e
           sudo docker ps -a
-          sudo find /tmp -maxdepth 1 -type d -name "regml-manager-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.distro }}*" -print
+          if [ -d "$INSTALL_DIR" ]; then
+            sudo env INSTALL_DIR="$INSTALL_DIR" sh -c 'cd "$INSTALL_DIR" && docker compose ps && docker compose images && docker compose logs --tail=120'
+          fi
+          sudo find /tmp -maxdepth 1 -type d -name "regml-manager-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.distro }}-${{ matrix.arch }}*" -print
 
       - name: Cleanup
         if: always()
