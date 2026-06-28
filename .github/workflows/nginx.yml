@@ -1,0 +1,73 @@
+name: Nginx Docker Image
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_PACKAGE: gml.web.nginx
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install nginx
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nginx
+
+      - name: Validate nginx config
+        run: |
+          sudo tee -a /etc/hosts >/dev/null <<'EOF'
+          127.0.0.1 gml-web-api
+          127.0.0.1 gml-web-frontend
+          127.0.0.1 gml-web-skins
+          EOF
+
+          cat > /tmp/gml-nginx.conf <<'EOF'
+          pid /tmp/gml-nginx.pid;
+          events {}
+          http {
+              include /etc/nginx/mime.types;
+              include ${{ github.workspace }}/nginx/default.conf;
+          }
+          EOF
+
+          sudo nginx -t -c /tmp/gml-nginx.conf
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set image name
+        id: image
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${IMAGE_PACKAGE}" >> "$GITHUB_OUTPUT"
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./nginx
+          push: true
+          tags: ${{ steps.image.outputs.name }}:${{ github.ref_name }}
