@@ -8,6 +8,12 @@ on:
       - '*'
     paths:
       - 'nginx/**'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and publish'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -60,6 +66,12 @@ jobs:
         id: image
         run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${IMAGE_PACKAGE}" >> "$GITHUB_OUTPUT"
 
+      - name: Set image tag
+        id: tag
+        run: echo "value=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+        env:
+          IMAGE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -72,4 +84,4 @@ jobs:
         with:
           context: ./nginx
           push: true
-          tags: ${{ steps.image.outputs.name }}:${{ github.ref_name }}
+          tags: ${{ steps.image.outputs.name }}:${{ steps.tag.outputs.value }}

@@ -138,3 +138,5 @@ Docker will download the necessary images and launch the project. Once the conta
 [] Maybe add offical version of GML.Backend to installer.
 [] Add anti downgrade feature to regml-manager.
 [] Find out why the volume is needed.
+[] Add tested versions and linux distributions to the installer.
+[] Add auto version check to regml-manager.
