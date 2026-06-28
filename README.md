@@ -6,7 +6,7 @@
 
 - Removed the YARP proxy and replaced it with Nginx.
 - Updated the installation and configuration documentation.
-- Added the installer to this repository, excluding Windows scripts.
+- Added a custom installer and version manager.
 - Added Russian localization of the documentation.
 
 # Gml.Backend
@@ -103,3 +103,7 @@ Docker will download the necessary images and launch the project. Once the conta
 [] Try to integrate Gml.Web.Skin.Service on the server.
 [] Try to build the frontend in static mode and run it with Nginx.
 [] Rewrite the installer as a single file with all scripts for Linux.
+[] Add alpine linux support for the installer.
+[] Add auto tests for regml-manager.
+[] Maybe add offical version of GML.Backend to installer.
+[] Add anti downgrade feature to regml-manager.

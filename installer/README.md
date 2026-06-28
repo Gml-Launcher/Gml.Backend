@@ -1,71 +1,83 @@
 <a id="english"></a>
 
-# Repository Description
+# Gml.Backend manager
 
 **Language:** English | [Русский](#russian)
 
-This directory contains scripts for installing, updating, and removing Gml.Backend. The scripts simplify backend management for Gml and make the required operations easier to run.
+This directory contains a single `gml-manager.sh` script for installing, updating, and removing Gml.Backend.
+
+The script stops on the first failed step and prints the failed step name plus the last log lines. The default installation directory is `/srv/gml`, but you can choose another directory with `--dir` or through the interactive prompt.
 
 ## Installation
 
-To install Gml.Backend, run the following commands in any convenient directory. The script requires `curl`; see the [curl installation guide](https://everything.curl.dev/get) if it is not installed.
-
 ```sh
-curl -O https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/installer.sh
-chmod +x ./installer.sh
-./installer.sh --version v2025.3.3.2
+curl -O https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/gml-manager.sh
+chmod +x ./gml-manager.sh
+sudo ./gml-manager.sh install --version v2025.3.3.2 --dir /srv/gml
 ```
 
 ## Update
 
-To update Gml.Backend, run the following commands in the directory that contains `docker-compose.yml` and `.env`:
-
 ```sh
-curl -O https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/updater.sh
-chmod +x ./updater.sh
-./updater.sh --version v2025.3.3.2
+curl -O https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/gml-manager.sh
+chmod +x ./gml-manager.sh
+sudo ./gml-manager.sh update --version v2025.3.3.2 --dir /srv/gml
 ```
 
 ## Removal
 
-To remove Gml.Backend, run the following command in the directory that contains `docker-compose.yml` and `.env`:
+```sh
+curl -O https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/gml-manager.sh
+chmod +x ./gml-manager.sh
+sudo ./gml-manager.sh delete --dir /srv/gml
+```
+
+## Interactive mode
+
+Run the script without arguments to choose the action, installation directory, and version interactively:
 
 ```sh
-curl -s https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/delete.sh | sh
+sudo ./gml-manager.sh
 ```
 
 <a id="russian"></a>
 
-# Описание репозитория
+# Менеджер Gml.Backend
 
 **Язык:** [English](#english) | Русский
 
-Эта директория содержит скрипты для установки, обновления и удаления Gml.Backend. Скрипты упрощают процесс управления серверной частью Gml, обеспечивая легкость и удобство выполнения необходимых операций.
+Эта директория содержит единый скрипт `gml-manager.sh` для установки, обновления и удаления Gml.Backend.
+
+Скрипт останавливается на первом упавшем шаге и выводит название шага вместе с последними строками лога. Папка установки по умолчанию: `/srv/gml`, но ее можно выбрать через `--dir` или интерактивный ввод.
 
 ## Установка
 
-Для установки Gml.Backend выполните следующие команды в удобной для вас директории. Для работы скрипта необходим `curl`; если он не установлен, смотрите [инструкцию по установке curl](https://losst.pro/ustanovka-curl-v-ubuntu).
-
 ```sh
-curl -O https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/installer.sh
-chmod +x ./installer.sh
-./installer.sh --version v2025.3.3.2
+curl -O https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/gml-manager.sh
+chmod +x ./gml-manager.sh
+sudo ./gml-manager.sh install --version v2025.3.3.2 --dir /srv/gml
 ```
 
 ## Обновление
 
-Для обновления Gml.Backend выполните следующие команды в директории, где находятся файлы `docker-compose.yml` и `.env`:
-
 ```sh
-curl -O https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/updater.sh
-chmod +x ./updater.sh
-./updater.sh --version v2025.3.3.2
+curl -O https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/gml-manager.sh
+chmod +x ./gml-manager.sh
+sudo ./gml-manager.sh update --version v2025.3.3.2 --dir /srv/gml
 ```
 
 ## Удаление
 
-Для удаления Gml.Backend выполните следующую команду в директории, где находятся файлы `docker-compose.yml` и `.env`:
+```sh
+curl -O https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/gml-manager.sh
+chmod +x ./gml-manager.sh
+sudo ./gml-manager.sh delete --dir /srv/gml
+```
+
+## Интерактивный режим
+
+Запустите скрипт без аргументов, чтобы выбрать действие, папку установки и версию интерактивно:
 
 ```sh
-curl -s https://raw.githubusercontent.com/serega404/ReGml.Backend/refs/heads/master/installer/delete.sh | sh
+sudo ./gml-manager.sh
 ```

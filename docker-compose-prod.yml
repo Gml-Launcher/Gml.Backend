@@ -3,7 +3,7 @@ name: gml-core
 services:
 
   gml-web-api:
-    image: ghcr.io/gml-launcher/gml.web.api:master
+    image: ghcr.io/gml-launcher/gml.web.api:${GML_VERSION:-master}
     container_name: gml-web-api
     restart: always
     volumes:
@@ -34,7 +34,7 @@ services:
       - gml-network
 
   gml-web-nginx:
-    image: ghcr.io/serega404/gml.web.nginx:master
+    image: ghcr.io/serega404/gml.web.nginx:${GML_VERSION:-master}
     container_name: gml-web-nginx
     restart: always
     ports:
@@ -50,7 +50,7 @@ services:
       - gml-network
 
   gml-web-frontend:
-    image: ghcr.io/gml-launcher/gml.web.client:master
+    image: ghcr.io/gml-launcher/gml.web.client:${GML_VERSION:-master}
     container_name: gml-web-frontend
     restart: always
     ports:
@@ -66,7 +66,7 @@ services:
       - TZ=Europe/Moscow
 
   gml-web-skins:
-    image: ghcr.io/gml-launcher/gml.web.skin.service:master
+    image: ghcr.io/gml-launcher/gml.web.skin.service:${GML_VERSION:-master}
     container_name: gml-web-skins
     restart: always
     ports:
