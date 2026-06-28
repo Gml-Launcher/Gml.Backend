@@ -8,6 +8,7 @@
 - Updated the installation and configuration documentation.
 - Added a custom installer and version manager.
 - Added Russian localization of the documentation.
+- Supported version start 2025.3 and newer of Gml.Backend.
 
 # Gml.Backend
 
