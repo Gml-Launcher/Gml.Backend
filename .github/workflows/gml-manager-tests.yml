@@ -1,0 +1,246 @@
+name: Gml Manager Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      install_version:
+        description: Docker image tag to install
+        required: true
+        default: v2025.3.2
+        type: string
+      update_version:
+        description: Docker image tag to update to
+        required: true
+        default: v2025.3.1
+        type: string
+  push:
+    branches:
+      - master
+    paths:
+      - "installer/gml-manager.sh"
+      - "installer/installer.env"
+      - "docker-compose-installer.yml"
+      - ".github/workflows/gml-manager-tests.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gml-manager-tests-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  install-update-delete:
+    name: ${{ matrix.distro }} / ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: ubuntu-26.04
+            arch: x64
+            runner: ubuntu-26.04
+          - distro: ubuntu-24.04
+            arch: x64
+            runner: ubuntu-24.04
+          - distro: ubuntu-22.04
+            arch: x64
+            runner: ubuntu-22.04
+          - distro: ubuntu-26.04
+            arch: arm64
+            runner: ubuntu-26.04-arm
+          - distro: ubuntu-24.04
+            arch: arm64
+            runner: ubuntu-24.04-arm
+          - distro: ubuntu-22.04
+            arch: arm64
+            runner: ubuntu-22.04-arm
+
+    env:
+      INSTALL_DIR: /tmp/gml-manager-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.distro }}-${{ matrix.arch }}
+      INSTALL_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.install_version || 'v2025.3.2' }}
+      UPDATE_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.update_version || 'v2025.3.1' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Print VM info
+        run: |
+          set -eux
+          id
+          uname -a
+          uname -m
+          cat /etc/os-release
+          command -v sudo
+
+      - name: Clean previous CI install directory
+        run: |
+          set -eux
+          sudo rm -rf "$INSTALL_DIR" "$INSTALL_DIR"_backup_*
+
+      - name: Install Gml Manager stack
+        run: |
+          set -eux
+          sudo sh ./installer/gml-manager.sh install --version "$INSTALL_VERSION" --dir "$INSTALL_DIR"
+
+      - name: Validate installation files
+        run: |
+          set -eux
+          sudo test -f "$INSTALL_DIR/.env"
+          sudo test -f "$INSTALL_DIR/docker-compose.yml"
+          sudo grep -qx "GML_VERSION=$INSTALL_VERSION" "$INSTALL_DIR/.env"
+
+      - name: Validate Docker Compose state
+        run: |
+          set -eux
+          sudo env INSTALL_DIR="$INSTALL_DIR" sh -c '
+            cd "$INSTALL_DIR"
+            for attempt in $(seq 1 60); do
+              services="$(docker compose ps --services)"
+              total_services=0
+              running_services=0
+              bad_services=""
+
+              for service in $services; do
+                total_services=$((total_services + 1))
+                container_id="$(docker compose ps -q "$service" | head -n 1)"
+
+                if [ -z "$container_id" ]; then
+                  echo "$service: container is not created yet"
+                  continue
+                fi
+
+                state="$(docker inspect -f "{{.State.Status}} {{.State.Restarting}} {{.State.ExitCode}}" "$container_id" 2>/dev/null || echo "missing false 0")"
+                set -- $state
+                status="$1"
+                restarting="$2"
+                exit_code="$3"
+
+                echo "$service: status=$status restarting=$restarting exit_code=$exit_code"
+
+                if [ "$restarting" = "true" ] || [ "$status" = "exited" ] || [ "$status" = "dead" ] || [ "$status" = "missing" ]; then
+                  bad_services="$bad_services $service"
+                  continue
+                fi
+
+                if [ "$status" = "running" ]; then
+                  running_services=$((running_services + 1))
+                fi
+              done
+
+              if [ -n "$bad_services" ]; then
+                echo "Failed services detected:$bad_services"
+                docker compose ps
+                docker compose logs --tail=120 $bad_services
+                exit 1
+              fi
+
+              if [ "$total_services" -gt 0 ] && [ "$running_services" -eq "$total_services" ]; then
+                docker compose ps
+                exit 0
+              fi
+
+              docker compose ps
+              sleep 5
+            done
+
+            echo "Timed out waiting for all services to run"
+            docker compose ps
+            docker compose logs --tail=120
+            exit 1
+          '
+
+      - name: Update Gml Manager stack
+        run: |
+          set -eux
+          sudo sh ./installer/gml-manager.sh update --version "$UPDATE_VERSION" --dir "$INSTALL_DIR"
+          sudo grep -qx "GML_VERSION=$UPDATE_VERSION" "$INSTALL_DIR/.env"
+
+      - name: Validate updated Docker Compose state
+        run: |
+          set -eux
+          sudo env INSTALL_DIR="$INSTALL_DIR" sh -c '
+            cd "$INSTALL_DIR"
+            for attempt in $(seq 1 60); do
+              services="$(docker compose ps --services)"
+              total_services=0
+              running_services=0
+              bad_services=""
+
+              for service in $services; do
+                total_services=$((total_services + 1))
+                container_id="$(docker compose ps -q "$service" | head -n 1)"
+
+                if [ -z "$container_id" ]; then
+                  echo "$service: container is not created yet"
+                  continue
+                fi
+
+                state="$(docker inspect -f "{{.State.Status}} {{.State.Restarting}} {{.State.ExitCode}}" "$container_id" 2>/dev/null || echo "missing false 0")"
+                set -- $state
+                status="$1"
+                restarting="$2"
+                exit_code="$3"
+
+                echo "$service: status=$status restarting=$restarting exit_code=$exit_code"
+
+                if [ "$restarting" = "true" ] || [ "$status" = "exited" ] || [ "$status" = "dead" ] || [ "$status" = "missing" ]; then
+                  bad_services="$bad_services $service"
+                  continue
+                fi
+
+                if [ "$status" = "running" ]; then
+                  running_services=$((running_services + 1))
+                fi
+              done
+
+              if [ -n "$bad_services" ]; then
+                echo "Failed services detected after update:$bad_services"
+                docker compose ps
+                docker compose logs --tail=120 $bad_services
+                exit 1
+              fi
+
+              if [ "$total_services" -gt 0 ] && [ "$running_services" -eq "$total_services" ]; then
+                docker compose ps
+                exit 0
+              fi
+
+              docker compose ps
+              sleep 5
+            done
+
+            echo "Timed out waiting for all services to run after update"
+            docker compose ps
+            docker compose logs --tail=120
+            exit 1
+          '
+
+      - name: Delete Gml Manager stack
+        run: |
+          set -eux
+          sudo sh ./installer/gml-manager.sh delete --dir "$INSTALL_DIR"
+          sudo test ! -d "$INSTALL_DIR"
+          backup_name="$(basename "$INSTALL_DIR")_backup_*"
+          backup_dir="$(sudo find /tmp -maxdepth 1 -type d -name "$backup_name" | head -n 1)"
+          test -n "$backup_dir"
+          echo "Backup directory: $backup_dir"
+
+      - name: Show diagnostics
+        if: always()
+        run: |
+          set +e
+          sudo docker ps -a
+          if [ -d "$INSTALL_DIR" ]; then
+            sudo env INSTALL_DIR="$INSTALL_DIR" sh -c 'cd "$INSTALL_DIR" && docker compose ps && docker compose images && docker compose logs --tail=120'
+          fi
+          sudo find /tmp -maxdepth 1 -type d -name "gml-manager-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.distro }}-${{ matrix.arch }}*" -print
+
+      - name: Cleanup
+        if: always()
+        run: |
+          set +e
+          sudo rm -rf "$INSTALL_DIR" "$INSTALL_DIR"_backup_*
