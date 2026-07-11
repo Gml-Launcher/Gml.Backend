@@ -1,5 +1,7 @@
 ![Frame 39262](https://github.com/user-attachments/assets/4ac0a227-a246-474a-8aab-1af34b6f8497)
 
+**Switch language:** [Русский](README.ru.md)
+
 # Gml.Backend
 
 Gml.Backend is a comprehensive project designed to facilitate rapid deployment of server infrastructure for Minecraft game profiles, including Forge, Fabric, and LiteLoader. This product suite encompasses three integral services:
