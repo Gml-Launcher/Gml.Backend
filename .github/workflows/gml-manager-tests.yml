@@ -19,7 +19,7 @@ on:
     paths:
       - "installer/gml-manager.sh"
       - "installer/installer.env"
-      - "docker-compose-prod.yml"
+      - "docker-compose-installer.yml"
       - ".github/workflows/gml-manager-tests.yml"
 
 permissions:

@@ -2,7 +2,7 @@
 
 DEFAULT_BASE_DIR="/srv/gml"
 GITHUB_REPOSITORY="${GITHUB_REPOSITORY:-Gml-Launcher/Gml.Backend}"
-COMPOSE_URL="${COMPOSE_URL:-https://raw.githubusercontent.com/$GITHUB_REPOSITORY/refs/heads/master/docker-compose-prod.yml}"
+COMPOSE_URL="${COMPOSE_URL:-https://raw.githubusercontent.com/$GITHUB_REPOSITORY/refs/heads/master/docker-compose-installer.yml}"
 ENV_URL="${ENV_URL:-https://raw.githubusercontent.com/$GITHUB_REPOSITORY/refs/heads/master/installer/installer.env}"
 DEFAULT_TAGS_URL="https://api.github.com/repos/$GITHUB_REPOSITORY/tags?per_page=100"
 
