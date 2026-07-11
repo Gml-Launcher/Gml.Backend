@@ -98,7 +98,7 @@ parse_args() {
     done
 }
 
-# Extract the greatest stable vN.N or vN.N.N tag from GitHub tags JSON.
+# Extract the greatest stable numeric tag (vN.N[.N...]) from GitHub tags JSON.
 extract_latest_stable_tag() {
     sed -n 's/.*"name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | awk '
         {
@@ -112,7 +112,7 @@ extract_latest_stable_tag() {
             sub(/^v/, "", version)
             part_count = split(version, parts, ".")
 
-            if (part_count < 2 || part_count > 3) {
+            if (part_count < 2) {
                 next
             }
 
@@ -127,31 +127,43 @@ extract_latest_stable_tag() {
                 next
             }
 
-            major = parts[1] + 0
-            minor = parts[2] + 0
-            patch = part_count == 3 ? parts[3] + 0 : 0
-
             is_better = 0
 
             if (found == 0) {
                 is_better = 1
-            } else if (major > best_major) {
-                is_better = 1
-            } else if (major == best_major && minor > best_minor) {
-                is_better = 1
-            } else if (major == best_major && minor == best_minor && patch > best_patch) {
-                is_better = 1
-            } else if (major == best_major && minor == best_minor && patch == best_patch && part_count > best_part_count) {
-                is_better = 1
+            } else {
+                max_part_count = part_count > best_part_count ? part_count : best_part_count
+
+                for (i = 1; i <= max_part_count; i++) {
+                    current_part = i <= part_count ? parts[i] + 0 : 0
+                    best_part = i <= best_part_count ? best_parts[i] : 0
+
+                    if (current_part > best_part) {
+                        is_better = 1
+                        break
+                    }
+
+                    if (current_part < best_part) {
+                        break
+                    }
+
+                    if (i == max_part_count && part_count > best_part_count) {
+                        is_better = 1
+                    }
+                }
             }
 
             if (is_better == 1) {
                 found = 1
                 best_tag = tag
-                best_major = major
-                best_minor = minor
-                best_patch = patch
                 best_part_count = part_count
+
+                for (i = 1; i <= best_part_count; i++) {
+                    delete best_parts[i]
+                }
+                for (i = 1; i <= part_count; i++) {
+                    best_parts[i] = parts[i] + 0
+                }
             }
         }
         END {
