@@ -581,18 +581,25 @@ backup_install_directory() {
 
 # Show reachable admin panel URLs after install or update.
 write_success_message() {
-    port=5003
+    port=$(get_env_value "$BASE_DIR/.env" "PORT_GML_FRONTEND")
+    port=${port:-5003}
     ip_list=""
 
     if command -v ip >/dev/null 2>&1; then
         ip_list=$(ip -4 -o addr show up | awk '!/ lo / && !/docker|br-|veth/ {print $4}' | cut -d/ -f1 | sort -u)
-    else
+    fi
+
+    # Some containers expose `ip`, but it returns no matching addresses.
+    if [ -z "$ip_list" ] && command -v hostname >/dev/null 2>&1; then
         ip_list=$(hostname -I 2>/dev/null)
     fi
 
     if [ -z "$ip_list" ] && [ -n "${SSH_CONNECTION:-}" ]; then
         ip_list=$(echo "$SSH_CONNECTION" | awk '{print $3}')
     fi
+
+    # Always print at least an address that is reachable from the host itself.
+    ip_list=${ip_list:-127.0.0.1}
 
     echo
     printf "\033[32m==================================================\033[0m\n"
