@@ -16,6 +16,185 @@ BASE_DIR=""
 VERSION=""
 PROMPT_ANSWER=""
 INTERACTIVE_MODE=0
+SHOW_HELP=0
+GML_MANAGER_LANGUAGE="en"
+
+# Return a localized message format. English is the fallback for missing keys.
+message_format() {
+    language="$1"
+    key="$2"
+
+    if [ "$language" = "ru" ]; then
+        case "$key" in
+            usage_heading) printf '%s' 'Использование:\n' ;;
+            usage_install) printf '%s' '  %s install [--version <версия>] [--dir <путь>] [--lang <ru|en>]\n' ;;
+            usage_update) printf '%s' '  %s update [--version <версия>] [--dir <путь>] [--lang <ru|en>]\n' ;;
+            usage_delete) printf '%s' '  %s delete [--dir <путь>] [--lang <ru|en>]\n' ;;
+            usage_interactive) printf '%s' '  %s [--lang <ru|en>]\n' ;;
+            commands_heading) printf '%s' 'Команды:\n' ;;
+            command_install) printf '%s' '  install    Установить Gml.Backend\n' ;;
+            command_update) printf '%s' '  update     Обновить Gml.Backend\n' ;;
+            command_delete) printf '%s' '  delete     Остановить контейнеры и переместить каталог установки в резервную копию\n' ;;
+            options_heading) printf '%s' 'Параметры:\n' ;;
+            option_version) printf '%s' '  --version  Переопределить тег версии Docker-образа. Используется для install и update.\n' ;;
+            option_dir) printf '%s' '  --dir      Каталог установки. По умолчанию: %s.\n' ;;
+            option_lang) printf '%s' '  --lang     Язык интерфейса: ru или en. По умолчанию определяется по локали системы.\n' ;;
+            option_help) printf '%s' '  -h, --help Показать эту справку.\n' ;;
+            error_prefix) printf '%s' '[Gml] Ошибка: %s\n' ;;
+            option_requires_value) printf '%s' 'Для параметра %s требуется значение' ;;
+            unsupported_language) printf '%s' 'Неподдерживаемый язык: %s. Доступные языки: ru, en' ;;
+            unknown_command) printf '%s' 'Неизвестная команда: %s' ;;
+            unknown_argument) printf '%s' 'Неизвестный аргумент: %s' ;;
+            unknown_action) printf '%s' 'Неизвестное действие: %s' ;;
+            no_stable_tags) printf '%s' 'По адресу %s не найдены теги стабильных версий\n' ;;
+            action_menu) printf '%b' 'Выберите действие:\n  1) установить\n  2) обновить\n  3) удалить\n' ;;
+            action_prompt) printf '%s' 'Действие [1]: ' ;;
+            installation_directory) printf '%s' 'Каталог установки' ;;
+            gml_version) printf '%s' 'Версия Gml' ;;
+            latest_version_error) printf '%s' 'Не удалось определить последнюю стабильную версию на GitHub. Передайте --version, чтобы использовать конкретную версию.' ;;
+            using_latest_version) printf '%s' '[Gml] Используется последняя стабильная версия: %s\n' ;;
+            root_required) printf '%s' 'Этот скрипт необходимо запустить от имени root' ;;
+            step_failed) printf '%s' '[Gml] Шаг завершился с ошибкой: %s (код выхода %s)\n' ;;
+            last_log_lines) printf '%s' '[Gml] Последние строки журнала:\n' ;;
+            no_package_manager) printf '%s' 'Не найден поддерживаемый менеджер пакетов\n' ;;
+            directory_not_empty) printf '%s' 'Каталог установки не пуст: %s\n' ;;
+            choose_empty_directory) printf '%s' 'Выберите пустой каталог или удалите существующее содержимое перед установкой.\n' ;;
+            directory_missing) printf '%s' 'Каталог установки не существует: %s\n' ;;
+            openssl_required) printf '%s' 'Для создания SECURITY_KEY требуется openssl\n' ;;
+            backend_ready) printf '%s' 'Gml.Backend готов к работе' ;;
+            admin_panel) printf '%s' 'Панель администратора:' ;;
+            backend_removed) printf '%s' 'Gml.Backend удалён, каталог сохранён в резервной копии' ;;
+            step_detect_os) printf '%s' '[Gml] Определение операционной системы' ;;
+            step_prepare_os) printf '%s' '[Gml] Подготовка операционной системы' ;;
+            step_install_curl) printf '%s' '[Gml] Установка curl' ;;
+            step_install_openssl) printf '%s' '[Gml] Установка openssl' ;;
+            step_install_docker) printf '%s' '[Gml] Установка Docker' ;;
+            step_check_empty_directory) printf '%s' '[Gml] Проверка, что каталог установки пуст' ;;
+            step_check_directory) printf '%s' '[Gml] Проверка каталога установки' ;;
+            step_create_directory) printf '%s' '[Gml] Создание каталога установки' ;;
+            step_download_compose) printf '%s' '[Gml] Загрузка docker-compose.yml' ;;
+            step_update_env) printf '%s' '[Gml] Создание или обновление .env' ;;
+            step_start_compose) printf '%s' '[Gml] Запуск docker compose' ;;
+            step_stop_compose) printf '%s' '[Gml] Остановка docker compose' ;;
+            step_stop_compose_volumes) printf '%s' '[Gml] Остановка docker compose и удаление томов' ;;
+            step_remove_images) printf '%s' '[Gml] Удаление Docker-образов' ;;
+            step_backup_directory) printf '%s' '[Gml] Создание резервной копии каталога установки' ;;
+            *) message_format "en" "$key" ;;
+        esac
+        return
+    fi
+
+    case "$key" in
+        usage_heading) printf '%s' 'Usage:\n' ;;
+        usage_install) printf '%s' '  %s install [--version <version>] [--dir <path>] [--lang <ru|en>]\n' ;;
+        usage_update) printf '%s' '  %s update [--version <version>] [--dir <path>] [--lang <ru|en>]\n' ;;
+        usage_delete) printf '%s' '  %s delete [--dir <path>] [--lang <ru|en>]\n' ;;
+        usage_interactive) printf '%s' '  %s [--lang <ru|en>]\n' ;;
+        commands_heading) printf '%s' 'Commands:\n' ;;
+        command_install) printf '%s' '  install    Install Gml.Backend\n' ;;
+        command_update) printf '%s' '  update     Update Gml.Backend\n' ;;
+        command_delete) printf '%s' '  delete     Stop containers and move the install directory to a backup\n' ;;
+        options_heading) printf '%s' 'Options:\n' ;;
+        option_version) printf '%s' '  --version  Override Docker image version tag. Used by install and update.\n' ;;
+        option_dir) printf '%s' '  --dir      Installation directory. Defaults to %s.\n' ;;
+        option_lang) printf '%s' '  --lang     Interface language: ru or en. Defaults to the system locale.\n' ;;
+        option_help) printf '%s' '  -h, --help Show this help.\n' ;;
+        error_prefix) printf '%s' '[Gml] Error: %s\n' ;;
+        option_requires_value) printf '%s' '%s requires a value' ;;
+        unsupported_language) printf '%s' 'Unsupported language: %s. Available languages: ru, en' ;;
+        unknown_command) printf '%s' 'Unknown command: %s' ;;
+        unknown_argument) printf '%s' 'Unknown argument: %s' ;;
+        unknown_action) printf '%s' 'Unknown action: %s' ;;
+        no_stable_tags) printf '%s' 'No stable version tags found at %s\n' ;;
+        action_menu) printf '%b' 'Select action:\n  1) install\n  2) update\n  3) delete\n' ;;
+        action_prompt) printf '%s' 'Action [1]: ' ;;
+        installation_directory) printf '%s' 'Installation directory' ;;
+        gml_version) printf '%s' 'Gml version' ;;
+        latest_version_error) printf '%s' 'Unable to resolve the latest stable version from GitHub. Pass --version to use a specific version.' ;;
+        using_latest_version) printf '%s' '[Gml] Using latest stable version: %s\n' ;;
+        root_required) printf '%s' 'This script must be run as root' ;;
+        step_failed) printf '%s' '[Gml] Step failed: %s (exit code %s)\n' ;;
+        last_log_lines) printf '%s' '[Gml] Last log lines:\n' ;;
+        no_package_manager) printf '%s' 'No supported package manager found\n' ;;
+        directory_not_empty) printf '%s' 'Installation directory is not empty: %s\n' ;;
+        choose_empty_directory) printf '%s' 'Choose an empty directory or remove the existing contents before installing.\n' ;;
+        directory_missing) printf '%s' 'Installation directory does not exist: %s\n' ;;
+        openssl_required) printf '%s' 'openssl is required to generate SECURITY_KEY\n' ;;
+        backend_ready) printf '%s' 'Gml.Backend is ready' ;;
+        admin_panel) printf '%s' 'Admin panel:' ;;
+        backend_removed) printf '%s' 'Gml.Backend was removed and backed up' ;;
+        step_detect_os) printf '%s' '[Gml] Detecting operating system' ;;
+        step_prepare_os) printf '%s' '[Gml] Preparing operating system' ;;
+        step_install_curl) printf '%s' '[Gml] Installing curl' ;;
+        step_install_openssl) printf '%s' '[Gml] Installing openssl' ;;
+        step_install_docker) printf '%s' '[Gml] Installing Docker' ;;
+        step_check_empty_directory) printf '%s' '[Gml] Checking installation directory is empty' ;;
+        step_check_directory) printf '%s' '[Gml] Checking installation directory' ;;
+        step_create_directory) printf '%s' '[Gml] Creating installation directory' ;;
+        step_download_compose) printf '%s' '[Gml] Downloading docker-compose.yml' ;;
+        step_update_env) printf '%s' '[Gml] Creating or updating .env' ;;
+        step_start_compose) printf '%s' '[Gml] Starting docker compose' ;;
+        step_stop_compose) printf '%s' '[Gml] Stopping docker compose' ;;
+        step_stop_compose_volumes) printf '%s' '[Gml] Stopping docker compose and volumes' ;;
+        step_remove_images) printf '%s' '[Gml] Removing Docker images' ;;
+        step_backup_directory) printf '%s' '[Gml] Backing up installation directory' ;;
+        *) printf '%s' "$key" ;;
+    esac
+}
+
+# Print a translated message using the selected language and optional arguments.
+message() {
+    key="$1"
+    shift
+    # The sentinel preserves trailing newlines that command substitution removes.
+    format=$(message_format "$GML_MANAGER_LANGUAGE" "$key"; printf '_')
+    format=${format%_}
+    # shellcheck disable=SC2059 -- the format comes from the built-in dictionary.
+    printf "$format" "$@"
+}
+
+# Set one of the explicitly supported interface languages.
+set_language() {
+    case "$1" in
+        ru|en)
+            GML_MANAGER_LANGUAGE="$1"
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+# Pick a language from the highest-priority locale environment variable.
+set_language_from_environment() {
+    locale_name=${LC_ALL:-${LC_MESSAGES:-${LANG:-}}}
+
+    case "$locale_name" in
+        ru|ru_*|ru.*|ru-*) GML_MANAGER_LANGUAGE="ru" ;;
+        *) GML_MANAGER_LANGUAGE="en" ;;
+    esac
+}
+
+# Pre-scan arguments so --lang affects help and argument parsing errors.
+detect_language() {
+    requested_language=""
+
+    while [ "$#" -gt 0 ]; do
+        if [ "$1" = "--lang" ] && [ "$#" -gt 1 ]; then
+            requested_language="$2"
+            shift 2
+        else
+            shift
+        fi
+    done
+
+    if [ -n "$requested_language" ] && set_language "$requested_language"; then
+        return 0
+    fi
+
+    set_language_from_environment
+}
 
 # Print the GML Manager banner when the script starts.
 print_banner() {
@@ -33,28 +212,27 @@ EOF
 
 # Print command-line usage for both scripted and interactive workflows.
 print_usage() {
-    cat <<EOF
-Usage:
-  $0 install [--version <version>] [--dir <path>]
-  $0 update [--version <version>] [--dir <path>]
-  $0 delete [--dir <path>]
-  $0
-
-Commands:
-  install    Install Gml.Backend
-  update     Update Gml.Backend
-  delete     Stop containers and move the install directory to a backup
-
-Options:
-  --version  Override Docker image version tag. Used by install and update.
-  --dir      Installation directory. Defaults to $DEFAULT_BASE_DIR.
-  -h, --help Show this help.
-EOF
+    message usage_heading
+    message usage_install "$0"
+    message usage_update "$0"
+    message usage_delete "$0"
+    message usage_interactive "$0"
+    printf '\n'
+    message commands_heading
+    message command_install
+    message command_update
+    message command_delete
+    printf '\n'
+    message options_heading
+    message option_version
+    message option_dir "$DEFAULT_BASE_DIR"
+    message option_lang
+    message option_help
 }
 
 # Stop immediately with a consistent error prefix.
 error() {
-    echo "[Gml] Error: $*" >&2
+    message error_prefix "$*" >&2
     exit 1
 }
 
@@ -64,7 +242,7 @@ require_value() {
     value="${2:-}"
 
     if [ -z "$value" ]; then
-        error "$option requires a value"
+        error "$(message option_requires_value "$option")"
     fi
 }
 
@@ -75,22 +253,29 @@ parse_args() {
         return 0
     fi
 
-    case "$1" in
-        install|update|delete)
-            ACTION="$1"
-            shift
-            ;;
-        -h|--help)
-            print_usage
-            exit 0
-            ;;
-        *)
-            error "Unknown command: $1"
-            ;;
-    esac
-
     while [ "$#" -gt 0 ]; do
         case "$1" in
+            install)
+                if [ -n "$ACTION" ]; then
+                    error "$(message unknown_argument "$1")"
+                fi
+                ACTION="install"
+                shift
+                ;;
+            update)
+                if [ -n "$ACTION" ]; then
+                    error "$(message unknown_argument "$1")"
+                fi
+                ACTION="update"
+                shift
+                ;;
+            delete)
+                if [ -n "$ACTION" ]; then
+                    error "$(message unknown_argument "$1")"
+                fi
+                ACTION="delete"
+                shift
+                ;;
             --version)
                 require_value "$1" "${2:-}"
                 VERSION="$2"
@@ -101,15 +286,34 @@ parse_args() {
                 BASE_DIR="$2"
                 shift 2
                 ;;
+            --lang)
+                require_value "$1" "${2:-}"
+                if ! set_language "$2"; then
+                    error "$(message unsupported_language "$2")"
+                fi
+                shift 2
+                ;;
             -h|--help)
-                print_usage
-                exit 0
+                SHOW_HELP=1
+                shift
                 ;;
             *)
-                error "Unknown argument: $1"
+                if [ -z "$ACTION" ]; then
+                    error "$(message unknown_command "$1")"
+                fi
+                error "$(message unknown_argument "$1")"
                 ;;
         esac
     done
+
+    if [ "$SHOW_HELP" -eq 1 ]; then
+        print_usage
+        exit 0
+    fi
+
+    if [ -z "$ACTION" ]; then
+        INTERACTIVE_MODE=1
+    fi
 }
 
 # Extract the greatest stable numeric tag (vN.N[.N...]) from GitHub tags JSON.
@@ -196,7 +400,7 @@ fetch_latest_stable_version() {
     latest_version=$(curl -fsSL "$tags_url" | extract_latest_stable_tag)
 
     if [ -z "$latest_version" ]; then
-        echo "No stable version tags found at $tags_url" >&2
+        message no_stable_tags "$tags_url" >&2
         return 1
     fi
 
@@ -231,11 +435,8 @@ prompt_with_default() {
 
 # Interactive action selector used when the script is launched without a command.
 prompt_action() {
-    echo "Select action:" >&2
-    echo "  1) install" >&2
-    echo "  2) update" >&2
-    echo "  3) delete" >&2
-    printf "Action [1]: " >&2
+    message action_menu >&2
+    message action_prompt >&2
     read_prompt_answer
 
     case "${PROMPT_ANSWER:-1}" in
@@ -249,7 +450,7 @@ prompt_action() {
             ACTION="delete"
             ;;
         *)
-            error "Unknown action: $PROMPT_ANSWER"
+            error "$(message unknown_action "$PROMPT_ANSWER")"
             ;;
     esac
 }
@@ -273,7 +474,7 @@ resolve_action_and_base_dir() {
     fi
 
     if [ -z "$BASE_DIR" ]; then
-        prompt_with_default "Installation directory" "$DEFAULT_BASE_DIR"
+        prompt_with_default "$(message installation_directory)" "$DEFAULT_BASE_DIR"
         BASE_DIR="$PROMPT_ANSWER"
     fi
 }
@@ -283,21 +484,21 @@ resolve_version_input() {
     case "$ACTION" in
         install|update)
             if [ -z "$VERSION" ]; then
-                latest_version=$(fetch_latest_stable_version) || error "Unable to resolve the latest stable version from GitHub. Pass --version to use a specific version."
+                latest_version=$(fetch_latest_stable_version) || error "$(message latest_version_error)"
 
                 if [ "$INTERACTIVE_MODE" -eq 1 ]; then
-                    prompt_with_default "Gml version" "$latest_version"
+                    prompt_with_default "$(message gml_version)" "$latest_version"
                     VERSION="$PROMPT_ANSWER"
                 else
                     VERSION="$latest_version"
-                    echo "[Gml] Using latest stable version: $VERSION" >&2
+                    message using_latest_version "$VERSION" >&2
                 fi
             fi
             ;;
         delete)
             ;;
         *)
-            error "Unknown action: $ACTION"
+            error "$(message unknown_action "$ACTION")"
             ;;
     esac
 }
@@ -311,7 +512,7 @@ resolve_inputs() {
 # Root is required because the script installs packages and controls Docker.
 require_root() {
     if [ "$(id -u)" -ne 0 ]; then
-        error "This script must be run as root"
+        error "$(message root_required)"
     fi
 }
 
@@ -357,9 +558,9 @@ run_step() {
     result="$?"
 
     if [ "$result" -ne 0 ]; then
-        echo "[Gml] Step failed: $text (exit code $result)" >&2
+        message step_failed "$text" "$result" >&2
         if [ -s "$log_file" ]; then
-            echo "[Gml] Last log lines:" >&2
+            message last_log_lines >&2
             tail -n 40 "$log_file" >&2
         fi
         rm -f "$log_file"
@@ -415,7 +616,7 @@ install_package() {
     elif command -v pacman >/dev/null 2>&1; then
         pacman -Sy --noconfirm "$package"
     else
-        echo "No supported package manager found" >&2
+        message no_package_manager >&2
         return 1
     fi
 }
@@ -481,8 +682,8 @@ ensure_install_directory_empty() {
     fi
 
     if find "$BASE_DIR" -mindepth 1 -maxdepth 1 | grep -q .; then
-        echo "Installation directory is not empty: $BASE_DIR" >&2
-        echo "Choose an empty directory or remove the existing contents before installing." >&2
+        message directory_not_empty "$BASE_DIR" >&2
+        message choose_empty_directory >&2
         return 1
     fi
 }
@@ -490,7 +691,7 @@ ensure_install_directory_empty() {
 # Updates and removals must target an existing installation directory.
 ensure_install_directory_exists() {
     if [ ! -d "$BASE_DIR" ]; then
-        echo "Installation directory does not exist: $BASE_DIR" >&2
+        message directory_missing "$BASE_DIR" >&2
         return 1
     fi
 }
@@ -509,7 +710,7 @@ generate_security_key() {
         return 0
     fi
 
-    echo "openssl is required to generate SECURITY_KEY" >&2
+    message openssl_required >&2
     return 1
 }
 
@@ -629,9 +830,10 @@ write_success_message() {
 
     echo
     printf "\033[32m==================================================\033[0m\n"
-    printf "\033[32mGml.Backend is ready\033[0m\n"
+    printf "\033[32m%s\033[0m\n" "$(message backend_ready)"
     printf "\033[32m==================================================\033[0m\n"
-    echo "Admin panel:"
+    message admin_panel
+    printf "\n"
 
     for ip in $ip_list; do
         [ -n "$ip" ] && echo " - http://$ip:$port/"
@@ -642,48 +844,49 @@ write_success_message() {
 write_delete_message() {
     echo
     printf "\033[32m==================================================\033[0m\n"
-    printf "\033[32mGml.Backend was removed and backed up\033[0m\n"
+    printf "\033[32m%s\033[0m\n" "$(message backend_removed)"
     printf "\033[32m==================================================\033[0m\n"
 }
 
 # Full installation flow. Every step must succeed before the next starts.
 run_install() {
-    run_step "[Gml] Detecting operating system" detect_os
-    run_step "[Gml] Preparing operating system" disable_additional_notify
-    run_step "[Gml] Installing curl" ensure_command curl curl
-    run_step "[Gml] Installing openssl" ensure_command openssl openssl
-    run_step "[Gml] Installing Docker" install_docker
-    run_step "[Gml] Checking installation directory is empty" ensure_install_directory_empty
-    run_step "[Gml] Creating installation directory" prepare_directory
-    run_step "[Gml] Downloading docker-compose.yml" download_compose
-    run_step "[Gml] Creating or updating .env" ensure_env
-    run_step "[Gml] Starting docker compose" docker_compose_up
+    run_step "$(message step_detect_os)" detect_os
+    run_step "$(message step_prepare_os)" disable_additional_notify
+    run_step "$(message step_install_curl)" ensure_command curl curl
+    run_step "$(message step_install_openssl)" ensure_command openssl openssl
+    run_step "$(message step_install_docker)" install_docker
+    run_step "$(message step_check_empty_directory)" ensure_install_directory_empty
+    run_step "$(message step_create_directory)" prepare_directory
+    run_step "$(message step_download_compose)" download_compose
+    run_step "$(message step_update_env)" ensure_env
+    run_step "$(message step_start_compose)" docker_compose_up
     write_success_message
 }
 
 # Update the compose file, version variable, images, and running containers.
 run_update() {
-    run_step "[Gml] Checking installation directory" ensure_install_directory_exists
-    run_step "[Gml] Installing curl" ensure_command curl curl
-    run_step "[Gml] Downloading docker-compose.yml" download_compose
-    run_step "[Gml] Creating or updating .env" ensure_env
-    run_step "[Gml] Stopping docker compose" docker_compose_down
-    run_step "[Gml] Removing Docker images" docker_compose_down_images
-    run_step "[Gml] Starting docker compose" docker_compose_up
+    run_step "$(message step_check_directory)" ensure_install_directory_exists
+    run_step "$(message step_install_curl)" ensure_command curl curl
+    run_step "$(message step_download_compose)" download_compose
+    run_step "$(message step_update_env)" ensure_env
+    run_step "$(message step_stop_compose)" docker_compose_down
+    run_step "$(message step_remove_images)" docker_compose_down_images
+    run_step "$(message step_start_compose)" docker_compose_up
     write_success_message
 }
 
 # Stop the stack, remove compose-managed resources, and back up the directory.
 run_delete() {
-    run_step "[Gml] Checking installation directory" ensure_install_directory_exists
-    run_step "[Gml] Stopping docker compose and volumes" docker_compose_down_volumes
-    run_step "[Gml] Removing Docker images" docker_compose_down_images
-    run_step "[Gml] Backing up installation directory" backup_install_directory
+    run_step "$(message step_check_directory)" ensure_install_directory_exists
+    run_step "$(message step_stop_compose_volumes)" docker_compose_down_volumes
+    run_step "$(message step_remove_images)" docker_compose_down_images
+    run_step "$(message step_backup_directory)" backup_install_directory
     write_delete_message
 }
 
 # Entrypoint: parse, validate privileges, resolve prompts, then dispatch.
 main() {
+    detect_language "$@"
     print_banner
     parse_args "$@"
     require_root
@@ -692,7 +895,7 @@ main() {
     case "$ACTION" in
         install|update)
             if [ -z "$VERSION" ]; then
-                run_step "[Gml] Installing curl" ensure_command curl curl
+                run_step "$(message step_install_curl)" ensure_command curl curl
             fi
             ;;
     esac
@@ -710,7 +913,7 @@ main() {
             run_delete
             ;;
         *)
-            error "Unknown action: $ACTION"
+            error "$(message unknown_action "$ACTION")"
             ;;
     esac
 }
