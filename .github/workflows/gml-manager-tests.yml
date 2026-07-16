@@ -67,6 +67,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate Gml Manager localization
+        run: |
+          set -eu
+          sh -n ./installer/gml-manager.sh
+
+          env -u LC_ALL -u LC_MESSAGES LANG=ru_RU.UTF-8 sh ./installer/gml-manager.sh --help | grep '^Использование:' >/dev/null
+          env -u LC_ALL -u LC_MESSAGES LANG=en_US.UTF-8 sh ./installer/gml-manager.sh --help | grep '^Usage:' >/dev/null
+          env LC_ALL=en_US.UTF-8 LC_MESSAGES=ru_RU.UTF-8 LANG=ru_RU.UTF-8 sh ./installer/gml-manager.sh --help | grep '^Usage:' >/dev/null
+          env -u LC_ALL LC_MESSAGES=ru_RU.UTF-8 LANG=en_US.UTF-8 sh ./installer/gml-manager.sh --help | grep '^Использование:' >/dev/null
+          env -u LC_ALL -u LC_MESSAGES LANG=ru_RU.UTF-8 sh ./installer/gml-manager.sh --lang en --help | grep '^Usage:' >/dev/null
+          env -u LC_ALL -u LC_MESSAGES LANG=unknown sh ./installer/gml-manager.sh --help | grep '^Usage:' >/dev/null
+
+          if missing_value_output="$(env -u LC_ALL -u LC_MESSAGES LANG=ru_RU.UTF-8 sh ./installer/gml-manager.sh --lang 2>&1)"; then
+            echo "Expected --lang without a value to fail"
+            exit 1
+          fi
+          printf '%s\n' "$missing_value_output" | grep 'требуется значение' >/dev/null
+
+          if unsupported_output="$(env -u LC_ALL -u LC_MESSAGES LANG=ru_RU.UTF-8 sh ./installer/gml-manager.sh --lang de --help 2>&1)"; then
+            echo "Expected an unsupported --lang value to fail"
+            exit 1
+          fi
+          printf '%s\n' "$unsupported_output" | grep 'Неподдерживаемый язык: de' >/dev/null
+
+          GML_MANAGER_SKIP_MAIN=1 sh -c '
+            . ./installer/gml-manager.sh
+            detect_language --lang ru
+            test "$GML_MANAGER_LANGUAGE" = ru
+            parse_args --lang ru install --version v1.2.3 --dir /tmp/gml
+            test "$ACTION" = install
+            test "$VERSION" = v1.2.3
+            test "$BASE_DIR" = /tmp/gml
+          '
+
       - name: Print VM info
         run: |
           set -eux
