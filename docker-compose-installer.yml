@@ -38,11 +38,9 @@ services:
     container_name: gml-web-proxy
     restart: always
     ports:
-      - "${PORT_GML_FRONTEND}:8080"
+      - "${PORT_GML_FRONTEND}:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8080;
-    user: "${UID}:${GID}"
+      - TZ=Europe/Moscow
     logging:
       driver: "json-file"
       options:

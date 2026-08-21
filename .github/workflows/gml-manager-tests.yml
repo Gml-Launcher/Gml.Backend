@@ -6,12 +6,12 @@ on:
       install_version:
         description: Docker image tag to install
         required: true
-        default: v2025.3.2
+        default: master
         type: string
       update_version:
         description: Docker image tag to update to
         required: true
-        default: v2025.3.1
+        default: master
         type: string
   push:
     branches:
@@ -60,8 +60,8 @@ jobs:
 
     env:
       INSTALL_DIR: /tmp/gml-manager-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.distro }}-${{ matrix.arch }}
-      INSTALL_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.install_version || 'v2025.3.2' }}
-      UPDATE_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.update_version || 'v2025.3.1' }}
+      INSTALL_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.install_version || 'master' }}
+      UPDATE_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.update_version || 'master' }}
 
     steps:
       - name: Checkout
@@ -114,6 +114,26 @@ jobs:
         run: |
           set -eux
           sudo rm -rf "$INSTALL_DIR" "$INSTALL_DIR"_backup_*
+
+      - name: Wait for the proxy image
+        run: |
+          set -eu
+          image="ghcr.io/gml-launcher/gml.web.proxy:$INSTALL_VERSION"
+
+          for attempt in $(seq 1 60); do
+            if sudo docker pull "$image" >/dev/null 2>&1; then
+              entrypoint="$(sudo docker image inspect --format '{{json .Config.Entrypoint}}' "$image")"
+              case "$entrypoint" in
+                *docker-entrypoint.sh*) exit 0 ;;
+              esac
+            fi
+
+            echo "Waiting for proxy image $image (attempt $attempt/60)"
+            sleep 10
+          done
+
+          echo "Proxy image was not published in time: $image" >&2
+          exit 1
 
       - name: Install Gml Manager stack
         run: |

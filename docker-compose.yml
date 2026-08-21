@@ -41,15 +41,11 @@ services:
     container_name: gml-web-proxy
     restart: always
     build:
-      context: src/Gml.Web.Proxy
-      dockerfile: Dockerfile
+      context: ./proxy
     ports:
-      - "${PORT_GML_FRONTEND}:8080"
+      - "${PORT_GML_FRONTEND}:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=DockerDevelopment
-      - ASPNETCORE_URLS=http://+:8080;
       - TZ=Europe/Moscow
-    user: "${UID}:${GID}"
     logging:
       driver: "json-file"
       options:
