@@ -12,6 +12,40 @@ export GML_MANAGER_SKIP_MAIN
 
 detect_language --lang ru
 test "$GML_MANAGER_LANGUAGE" = ru
+test "$GML_MANAGER_LANGUAGE_EXPLICIT" -eq 1
+
+GML_MANAGER_LANGUAGE=ru
+read_prompt_answer() { PROMPT_ANSWER=; }
+prompt_language >/dev/null 2>&1
+test "$GML_MANAGER_LANGUAGE" = ru
+
+GML_MANAGER_LANGUAGE=en
+read_prompt_answer() { PROMPT_ANSWER=; }
+prompt_language >/dev/null 2>&1
+test "$GML_MANAGER_LANGUAGE" = en
+
+GML_MANAGER_LANGUAGE=ru
+read_prompt_answer() { PROMPT_ANSWER=en; }
+prompt_language >/dev/null 2>&1
+test "$GML_MANAGER_LANGUAGE" = en
+
+GML_MANAGER_LANGUAGE=en
+read_prompt_answer() { PROMPT_ANSWER=1; }
+prompt_language >/dev/null 2>&1
+test "$GML_MANAGER_LANGUAGE" = ru
+
+GML_MANAGER_LANGUAGE=ru
+read_prompt_answer() { PROMPT_ANSWER=de; }
+! (prompt_language >/dev/null 2>&1)
+
+INTERACTIVE_MODE=1
+GML_MANAGER_LANGUAGE=en
+GML_MANAGER_LANGUAGE_EXPLICIT=1
+read_prompt_answer() { PROMPT_ANSWER=1; }
+resolve_language_input >/dev/null 2>&1
+test "$GML_MANAGER_LANGUAGE" = en
+
+GML_MANAGER_LANGUAGE=ru
 message compose_overwrite_warning | grep "docker-compose.yml будет заменён" >/dev/null
 read_prompt_answer() { PROMPT_ANSWER=да; }
 confirm_compose_overwrite >/dev/null 2>&1

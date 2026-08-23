@@ -25,7 +25,7 @@ The easiest way to start the installation manager:
 curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh
 ```
 
-Gml Manager will ask for the action, installation directory, version, and proxy mode interactively. The version prompt defaults to the latest stable GitHub tag. The default installation directory is `/srv/gml`.
+Gml Manager will ask for the language, action, installation directory, version, and proxy mode interactively. The language prompt defaults to the system locale, the version prompt defaults to the latest stable GitHub tag, and the default installation directory is `/srv/gml`.
 
 Two proxy modes are available:
 

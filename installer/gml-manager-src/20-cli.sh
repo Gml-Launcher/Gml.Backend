@@ -208,6 +208,25 @@ prompt_with_default() {
     fi
 }
 
+# Let interactive users confirm or override the language inferred from locale.
+prompt_language() {
+    message language_menu >&2
+    prompt_with_default "$(message language_prompt)" "$GML_MANAGER_LANGUAGE"
+
+    case "$PROMPT_ANSWER" in
+        1|ru) set_language "ru" ;;
+        2|en) set_language "en" ;;
+        *) error "$(message unsupported_language "$PROMPT_ANSWER")" ;;
+    esac
+}
+
+# Keep an explicit --lang value; otherwise ask only in the interactive workflow.
+resolve_language_input() {
+    if [ "$INTERACTIVE_MODE" -eq 1 ] && [ "$GML_MANAGER_LANGUAGE_EXPLICIT" -eq 0 ]; then
+        prompt_language
+    fi
+}
+
 # Interactive action selector used when the script is launched without a command.
 prompt_action() {
     message action_menu >&2
@@ -370,5 +389,3 @@ resolve_version_input() {
             ;;
     esac
 }
-
-

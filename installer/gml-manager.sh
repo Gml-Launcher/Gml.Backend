@@ -28,6 +28,7 @@ PROMPT_ANSWER=""
 INTERACTIVE_MODE=0
 SHOW_HELP=0
 GML_MANAGER_LANGUAGE="en"
+GML_MANAGER_LANGUAGE_EXPLICIT=0
 
 # Return a localized message format. English is the fallback for missing keys.
 message_format() {
@@ -56,6 +57,8 @@ message_format() {
             error_prefix) printf '%s' '[Gml] Ошибка: %s\n' ;;
             option_requires_value) printf '%s' 'Для параметра %s требуется значение' ;;
             unsupported_language) printf '%s' 'Неподдерживаемый язык: %s. Доступные языки: ru, en' ;;
+            language_menu) printf '%b' 'Выберите язык:\n  1) Русский\n  2) English\n' ;;
+            language_prompt) printf '%s' 'Язык' ;;
             unknown_command) printf '%s' 'Неизвестная команда: %s' ;;
             unknown_argument) printf '%s' 'Неизвестный аргумент: %s' ;;
             unknown_action) printf '%s' 'Неизвестное действие: %s' ;;
@@ -82,7 +85,7 @@ message_format() {
             directory_not_empty) printf '%s' 'Каталог установки не пуст: %s\n' ;;
             choose_empty_directory) printf '%s' 'Выберите пустой каталог или удалите существующее содержимое перед установкой.\n' ;;
             directory_missing) printf '%s' 'Каталог установки не существует: %s\n' ;;
-            compose_overwrite_warning) printf '%s' '[Gml] Внимание: docker-compose.yml будет заменён актуальным шаблоном, а ручные изменения в этом файле будут потеряны. Вы готовы продолжить обновление? [y/N]: ' ;;
+            compose_overwrite_warning) printf '%s' '[Gml] Внимание: docker-compose.yml будет заменён актуальным шаблоном, а ручные изменения в этом файле будут потеряны.\nВы готовы продолжить обновление? [y/N]: ' ;;
             update_cancelled) printf '%s' '[Gml] Обновление отменено. Файлы не изменены.\n' ;;
             openssl_required) printf '%s' 'Для создания SECURITY_KEY требуется openssl\n' ;;
             backend_ready) printf '%s' 'Gml.Backend готов к работе' ;;
@@ -131,6 +134,8 @@ message_format() {
         error_prefix) printf '%s' '[Gml] Error: %s\n' ;;
         option_requires_value) printf '%s' '%s requires a value' ;;
         unsupported_language) printf '%s' 'Unsupported language: %s. Available languages: ru, en' ;;
+        language_menu) printf '%b' 'Select language:\n  1) Русский\n  2) English\n' ;;
+        language_prompt) printf '%s' 'Language' ;;
         unknown_command) printf '%s' 'Unknown command: %s' ;;
         unknown_argument) printf '%s' 'Unknown argument: %s' ;;
         unknown_action) printf '%s' 'Unknown action: %s' ;;
@@ -157,7 +162,7 @@ message_format() {
         directory_not_empty) printf '%s' 'Installation directory is not empty: %s\n' ;;
         choose_empty_directory) printf '%s' 'Choose an empty directory or remove the existing contents before installing.\n' ;;
         directory_missing) printf '%s' 'Installation directory does not exist: %s\n' ;;
-        compose_overwrite_warning) printf '%s' '[Gml] Warning: docker-compose.yml will be replaced with the current template, and manual changes in this file will be lost. Are you ready to continue with the update? [y/N]: ' ;;
+        compose_overwrite_warning) printf '%s' '[Gml] Warning: docker-compose.yml will be replaced with the current template, and manual changes in this file will be lost.\nAre you ready to continue with the update? [y/N]: ' ;;
         update_cancelled) printf '%s' '[Gml] Update cancelled. No files were changed.\n' ;;
         openssl_required) printf '%s' 'openssl is required to generate SECURITY_KEY\n' ;;
         backend_ready) printf '%s' 'Gml.Backend is ready' ;;
@@ -221,6 +226,7 @@ set_language_from_environment() {
 # Pre-scan arguments so --lang affects help and argument parsing errors.
 detect_language() {
     requested_language=""
+    GML_MANAGER_LANGUAGE_EXPLICIT=0
 
     while [ "$#" -gt 0 ]; do
         if [ "$1" = "--lang" ] && [ "$#" -gt 1 ]; then
@@ -232,6 +238,7 @@ detect_language() {
     done
 
     if [ -n "$requested_language" ] && set_language "$requested_language"; then
+        GML_MANAGER_LANGUAGE_EXPLICIT=1
         return 0
     fi
 
@@ -280,7 +287,6 @@ error() {
     message error_prefix "$*" >&2
     exit 1
 }
-
 
 # Validate that an option expecting a value actually received one.
 require_value() {
@@ -492,6 +498,25 @@ prompt_with_default() {
     fi
 }
 
+# Let interactive users confirm or override the language inferred from locale.
+prompt_language() {
+    message language_menu >&2
+    prompt_with_default "$(message language_prompt)" "$GML_MANAGER_LANGUAGE"
+
+    case "$PROMPT_ANSWER" in
+        1|ru) set_language "ru" ;;
+        2|en) set_language "en" ;;
+        *) error "$(message unsupported_language "$PROMPT_ANSWER")" ;;
+    esac
+}
+
+# Keep an explicit --lang value; otherwise ask only in the interactive workflow.
+resolve_language_input() {
+    if [ "$INTERACTIVE_MODE" -eq 1 ] && [ "$GML_MANAGER_LANGUAGE_EXPLICIT" -eq 0 ]; then
+        prompt_language
+    fi
+}
+
 # Interactive action selector used when the script is launched without a command.
 prompt_action() {
     message action_menu >&2
@@ -654,7 +679,6 @@ resolve_version_input() {
             ;;
     esac
 }
-
 
 # Accept a single ASCII hostname.
 validate_proxy_domain() {
@@ -1401,6 +1425,7 @@ main() {
     detect_language "$@"
     print_banner
     parse_args "$@"
+    resolve_language_input
     require_root
     resolve_action_and_base_dir
     resolve_proxy_inputs

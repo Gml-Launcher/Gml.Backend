@@ -3,6 +3,7 @@ main() {
     detect_language "$@"
     print_banner
     parse_args "$@"
+    resolve_language_input
     require_root
     resolve_action_and_base_dir
     resolve_proxy_inputs
@@ -36,4 +37,3 @@ main() {
 if [ "${GML_MANAGER_SKIP_MAIN:-0}" != "1" ]; then
     main "$@"
 fi
-
