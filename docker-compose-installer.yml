@@ -6,6 +6,12 @@
 
 name: gml-core
 
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "5"
+
 services:
 
   gml-web-api:
@@ -31,11 +37,7 @@ services:
       - SERVICE_TEXTURE_ENDPOINT=${SERVICE_TEXTURE_ENDPOINT}
       - TZ=Europe/Moscow
     user: "${UID}:${GID}"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     networks:
       - gml-network
 
@@ -59,11 +61,7 @@ services:
       - GML_PROXY_DOMAIN=${GML_PROXY_DOMAIN:-}
     volumes:
       - gml-proxy-acme:/var/lib/angie/acme
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     networks:
       - gml-network
 
@@ -75,11 +73,7 @@ services:
       - ":8081"
     networks:
       - gml-network
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     environment:
       - TZ=Europe/Moscow
 
@@ -96,11 +90,7 @@ services:
       - ASPNETCORE_URLS=http://+:8085;
       - TZ=Europe/Moscow
     user: "${UID}:${GID}"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     volumes:
       - ./data/TextureService:/app/Storage
 
