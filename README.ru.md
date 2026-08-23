@@ -25,7 +25,14 @@ Gml.Backend — комплексный проект для быстрого ра
 curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh
 ```
 
-Gml Manager интерактивно предложит выбрать действие, директорию установки и версию. По умолчанию используется последний стабильный тег GitHub, а проект устанавливается в `/srv/gml`.
+Gml Manager интерактивно предложит выбрать действие, директорию установки, версию и режим прокси. По умолчанию используется последний стабильный тег GitHub, а проект устанавливается в `/srv/gml`.
+
+Доступны два режима прокси:
+
+- `external` — GML работает по HTTP на `PORT_GML_FRONTEND` за существующим nginx или другим reverse proxy;
+- `global` — Angie занимает публичные порты 80/443 и автоматически получает сертификат Let’s Encrypt для `GML_PROXY_DOMAIN`.
+
+Перед включением `global` менеджер проверяет, что порты 80/443 свободны, DNS A указывает на публичный IPv4 сервера, а существующая AAAA-запись — на его публичный IPv6. Проксирование DNS через Cloudflare/CDN этим режимом не поддерживается.
 
 Если вы уже работаете от имени `root`, используйте `sh` без `sudo`:
 
@@ -38,6 +45,14 @@ curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/
 ```bash
 curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh -s -- install --dir /srv/gml
 ```
+
+Неинтерактивная установка Angie как основного HTTPS-прокси:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh -s -- install --dir /srv/gml --proxy-mode global --domain gml.example.com --accept-acme-terms
+```
+
+Те же параметры можно передать команде `update`, чтобы перейти между `external` и `global`. Если `--proxy-mode` при обновлении не указан, текущий режим сохраняется.
 
 Указывайте `--version`, только если хотите закрепить определённый тег Docker-образов:
 

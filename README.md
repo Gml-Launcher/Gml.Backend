@@ -25,7 +25,14 @@ The easiest way to start the installation manager:
 curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh
 ```
 
-Gml Manager will ask for the action, installation directory, and version interactively. The version prompt defaults to the latest stable GitHub tag. The default installation directory is `/srv/gml`.
+Gml Manager will ask for the action, installation directory, version, and proxy mode interactively. The version prompt defaults to the latest stable GitHub tag. The default installation directory is `/srv/gml`.
+
+Two proxy modes are available:
+
+- `external` — GML uses HTTP on `PORT_GML_FRONTEND` behind an existing nginx or another reverse proxy;
+- `global` — Angie binds public ports 80/443 and automatically obtains a Let’s Encrypt certificate for `GML_PROXY_DOMAIN`.
+
+Before enabling `global`, the manager verifies that ports 80/443 are free, the DNS A record points to the server's public IPv4, and any existing AAAA record points to its public IPv6. DNS proxying through Cloudflare/CDNs is not supported in this mode.
 
 If you are already running as `root`, you can use `sh` without `sudo`:
 
@@ -38,6 +45,14 @@ For a non-interactive installation, pass arguments through `sh -s --`:
 ```bash
 curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh -s -- install --dir /srv/gml
 ```
+
+To install Angie as the primary HTTPS proxy non-interactively:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh -s -- install --dir /srv/gml --proxy-mode global --domain gml.example.com --accept-acme-terms
+```
+
+The same options can be passed to `update` to switch between `external` and `global`. If `--proxy-mode` is omitted during an update, the current mode is preserved.
 
 Pass `--version` only when you want to pin a specific Docker image tag:
 

@@ -31,29 +31,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install proxy
+      - name: Build proxy image
         run: |
-          sudo apt-get update
-          sudo apt-get install -y nginx
+          docker build -t gml-web-proxy:test ./proxy
 
-      - name: Validate proxy config
+      - name: Validate external proxy config
         run: |
-          sudo tee -a /etc/hosts >/dev/null <<'EOF'
-          127.0.0.1 gml-web-api
-          127.0.0.1 gml-web-frontend
-          127.0.0.1 gml-web-skins
-          EOF
+          docker run --rm \
+            --add-host gml-web-api:127.0.0.1 \
+            --add-host gml-web-frontend:127.0.0.1 \
+            --add-host gml-web-skins:127.0.0.1 \
+            -e GML_PROXY_MODE=external \
+            gml-web-proxy:test angie -t
 
-          cat > /tmp/gml-proxy.conf <<'EOF'
-          pid /tmp/gml-proxy.pid;
-          events {}
-          http {
-              include /etc/nginx/mime.types;
-              include ${{ github.workspace }}/proxy/default.conf;
-          }
-          EOF
-
-          sudo nginx -t -c /tmp/gml-proxy.conf
+      - name: Validate global ACME proxy config
+        run: |
+          docker run --rm \
+            --add-host gml-web-api:127.0.0.1 \
+            --add-host gml-web-frontend:127.0.0.1 \
+            --add-host gml-web-skins:127.0.0.1 \
+            -e GML_PROXY_MODE=global \
+            -e GML_PROXY_DOMAIN=gml.example.com \
+            gml-web-proxy:test angie -t
 
   publish:
     runs-on: ubuntu-latest

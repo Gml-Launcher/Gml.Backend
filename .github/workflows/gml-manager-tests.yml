@@ -18,6 +18,9 @@ on:
       - master
     paths:
       - "installer/gml-manager.sh"
+      - "installer/build-gml-manager.sh"
+      - "installer/gml-manager-src/**"
+      - "installer/tests/**"
       - "installer/installer.env"
       - "docker-compose-installer.yml"
       - ".github/workflows/gml-manager-tests.yml"
@@ -67,6 +70,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate generated Gml Manager
+        run: |
+          set -eu
+          sh ./installer/build-gml-manager.sh --check
+          first_checksum=$(cksum < ./installer/gml-manager.sh)
+          sh ./installer/build-gml-manager.sh
+          second_checksum=$(cksum < ./installer/gml-manager.sh)
+          sh ./installer/build-gml-manager.sh
+          third_checksum=$(cksum < ./installer/gml-manager.sh)
+          test "$first_checksum" = "$second_checksum"
+          test "$second_checksum" = "$third_checksum"
+          git diff --exit-code -- ./installer/gml-manager.sh
+          git diff --check
+          test -x ./installer/build-gml-manager.sh
+          test -x ./installer/gml-manager.sh
+          test -x ./installer/tests/gml-manager-unit.sh
+          sh -n ./installer/build-gml-manager.sh
+          sh -n ./installer/gml-manager.sh
+          sh -n ./installer/tests/gml-manager-unit.sh
+          for module_file in ./installer/gml-manager-src/*.sh; do
+            sh -n "$module_file"
+          done
+
+      - name: Run Gml Manager unit tests
+        run: sh ./installer/tests/gml-manager-unit.sh
+
       - name: Validate Gml Manager localization
         run: |
           set -eu
@@ -91,15 +120,11 @@ jobs:
           fi
           printf '%s\n' "$unsupported_output" | grep 'Неподдерживаемый язык: de' >/dev/null
 
-          GML_MANAGER_SKIP_MAIN=1 sh -c '
-            . ./installer/gml-manager.sh
-            detect_language --lang ru
-            test "$GML_MANAGER_LANGUAGE" = ru
-            parse_args --lang ru install --version v1.2.3 --dir /tmp/gml
-            test "$ACTION" = install
-            test "$VERSION" = v1.2.3
-            test "$BASE_DIR" = /tmp/gml
-          '
+      - name: Validate installer compose templates
+        run: |
+          docker compose --env-file installer/installer.env -f docker-compose-installer.yml config >/dev/null
+          GML_PROXY_MODE=global GML_PROXY_DOMAIN=gml.example.com PORT_GML_FRONTEND=80 GML_PROXY_HTTPS_PORT=443 \
+            docker compose --env-file installer/installer.env -f docker-compose-installer.yml config >/dev/null
 
       - name: Print VM info
         run: |
@@ -124,7 +149,7 @@ jobs:
             if sudo docker pull "$image" >/dev/null 2>&1; then
               entrypoint="$(sudo docker image inspect --format '{{json .Config.Entrypoint}}' "$image")"
               case "$entrypoint" in
-                *docker-entrypoint.sh*) exit 0 ;;
+                *init*) exit 0 ;;
               esac
             fi
 
@@ -146,6 +171,9 @@ jobs:
           sudo test -f "$INSTALL_DIR/.env"
           sudo test -f "$INSTALL_DIR/docker-compose.yml"
           sudo grep -qx "GML_VERSION=$INSTALL_VERSION" "$INSTALL_DIR/.env"
+          sudo grep -qx "GML_PROXY_MODE=external" "$INSTALL_DIR/.env"
+          sudo grep -qx "GML_PROXY_DOMAIN=" "$INSTALL_DIR/.env"
+          sudo grep -qx "GML_PROXY_HTTPS_PORT=0" "$INSTALL_DIR/.env"
 
       - name: Validate Docker Compose state
         run: |
@@ -210,7 +238,7 @@ jobs:
       - name: Update Gml Manager stack
         run: |
           set -eux
-          sudo sh ./installer/gml-manager.sh update --version "$UPDATE_VERSION" --dir "$INSTALL_DIR"
+          printf 'y\n' | sudo sh ./installer/gml-manager.sh update --version "$UPDATE_VERSION" --dir "$INSTALL_DIR"
           sudo grep -qx "GML_VERSION=$UPDATE_VERSION" "$INSTALL_DIR/.env"
 
       - name: Validate updated Docker Compose state

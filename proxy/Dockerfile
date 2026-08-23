@@ -1,5 +1,9 @@
-FROM nginx:1.31-alpine
+FROM docker.angie.software/angie:1.12.1-templated
 
-COPY default.conf /etc/nginx/conf.d/default.conf
+ENV GML_PROXY_MODE=external \
+    GML_PROXY_DOMAIN=
 
-EXPOSE 80
+COPY angie.conf /etc/angie/templates/angie.conf
+COPY gml-routes.conf /etc/angie/gml-routes.conf
+
+EXPOSE 80 443

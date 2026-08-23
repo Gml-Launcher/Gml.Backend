@@ -1,3 +1,9 @@
+# ВНИМАНИЕ: если установка управляется через gml-manager.sh, этот файл
+# автоматически перезаписывается при обновлении. Не храните здесь ручные изменения.
+#
+# WARNING: if the installation is managed with gml-manager.sh, this file is
+# automatically overwritten during updates. Do not keep manual changes here.
+
 name: gml-core
 
 services:
@@ -38,9 +44,21 @@ services:
     container_name: gml-web-proxy
     restart: always
     ports:
-      - "${PORT_GML_FRONTEND}:80"
+      # external uses the configured frontend port; global sets it to 80.
+      - target: 80
+        published: "${PORT_GML_FRONTEND:-5003}"
+        protocol: tcp
+      # Port 0 asks Docker for an ephemeral port, leaving host 443 available to
+      # the outer nginx. In global mode the installer sets this value to 443.
+      - target: 443
+        published: "${GML_PROXY_HTTPS_PORT:-0}"
+        protocol: tcp
     environment:
       - TZ=Europe/Moscow
+      - GML_PROXY_MODE=${GML_PROXY_MODE:-external}
+      - GML_PROXY_DOMAIN=${GML_PROXY_DOMAIN:-}
+    volumes:
+      - gml-proxy-acme:/var/lib/angie/acme
     logging:
       driver: "json-file"
       options:
@@ -92,3 +110,4 @@ networks:
 
 volumes:
   gml-system-data:
+  gml-proxy-acme:
