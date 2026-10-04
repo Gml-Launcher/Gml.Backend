@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - master
+      - new_proxy
     tags:
       - "*"
     paths:
-      - "proxy/**"
+      - "src/Proxy/**"
       - ".github/workflows/proxy.yml"
   workflow_dispatch:
     inputs:
@@ -33,7 +34,7 @@ jobs:
 
       - name: Build proxy image
         run: |
-          docker build -t gml-web-proxy:test ./proxy
+          docker build -t gml-web-proxy:test ./src/Proxy
 
       - name: Validate external proxy config
         run: |
@@ -96,7 +97,7 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
-          context: ./proxy
+          context: ./src/Proxy
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.tags.outputs.value }}
