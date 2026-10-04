@@ -1,6 +1,10 @@
 name: Proxy Docker Image
 
 on:
+  pull_request:
+    paths:
+      - "src/Proxy/**"
+      - ".github/workflows/proxy.yml"
   push:
     branches:
       - master
@@ -19,7 +23,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 env:
   IMAGE_PACKAGE: gml.web.proxy
@@ -56,8 +59,12 @@ jobs:
             gml-web-proxy:test angie -t
 
   publish:
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     needs: validate
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout
