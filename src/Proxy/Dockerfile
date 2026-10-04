@@ -1,5 +1,7 @@
 FROM docker.angie.software/angie:1.12.1-templated
 
+LABEL org.opencontainers.image.source="https://github.com/Gml-Launcher/Gml.Backend"
+
 ENV GML_PROXY_MODE=external \
     GML_PROXY_DOMAIN=
 
