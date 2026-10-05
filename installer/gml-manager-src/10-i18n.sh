@@ -21,7 +21,7 @@ message_format() {
             option_lang) printf '%s' '  --lang     Язык интерфейса: ru или en. По умолчанию определяется по локали системы.\n' ;;
             option_proxy_mode) printf '%s' '  --proxy-mode Режим прокси: external (за другим прокси) или global (публичные 80/443 и Let’s Encrypt).\n' ;;
             option_domain) printf '%s' '  --domain   Публичный домен для прокси режима global.\n' ;;
-            option_acme_terms) printf '%s' '  --accept-acme-terms Подтвердить условия Let’s Encrypt для прокси режима global.\n' ;;
+            option_acme_terms) printf '%s' '  --accept-acme-terms Подтвердить условия Let’s Encrypt для прокси режима global: https://letsencrypt.org/repository/\n' ;;
             option_help) printf '%s' '  -h, --help Показать эту справку.\n' ;;
             error_prefix) printf '%s' '[Gml] Ошибка: %s\n' ;;
             option_requires_value) printf '%s' 'Для параметра %s требуется значение' ;;
@@ -40,12 +40,12 @@ message_format() {
             proxy_mode_menu) printf '%b' 'Режим прокси:\n  1) external - за существующим прокси\n  2) global - GML будет единственным сервисом на этом сервере и займёт порты 80/443, но автоматически настроит HTTPS и сертификаты\n' ;;
             proxy_mode_prompt) printf '%s' 'Режим прокси' ;;
             proxy_domain_prompt) printf '%s' 'Публичный домен для панели' ;;
-            acme_terms_prompt) printf '%s' 'Вы принимаете условия Let’s Encrypt? [y/N]: ' ;;
+            acme_terms_prompt) printf '%s' 'Условия Let’s Encrypt:\nhttps://letsencrypt.org/repository/\nВы принимаете условия Let’s Encrypt? [y/N]: ' ;;
             invalid_proxy_mode) printf '%s' 'Неподдерживаемый режим прокси: %s. Допустимы external и global' ;;
             invalid_domain) printf '%s' 'Некорректный домен: %s. Укажите один FQDN без схемы (http[s]://), пути и порта' ;;
             invalid_port) printf '%s' 'Некорректный HTTP-порт прокси: %s. Допустимы значения от 1 до 65535' ;;
             domain_required) printf '%s' 'Для режима global требуется --domain' ;;
-            acme_terms_required) printf '%s' 'Для включения режима global подтвердите условия Let’s Encrypt через --accept-acme-terms' ;;
+            acme_terms_required) printf '%s' 'Для включения режима global подтвердите условия Let’s Encrypt через --accept-acme-terms.\nУсловия: https://letsencrypt.org/repository/' ;;
             latest_version_error) printf '%s' 'Не удалось определить последнюю стабильную версию на GitHub. Передайте --version, чтобы использовать конкретную версию.' ;;
             using_latest_version) printf '%s' '[Gml] Используется последняя стабильная версия: %s\n' ;;
             version_downgrade_blocked) printf '%s' '[Gml] Понижение версии запрещено: установлена %s, выбрана %s. Обновление отменено.\n' ;;
@@ -102,7 +102,7 @@ message_format() {
         option_lang) printf '%s' '  --lang     Interface language: ru or en. Defaults to the system locale.\n' ;;
         option_proxy_mode) printf '%s' '  --proxy-mode Proxy mode: external (behind another proxy) or global (public ports 80/443 and Let’s Encrypt).\n' ;;
         option_domain) printf '%s' '  --domain   Public domain for global mode.\n' ;;
-        option_acme_terms) printf '%s' '  --accept-acme-terms Accept the Let’s Encrypt terms when enabling global non-interactively.\n' ;;
+        option_acme_terms) printf '%s' '  --accept-acme-terms Accept the Let’s Encrypt terms when enabling global non-interactively: https://letsencrypt.org/repository/\n' ;;
         option_help) printf '%s' '  -h, --help Show this help.\n' ;;
         error_prefix) printf '%s' '[Gml] Error: %s\n' ;;
         option_requires_value) printf '%s' '%s requires a value' ;;
@@ -121,12 +121,12 @@ message_format() {
         proxy_mode_menu) printf '%b' 'Proxy mode:\n  1) external - behind an existing proxy\n  2) global - GML will be the sole service on this server, utilizing ports 80/443, but it will set up HTTPS and certificates automatically\n' ;;
         proxy_mode_prompt) printf '%s' 'Proxy mode' ;;
         proxy_domain_prompt) printf '%s' 'Public domain for panel' ;;
-        acme_terms_prompt) printf '%s' 'Do you accept the Let’s Encrypt terms? [y/N]: ' ;;
+        acme_terms_prompt) printf '%s' 'Let’s Encrypt terms:\nhttps://letsencrypt.org/repository/\nDo you accept the Let’s Encrypt terms? [y/N]: ' ;;
         invalid_proxy_mode) printf '%s' 'Unsupported proxy mode: %s. Use external or global' ;;
         invalid_domain) printf '%s' 'Invalid domain: %s. Specify one regular FQDN without a scheme (http[s]://), path or port' ;;
         invalid_port) printf '%s' 'Invalid proxy HTTP port: %s. Use a value from 1 to 65535' ;;
         domain_required) printf '%s' 'Global mode requires --domain' ;;
-        acme_terms_required) printf '%s' 'To enable global mode, accept the Let’s Encrypt terms with --accept-acme-terms' ;;
+        acme_terms_required) printf '%s' 'To enable global mode, accept the Let’s Encrypt terms with --accept-acme-terms.\nTerms: https://letsencrypt.org/repository/' ;;
         latest_version_error) printf '%s' 'Unable to resolve the latest stable version from GitHub. Pass --version to use a specific version.' ;;
         using_latest_version) printf '%s' '[Gml] Using latest stable version: %s\n' ;;
         version_downgrade_blocked) printf '%s' '[Gml] Version downgrade is prohibited: installed %s, selected %s. Update cancelled.\n' ;;
