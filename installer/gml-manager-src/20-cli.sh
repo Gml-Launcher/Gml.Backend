@@ -224,11 +224,43 @@ fetch_latest_stable_version() {
     printf "%s\n" "$latest_version"
 }
 
+# sudo use_pty may put the user's original terminal in raw mode. Restore line
+# input for the duration of the read, then restore sudo's settings on all exits.
+read_original_terminal_answer() (
+    prompt_terminal="$1"
+    prompt_terminal_settings=$(stty -g < "$prompt_terminal") || exit 1
+    trap 'stty "$prompt_terminal_settings" < "$prompt_terminal" 2>/dev/null || true' 0
+    trap 'exit 1' 1 2 15
+
+    stty icanon icrnl -igncr -inlcr echo isig < "$prompt_terminal" || exit 1
+    IFS= read -r original_terminal_answer < "$prompt_terminal" || exit 1
+    printf '%s\n' "$original_terminal_answer"
+)
+
 # Read an answer from the terminal even when the script body is piped through stdin.
 read_prompt_answer() {
     PROMPT_ANSWER=""
 
-    if [ -e /dev/tty ] && { IFS= read -r PROMPT_ANSWER < /dev/tty; } 2>/dev/null; then
+    # With curl | sudo sh, /dev/tty can be sudo's separate pseudo-terminal,
+    # while keyboard input arrives at the original terminal named by SUDO_TTY.
+    if [ -n "${SUDO_TTY:-}" ] && [ -c "$SUDO_TTY" ]; then
+        PROMPT_ANSWER=$(read_original_terminal_answer "$SUDO_TTY" 2>/dev/null) ||
+            error "$(message terminal_input_failed "$SUDO_TTY")"
+        return 0
+    fi
+
+    # sudo-rs does not set SUDO_TTY and relays keyboard input to /dev/tty.
+    # Keep the read builtin in the main shell: sudo-rs uses its SIGTTIN stop
+    # to move the command into the foreground. stty must not stop a child
+    # while the main shell is waiting for it, so ignore SIGTTOU only there.
+    if prompt_tty_settings=$(stty -g 2>/dev/null < /dev/tty); then
+        (trap '' TTOU; stty icanon icrnl -igncr -inlcr echo isig < /dev/tty) 2>/dev/null ||
+            error "$(message terminal_input_failed /dev/tty)"
+        prompt_tty_read_status=0
+        IFS= read -r PROMPT_ANSWER < /dev/tty || prompt_tty_read_status=$?
+        (trap '' TTOU; stty "$prompt_tty_settings" < /dev/tty) 2>/dev/null ||
+            error "$(message terminal_input_failed /dev/tty)"
+        [ "$prompt_tty_read_status" -eq 0 ] || error "$(message terminal_input_failed /dev/tty)"
         return 0
     fi
 

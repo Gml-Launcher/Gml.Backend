@@ -96,6 +96,9 @@ jobs:
       - name: Run Gml Manager unit tests
         run: sh ./installer/tests/gml-manager-unit.sh
 
+      - name: Validate interactive input through pseudo-terminals
+        run: python3 ./installer/tests/gml-manager-prompt-pty.py --real-sudo
+
       - name: Validate Gml Manager localization
         run: |
           set -eu

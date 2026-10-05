@@ -26,6 +26,7 @@ message_format() {
             error_prefix) printf '%s' '[Gml] Ошибка: %s\n' ;;
             option_requires_value) printf '%s' 'Для параметра %s требуется значение' ;;
             unsupported_language) printf '%s' 'Неподдерживаемый язык: %s. Доступные языки: ru, en' ;;
+            terminal_input_failed) printf '%s' 'Не удалось прочитать ответ из терминала %s. Ввод прерван или терминал недоступен.' ;;
             language_menu) printf '%b' 'Выберите язык:\n  1) Русский\n  2) English\n' ;;
             language_prompt) printf '%s' 'Язык' ;;
             unknown_command) printf '%s' 'Неизвестная команда: %s' ;;
@@ -106,6 +107,7 @@ message_format() {
         error_prefix) printf '%s' '[Gml] Error: %s\n' ;;
         option_requires_value) printf '%s' '%s requires a value' ;;
         unsupported_language) printf '%s' 'Unsupported language: %s. Available languages: ru, en' ;;
+        terminal_input_failed) printf '%s' 'Unable to read an answer from terminal %s. Input was interrupted or the terminal is unavailable.' ;;
         language_menu) printf '%b' 'Select language:\n  1) Русский\n  2) English\n' ;;
         language_prompt) printf '%s' 'Language' ;;
         unknown_command) printf '%s' 'Unknown command: %s' ;;
