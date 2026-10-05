@@ -69,7 +69,7 @@ run_install() {
     run_step "$(message step_create_directory)" prepare_directory
     run_step "$(message step_download_compose)" download_compose
     run_step "$(message step_update_env)" ensure_env
-    run_step "$(message step_start_compose)" start_install_stack
+    run_compose_step "$(message step_start_compose)" start_install_stack
     write_success_message
 }
 
@@ -83,15 +83,15 @@ run_update() {
     run_step "$(message step_install_curl)" ensure_command curl curl
     run_step "$(message step_install_network_tools)" ensure_socket_tools
     run_step "$(message step_check_proxy)" check_proxy_requirements
-    run_step "$(message step_start_compose)" update_stack_transaction
+    run_compose_step "$(message step_start_compose)" update_stack_transaction
     write_success_message
 }
 
 # Stop the stack, remove compose-managed resources, and back up the directory.
 run_delete() {
     run_step "$(message step_check_directory)" ensure_install_directory_exists
-    run_step "$(message step_stop_compose_volumes)" docker_compose_down_volumes
-    run_step "$(message step_remove_images)" docker_compose_down_images
+    run_compose_step "$(message step_stop_compose_volumes)" docker_compose_down_volumes
+    run_compose_step "$(message step_remove_images)" docker_compose_down_images
     run_step "$(message step_backup_directory)" backup_install_directory
     write_delete_message
 }

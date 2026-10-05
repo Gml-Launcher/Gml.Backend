@@ -993,30 +993,187 @@ show_spinner() {
     return "$result"
 }
 
-# Run one step, capture its log, and abort the whole flow on failure.
-run_step() {
-    text="$1"
-    shift
-    log_file=$(mktemp "${TMPDIR:-/tmp}/gml-manager.XXXXXX") || exit 1
+# Strip terminal controls from logs, including Docker's carriage-return progress.
+plain_step_log() {
+    tr '\r' '\n' | awk '
+        BEGIN { esc = sprintf("%c", 27); bel = sprintf("%c", 7) }
+        {
+            out = ""; state = ""
+            for (i = 1; i <= length($0); i++) {
+                c = substr($0, i, 1)
+                if (state == "escape") {
+                    if (c == "[") state = "csi"
+                    else if (c == "]") state = "osc"
+                    else state = ""
+                } else if (state == "csi") {
+                    if (c ~ /[@-~]/) state = ""
+                } else if (state == "osc") {
+                    if (c == bel) state = ""
+                    else if (c == esc) state = "osc_escape"
+                } else if (state == "osc_escape") {
+                    if (c == "\\") state = ""
+                    else state = "osc"
+                } else if (c == esc) state = "escape"
+                else if (c == "\t") out = out "    "
+                else if (c !~ /[[:cntrl:]]/) out = out c
+            }
+            print out
+        }
+    '
+}
 
-    (
-        "$@"
-    ) >"$log_file" 2>&1 &
+# stty reads the output terminal: stdin may contain curl | sudo sh's script.
+step_terminal_size() {
+    [ -t 1 ] && [ "${TERM:-dumb}" != dumb ] || return 1
+    step_size=$(stty size 2>/dev/null <&3) || return 1
+    set -- $step_size
+    [ "$#" -eq 2 ] || return 1
+    step_rows=$1
+    step_columns=$2
+    case "$step_rows:$step_columns" in *[!0-9:]*|:*) return 1 ;; esac
+    [ "$step_rows" -ge 7 ] && [ "$step_columns" -ge 30 ]
+} 3>&1
 
-    show_spinner "$!" "$text"
-    result="$?"
+# Count UTF-8 characters without splitting continuation bytes (also with mawk).
+fit_step_lines() {
+    LC_ALL=C awk -v width="$1" '
+        {
+            line = ""; columns = 0
+            for (i = 1; i <= length($0); i++) {
+                c = substr($0, i, 1)
+                continuation = c ~ /^[\200-\277]$/
+                if (!continuation && columns >= width) break
+                line = line c
+                if (!continuation) columns++
+            }
+            printf "%s%*s\n", line, width - columns, ""
+        }
+    '
+}
 
-    if [ "$result" -ne 0 ]; then
-        message step_failed "$text" "$result" >&2
-        if [ -s "$log_file" ]; then
-            message last_log_lines >&2
-            tail -n 40 "$log_file" >&2
+render_step_box() {
+    step_height=$((step_rows - 4))
+    [ "$step_height" -le 8 ] || step_height=8
+    step_width=$((step_columns - 4))
+    # Clear the old block before redrawing, also after a terminal resize.
+    if [ "$step_drawn" -gt 0 ]; then
+        printf '\033[%sA\r\033[J' "$step_drawn"
+    fi
+    printf '\033[2K'
+    printf '%s %s\n' "$1" "$step_text" | plain_step_log |
+        head -n 1 | fit_step_lines "$((step_columns - 1))"
+    awk -v width="$step_width" 'BEGIN {
+        printf "+"; for (i = 0; i < width + 2; i++) printf "-"; print "+"
+    }'
+    tail -n 80 "$step_log" | plain_step_log | tail -n "$step_height" |
+        fit_step_lines "$step_width" |
+        awk -v width="$step_width" -v height="$step_height" '
+            { printf "| %s |\n", $0; count++ }
+            END { for (; count < height; count++) printf "| %*s |\n", width, "" }
+        '
+    awk -v width="$step_width" 'BEGIN {
+        printf "+"; for (i = 0; i < width + 2; i++) printf "-"; print "+"
+    }'
+    step_drawn=$((step_height + 3))
+}
+
+# Plain output is streamed by byte offset so partial lines are never lost.
+stream_step_log() {
+    step_bytes=$(wc -c < "$step_log")
+    if [ "$step_bytes" -gt "$step_offset" ]; then
+        tail -c +$((step_offset + 1)) "$step_log" |
+            head -c "$((step_bytes - step_offset))" | plain_step_log
+        step_offset=$step_bytes
+    fi
+}
+
+# Isolate traps and working variables from the calling installer shell.
+run_step_output() (
+    step_live="$1"
+    step_text="$2"
+    shift 2
+    step_log=$(mktemp "${TMPDIR:-/tmp}/gml-manager.XXXXXX") || exit 1
+    step_pid=""
+    step_drawn=0
+    step_offset=0
+    step_tick=0
+    step_cursor_hidden=0
+    cleanup_step() {
+        if [ "$step_cursor_hidden" -eq 1 ]; then
+            printf '\033[?25h'
         fi
-        rm -f "$log_file"
-        exit "$result"
+        rm -f "$step_log"
+    }
+    interrupt_step() {
+        [ -z "$step_pid" ] || kill "$step_pid" 2>/dev/null || true
+        exit "$1"
+    }
+    trap cleanup_step 0
+    trap 'interrupt_step 129' 1
+    trap 'interrupt_step 130' 2
+    trap 'interrupt_step 143' 15
+
+    ( "$@" ) >"$step_log" 2>&1 &
+    step_pid=$!
+
+    if [ "$step_live" -eq 1 ]; then
+        if step_terminal_size; then
+            printf '\033[?25l'
+            step_cursor_hidden=1
+        else
+            printf '%s\n' "$step_text"
+        fi
+        while kill -0 "$step_pid" 2>/dev/null; do
+            if [ "$step_cursor_hidden" -eq 1 ] && step_terminal_size; then
+                case "$step_tick" in
+                    0) step_mark='/' ;;
+                    1) step_mark='-' ;;
+                    2) step_mark='\' ;;
+                    3) step_mark='|' ;;
+                esac
+                render_step_box "$step_mark"
+                step_tick=$(((step_tick + 1) % 4))
+            else
+                if [ "$step_drawn" -gt 0 ]; then
+                    printf '\033[%sA\r\033[J\033[?25h' "$step_drawn"
+                    step_drawn=0
+                    step_cursor_hidden=0
+                fi
+                stream_step_log
+            fi
+            sleep 0.2
+        done
+        step_result=0
+        wait "$step_pid" || step_result=$?
+        if [ "$step_result" -eq 0 ]; then step_mark='✓'; else step_mark='✗'; fi
+        if [ "$step_cursor_hidden" -eq 1 ] && step_terminal_size; then
+            render_step_box "$step_mark"
+        else
+            stream_step_log
+            printf '%s %s\n' "$step_text" "$step_mark"
+        fi
+    else
+        step_result=0
+        show_spinner "$step_pid" "$step_text" || step_result=$?
     fi
 
-    rm -f "$log_file"
+    if [ "$step_result" -ne 0 ]; then
+        message step_failed "$step_text" "$step_result" >&2
+        if [ -s "$step_log" ]; then
+            message last_log_lines >&2
+            tail -n 40 "$step_log" | plain_step_log >&2
+        fi
+    fi
+    exit "$step_result"
+)
+
+# A failed step still aborts the full workflow, not just the rendering subshell.
+run_step() {
+    run_step_output 0 "$@" || exit "$?"
+}
+
+run_compose_step() {
+    run_step_output 1 "$@" || exit "$?"
 }
 
 # Avoid interactive package restart prompts on systems with needrestart.
@@ -1497,7 +1654,7 @@ run_install() {
     run_step "$(message step_create_directory)" prepare_directory
     run_step "$(message step_download_compose)" download_compose
     run_step "$(message step_update_env)" ensure_env
-    run_step "$(message step_start_compose)" start_install_stack
+    run_compose_step "$(message step_start_compose)" start_install_stack
     write_success_message
 }
 
@@ -1511,15 +1668,15 @@ run_update() {
     run_step "$(message step_install_curl)" ensure_command curl curl
     run_step "$(message step_install_network_tools)" ensure_socket_tools
     run_step "$(message step_check_proxy)" check_proxy_requirements
-    run_step "$(message step_start_compose)" update_stack_transaction
+    run_compose_step "$(message step_start_compose)" update_stack_transaction
     write_success_message
 }
 
 # Stop the stack, remove compose-managed resources, and back up the directory.
 run_delete() {
     run_step "$(message step_check_directory)" ensure_install_directory_exists
-    run_step "$(message step_stop_compose_volumes)" docker_compose_down_volumes
-    run_step "$(message step_remove_images)" docker_compose_down_images
+    run_compose_step "$(message step_stop_compose_volumes)" docker_compose_down_volumes
+    run_compose_step "$(message step_remove_images)" docker_compose_down_images
     run_step "$(message step_backup_directory)" backup_install_directory
     write_delete_message
 }
