@@ -76,6 +76,7 @@ run_install() {
 # Update the compose file, version variable, images, and running containers.
 run_update() {
     run_step "$(message step_check_directory)" ensure_install_directory_exists
+    ensure_no_version_downgrade || return 1
     if ! confirm_compose_overwrite; then
         return 0
     fi

@@ -60,6 +60,13 @@ test "$BASE_DIR" = /tmp/gml
 test "$PROXY_MODE" = global
 test "$PROXY_DOMAIN" = gml.example.com
 test "$ACCEPT_ACME_TERMS" = 1
+test "$BREAK_VERSION" -eq 0
+(
+    ACTION=
+    parse_args update --version v2025.3.3.2 --break-version
+    test "$BREAK_VERSION" -eq 1
+    test "$ACTION" = update
+)
 
 validate_proxy_domain gml.example.com
 ! validate_proxy_domain "*.example.com"
@@ -73,6 +80,21 @@ is_valid_port 65535
 ! is_valid_port 0
 ! is_valid_port 65536
 ! is_valid_port invalid
+
+test "$(compare_release_versions v2025.3.3.2 v2025.3.3.1)" = -1
+test "$(compare_release_versions v2025.3.9 v2025.3.10)" = 1
+test "$(compare_release_versions v2025.10.0 v2025.9.99)" = -1
+test "$(compare_release_versions v2026.0 v2025.99.99.99)" = -1
+test "$(compare_release_versions v1.2 1.2.0.0)" = 0
+test "$(compare_release_versions v01.002.0 v1.2)" = 0
+test "$(compare_release_versions v1.2 v1.2.0.1)" = 1
+test "$(compare_release_versions v1.99999999999999999998 v1.99999999999999999999)" = 1
+test "$(compare_release_versions master master)" = 0
+! compare_release_versions master v2025.3.3.2
+! compare_release_versions v2025.3.3.2 master
+! compare_release_versions v1.2-beta v1.2
+! compare_release_versions "" v1.2
+! compare_release_versions "" ""
 
 doh_json='{"Status":0,"Question":[{"name":"gml.example.com.","type":1}],"Answer":[{"name":"gml.example.com.","type":5,"TTL":60,"data":"alias.example.com."},{"name":"alias.example.com.","type":1,"TTL":60,"data":"203.0.113.10"}]}'
 test "$(parse_doh_records "$doh_json" 1)" = 203.0.113.10
@@ -102,12 +124,25 @@ resolve_proxy_inputs
 test "$CURRENT_PROXY_MODE" = external
 test "$PROXY_MODE" = external
 
+VERSION=v2025.3.3.2
+! ensure_no_version_downgrade >/dev/null 2>&1
+printf '%s\n' 'GML_VERSION="v2025.3.3.1"' > "$legacy_dir/.env"
+ensure_no_version_downgrade
+printf "%s\n" "GML_VERSION='v2025.3.3.3'" > "$legacy_dir/.env"
+! ensure_no_version_downgrade >/dev/null 2>&1
+(BREAK_VERSION=1; ensure_no_version_downgrade)
+printf '%s\n' 'GML_VERSION=master' > "$legacy_dir/.env"
+! ensure_no_version_downgrade >/dev/null 2>&1
+(BREAK_VERSION=1; ensure_no_version_downgrade)
+VERSION=master
+ensure_no_version_downgrade
+
 printf "%s\n" old-compose > "$transaction_dir/docker-compose.yml"
-printf "%s\n" "GML_VERSION=old" > "$transaction_dir/.env"
+printf "%s\n" "GML_VERSION=v2025.3.3.2" > "$transaction_dir/.env"
 printf "%s\n" new-compose > "$transaction_dir/source-compose.yml"
 BASE_DIR="$transaction_dir"
 COMPOSE_URL=https://compose.test/docker-compose.yml
-VERSION=new
+VERSION=v2025.3.3.3
 PROXY_MODE=external
 PROXY_DOMAIN=
 PROXY_HTTPS_PORT=0
@@ -116,6 +151,7 @@ transaction_log="$transaction_dir/operations.log"
 transaction_up_count="$transaction_dir/up-count"
 
 curl() {
+    echo download >> "$transaction_log"
     mock_output=
     while [ "$#" -gt 0 ]; do
         if [ "$1" = -o ]; then
@@ -149,9 +185,32 @@ docker_compose_up() {
 
 wait_for_global_certificate() { return 0; }
 
+# Downgrades stop before confirmation, downloads, staging files, or Docker calls.
+VERSION=v2025.3.3.1
+! (
+    run_step() { shift; "$@"; }
+    confirm_compose_overwrite() { echo confirm >> "$transaction_log"; }
+    run_update
+) >/dev/null 2>&1
+! update_stack_transaction >/dev/null 2>&1
+test ! -e "$transaction_log"
+test "$(cat "$transaction_dir/docker-compose.yml")" = old-compose
+grep -qx "GML_VERSION=v2025.3.3.2" "$transaction_dir/.env"
+test "$(find "$transaction_dir" -name '.*' -type f | wc -l)" -eq 1
+
+# Explicit bypass reaches the download stage even for a numeric downgrade.
+(
+    BREAK_VERSION=1
+    curl() { echo bypass-download >> "$transaction_log"; return 1; }
+    ! update_stack_transaction
+)
+grep -qx bypass-download "$transaction_log"
+rm -f "$transaction_log"
+
+VERSION=v2025.3.3.3
 ! update_stack_transaction
 test "$(cat "$transaction_dir/docker-compose.yml")" = old-compose
-grep -qx "GML_VERSION=old" "$transaction_dir/.env"
+grep -qx "GML_VERSION=v2025.3.3.2" "$transaction_dir/.env"
 pull_line=$(awk '$0 == "pull" { print NR; exit }' "$transaction_log")
 down_line=$(awk '$0 == "down" { print NR; exit }' "$transaction_log")
 test "$pull_line" -lt "$down_line"

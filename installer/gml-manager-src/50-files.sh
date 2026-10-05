@@ -37,6 +37,25 @@ ensure_install_directory_exists() {
     fi
 }
 
+# Refuse downgrades before any update files or running containers are touched.
+ensure_no_version_downgrade() {
+    [ "$BREAK_VERSION" -eq 1 ] && return 0
+
+    installed_version=$(get_env_value "$BASE_DIR/.env" "GML_VERSION" | sed \
+        -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' \
+        -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/")
+
+    if ! version_order=$(compare_release_versions "$installed_version" "$VERSION"); then
+        message version_comparison_failed "$installed_version" "$VERSION" >&2
+        return 1
+    fi
+
+    if [ "$version_order" = "-1" ]; then
+        message version_downgrade_blocked "$installed_version" "$VERSION" >&2
+        return 1
+    fi
+}
+
 # Download the production compose template into the installation directory.
 download_compose() {
     mkdir -p "$BASE_DIR"

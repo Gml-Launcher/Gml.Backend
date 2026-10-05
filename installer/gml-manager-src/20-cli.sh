@@ -43,6 +43,10 @@ parse_args() {
                 VERSION="$2"
                 shift 2
                 ;;
+            --break-version)
+                BREAK_VERSION=1
+                shift
+                ;;
             --dir)
                 require_value "$1" "${2:-}"
                 BASE_DIR="$2"
@@ -166,6 +170,43 @@ extract_latest_stable_tag() {
             } else {
                 exit 1
             }
+        }
+    '
+}
+
+# Compare numeric release tags component by component; missing parts are zero.
+# Return 2 when different tags cannot be ordered (for example, master).
+compare_release_versions() {
+    awk -v current="$1" -v target="$2" '
+        BEGIN {
+            if (current != "" && current == target) {
+                print 0
+                exit
+            }
+            sub(/^v/, "", current)
+            sub(/^v/, "", target)
+            if (current !~ /^[0-9]+(\.[0-9]+)+$/ || target !~ /^[0-9]+(\.[0-9]+)+$/) {
+                exit 2
+            }
+            current_count = split(current, current_parts, ".")
+            target_count = split(target, target_parts, ".")
+            count = current_count > target_count ? current_count : target_count
+            for (i = 1; i <= count; i++) {
+                a = i <= current_count ? current_parts[i] : "0"
+                b = i <= target_count ? target_parts[i] : "0"
+                sub(/^0+/, "", a)
+                sub(/^0+/, "", b)
+                # Compare strings to avoid numeric overflow or rounding.
+                if (length(a) != length(b)) {
+                    print (length(b) > length(a) ? 1 : -1)
+                    exit
+                }
+                if ("x" a != "x" b) {
+                    print ("x" b > "x" a ? 1 : -1)
+                    exit
+                }
+            }
+            print 0
         }
     '
 }

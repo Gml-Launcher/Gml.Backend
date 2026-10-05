@@ -7,7 +7,7 @@ message_format() {
         case "$key" in
             usage_heading) printf '%s' 'Использование:\n' ;;
             usage_install) printf '%s' '  %s install [--version <версия>] [--dir <путь>] [--proxy-mode <external|global>] [--domain <домен>] [--accept-acme-terms] [--lang <ru|en>]\n' ;;
-            usage_update) printf '%s' '  %s update [--version <версия>] [--dir <путь>] [--proxy-mode <external|global>] [--domain <домен>] [--accept-acme-terms] [--lang <ru|en>]\n' ;;
+            usage_update) printf '%s' '  %s update [--version <версия>] [--break-version] [--dir <путь>] [--proxy-mode <external|global>] [--domain <домен>] [--accept-acme-terms] [--lang <ru|en>]\n' ;;
             usage_delete) printf '%s' '  %s delete [--dir <путь>] [--lang <ru|en>]\n' ;;
             usage_interactive) printf '%s' '  %s [--lang <ru|en>]\n' ;;
             commands_heading) printf '%s' 'Команды:\n' ;;
@@ -16,6 +16,7 @@ message_format() {
             command_delete) printf '%s' '  delete     Остановить контейнеры и переместить каталог установки в резервную копию\n' ;;
             options_heading) printf '%s' 'Параметры:\n' ;;
             option_version) printf '%s' '  --version  Переопределить тег версии Docker-образа. Используется для install и update.\n' ;;
+            option_break_version) printf '%s' '  --break-version Пропустить проверку версии при update: разрешить понижение и переход между несравнимыми тегами.\n' ;;
             option_dir) printf '%s' '  --dir      Каталог установки. По умолчанию: %s.\n' ;;
             option_lang) printf '%s' '  --lang     Язык интерфейса: ru или en. По умолчанию определяется по локали системы.\n' ;;
             option_proxy_mode) printf '%s' '  --proxy-mode Режим прокси: external (за другим прокси) или global (публичные 80/443 и Let’s Encrypt).\n' ;;
@@ -46,6 +47,8 @@ message_format() {
             acme_terms_required) printf '%s' 'Для включения режима global подтвердите условия Let’s Encrypt через --accept-acme-terms' ;;
             latest_version_error) printf '%s' 'Не удалось определить последнюю стабильную версию на GitHub. Передайте --version, чтобы использовать конкретную версию.' ;;
             using_latest_version) printf '%s' '[Gml] Используется последняя стабильная версия: %s\n' ;;
+            version_downgrade_blocked) printf '%s' '[Gml] Понижение версии запрещено: установлена %s, выбрана %s. Обновление отменено.\n' ;;
+            version_comparison_failed) printf '%s' '[Gml] Невозможно сравнить установленную версию "%s" с выбранной "%s". Обновление отменено: требуются числовые версии вида v2025.3.3.2 или одинаковые непустые теги.\n' ;;
             root_required) printf '%s' 'Этот скрипт необходимо запустить от имени root' ;;
             step_failed) printf '%s' '[Gml] Шаг завершился с ошибкой: %s (код выхода %s)\n' ;;
             last_log_lines) printf '%s' '[Gml] Последние строки журнала:\n' ;;
@@ -84,7 +87,7 @@ message_format() {
     case "$key" in
         usage_heading) printf '%s' 'Usage:\n' ;;
         usage_install) printf '%s' '  %s install [--version <version>] [--dir <path>] [--proxy-mode <external|global>] [--domain <domain>] [--accept-acme-terms] [--lang <ru|en>]\n' ;;
-        usage_update) printf '%s' '  %s update [--version <version>] [--dir <path>] [--proxy-mode <external|global>] [--domain <domain>] [--accept-acme-terms] [--lang <ru|en>]\n' ;;
+        usage_update) printf '%s' '  %s update [--version <version>] [--break-version] [--dir <path>] [--proxy-mode <external|global>] [--domain <domain>] [--accept-acme-terms] [--lang <ru|en>]\n' ;;
         usage_delete) printf '%s' '  %s delete [--dir <path>] [--lang <ru|en>]\n' ;;
         usage_interactive) printf '%s' '  %s [--lang <ru|en>]\n' ;;
         commands_heading) printf '%s' 'Commands:\n' ;;
@@ -93,6 +96,7 @@ message_format() {
         command_delete) printf '%s' '  delete     Stop containers and move the install directory to a backup\n' ;;
         options_heading) printf '%s' 'Options:\n' ;;
         option_version) printf '%s' '  --version  Override Docker image version tag. Used by install and update.\n' ;;
+        option_break_version) printf '%s' '  --break-version Skip the version check during update: allow downgrades and transitions between incomparable tags.\n' ;;
         option_dir) printf '%s' '  --dir      Installation directory. Defaults to %s.\n' ;;
         option_lang) printf '%s' '  --lang     Interface language: ru or en. Defaults to the system locale.\n' ;;
         option_proxy_mode) printf '%s' '  --proxy-mode Proxy mode: external (behind another proxy) or global (public ports 80/443 and Let’s Encrypt).\n' ;;
@@ -123,6 +127,8 @@ message_format() {
         acme_terms_required) printf '%s' 'To enable global mode, accept the Let’s Encrypt terms with --accept-acme-terms' ;;
         latest_version_error) printf '%s' 'Unable to resolve the latest stable version from GitHub. Pass --version to use a specific version.' ;;
         using_latest_version) printf '%s' '[Gml] Using latest stable version: %s\n' ;;
+        version_downgrade_blocked) printf '%s' '[Gml] Version downgrade is prohibited: installed %s, selected %s. Update cancelled.\n' ;;
+        version_comparison_failed) printf '%s' '[Gml] Cannot compare installed version "%s" with selected version "%s". Update cancelled: numeric versions such as v2025.3.3.2 or identical nonempty tags are required.\n' ;;
         root_required) printf '%s' 'This script must be run as root' ;;
         step_failed) printf '%s' '[Gml] Step failed: %s (exit code %s)\n' ;;
         last_log_lines) printf '%s' '[Gml] Last log lines:\n' ;;
@@ -242,6 +248,7 @@ print_usage() {
     printf '\n'
     message options_heading
     message option_version
+    message option_break_version
     message option_dir "$DEFAULT_BASE_DIR"
     message option_proxy_mode
     message option_domain

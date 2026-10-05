@@ -65,6 +65,8 @@ start_install_stack() {
 # Update compose and installer-managed environment keys atomically. If the new
 # proxy cannot start or obtain its certificate, restore the previous stack.
 update_stack_transaction() {
+    ensure_no_version_downgrade || return 1
+
     transaction_compose="$BASE_DIR/docker-compose.yml"
     transaction_env="$BASE_DIR/.env"
     transaction_staged_compose="$BASE_DIR/.docker-compose.yml.new.$$"
