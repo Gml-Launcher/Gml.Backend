@@ -46,6 +46,8 @@ message_format() {
             invalid_port) printf '%s' 'Некорректный HTTP-порт прокси: %s. Допустимы значения от 1 до 65535' ;;
             domain_required) printf '%s' 'Для режима global требуется --domain' ;;
             acme_terms_required) printf '%s' 'Для включения режима global подтвердите условия Let’s Encrypt через --accept-acme-terms.\nУсловия: https://letsencrypt.org/repository/' ;;
+            install_version_too_old) printf '%s' '[Gml] Установка версии "%s" не поддерживается. Минимальная версия для установки: %s.\n' ;;
+            install_version_invalid) printf '%s' '[Gml] Невозможно проверить версию "%s". Для установки требуется числовая версия не ниже %s.\n' ;;
             latest_version_error) printf '%s' 'Не удалось определить последнюю стабильную версию на GitHub. Передайте --version, чтобы использовать конкретную версию.' ;;
             using_latest_version) printf '%s' '[Gml] Используется последняя стабильная версия: %s\n' ;;
             version_downgrade_blocked) printf '%s' '[Gml] Понижение версии запрещено: установлена %s, выбрана %s. Обновление отменено.\n' ;;
@@ -127,6 +129,8 @@ message_format() {
         invalid_port) printf '%s' 'Invalid proxy HTTP port: %s. Use a value from 1 to 65535' ;;
         domain_required) printf '%s' 'Global mode requires --domain' ;;
         acme_terms_required) printf '%s' 'To enable global mode, accept the Let’s Encrypt terms with --accept-acme-terms.\nTerms: https://letsencrypt.org/repository/' ;;
+        install_version_too_old) printf '%s' '[Gml] Installing version "%s" is not supported. Minimum installation version: %s.\n' ;;
+        install_version_invalid) printf '%s' '[Gml] Cannot validate version "%s". Installation requires a numeric version at least %s.\n' ;;
         latest_version_error) printf '%s' 'Unable to resolve the latest stable version from GitHub. Pass --version to use a specific version.' ;;
         using_latest_version) printf '%s' '[Gml] Using latest stable version: %s\n' ;;
         version_downgrade_blocked) printf '%s' '[Gml] Version downgrade is prohibited: installed %s, selected %s. Update cancelled.\n' ;;

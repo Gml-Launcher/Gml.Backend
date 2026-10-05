@@ -54,10 +54,12 @@ curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/
 
 The same options can be passed to `update` to switch between `external` and `global`. If `--proxy-mode` is omitted during an update, the current mode is preserved.
 
+The minimum supported version for a new installation is `v2026.2`; the limit does not apply to updates.
+
 Pass `--version` only when you want to pin a specific Docker image tag:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh -s -- install --version v2025.3.2 --dir /srv/gml
+curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh -s -- install --version v2026.2 --dir /srv/gml
 ```
 
 Use these commands to update or remove the installation:

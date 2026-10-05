@@ -58,6 +58,16 @@ write_delete_message() {
 
 # Full installation flow. Every step must succeed before the next starts.
 run_install() {
+    case "$VERSION" in
+        master|dev) ;;
+        *)
+            install_version_comparison=$(compare_release_versions "$MIN_INSTALL_VERSION" "$VERSION") || error "$(message install_version_invalid "$VERSION" "$MIN_INSTALL_VERSION")"
+            if [ "$install_version_comparison" -eq -1 ]; then
+                error "$(message install_version_too_old "$VERSION" "$MIN_INSTALL_VERSION")"
+            fi
+            ;;
+    esac
+
     run_step "$(message step_detect_os)" detect_os
     run_step "$(message step_prepare_os)" disable_additional_notify
     run_step "$(message step_install_curl)" ensure_command curl curl

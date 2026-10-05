@@ -1,4 +1,5 @@
 DEFAULT_BASE_DIR="/srv/gml"
+MIN_INSTALL_VERSION="v2026.2"
 GITHUB_REPOSITORY="${GITHUB_REPOSITORY:-Gml-Launcher/Gml.Backend}"
 COMPOSE_URL_OVERRIDE="${COMPOSE_URL:-}"
 DEFAULT_COMPOSE_URL="${DEFAULT_COMPOSE_URL:-https://raw.githubusercontent.com/$GITHUB_REPOSITORY/refs/heads/master/docker-compose-installer.yml}"

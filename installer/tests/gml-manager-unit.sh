@@ -96,6 +96,24 @@ test "$(compare_release_versions master master)" = 0
 ! compare_release_versions "" v1.2
 ! compare_release_versions "" ""
 
+# Reject unsupported installations before any system preparation, even with
+# --break-version. Accepted versions reach the first installation step.
+(
+    BREAK_VERSION=1
+    detect_os() { exit 42; }
+    run_step() { shift; "$@"; }
+    for VERSION in v2025.3.3.2 v2026.1 v2026.1.999 other-tag v2026.2-beta; do
+        install_status=0
+        (run_install >/dev/null 2>&1) || install_status=$?
+        test "$install_status" -eq 1
+    done
+    for VERSION in v2026.2 2026.2.0 v2026.2.1 v2026.10 v2027.0 master dev; do
+        install_status=0
+        (run_install >/dev/null 2>&1) || install_status=$?
+        test "$install_status" -eq 42
+    done
+)
+
 doh_json='{"Status":0,"Question":[{"name":"gml.example.com.","type":1}],"Answer":[{"name":"gml.example.com.","type":5,"TTL":60,"data":"alias.example.com."},{"name":"alias.example.com.","type":1,"TTL":60,"data":"203.0.113.10"}]}'
 test "$(parse_doh_records "$doh_json" 1)" = 203.0.113.10
 test -z "$(parse_doh_records "$doh_json" 28)"
