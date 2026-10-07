@@ -36,7 +36,7 @@ public class Tests
     [SetUp]
     public void Setup()
     {
-        Environment.SetEnvironmentVariable("SECURITY_KEY", "jkuhbsfgvuk4gfikhn8i7wa34rkbqw23");
+        Environment.SetEnvironmentVariable("SECURITY_KEY", Convert.ToHexString(System.Security.Cryptography.RandomNumberGenerator.GetBytes(32)));
         Environment.SetEnvironmentVariable("PROJECT_NAME", "GmlServer");
         Environment.SetEnvironmentVariable("MARKET_ENDPOINT", "https://gml-market.recloud.tech");
         Environment.SetEnvironmentVariable("PROJECT_DESCRIPTION", "GmlServer Description");

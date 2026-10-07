@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Skins (development)" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
+    <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/src/Gml.Web.Skin.Service/src/Gml.Web.Skin.Service/Gml.Web.Skin.Service.csproj" />
+    <option name="LAUNCH_PROFILE_TFM" value="net8.0" />
+    <option name="LAUNCH_PROFILE_NAME" value="http" />
+    <method v="2">
+      <option name="Build" />
+    </method>
+  </configuration>
+</component>

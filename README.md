@@ -69,6 +69,51 @@ curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/
 curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh -s -- delete --dir /srv/gml
 ```
 
+## Local Development and Rider
+
+Install .NET SDK 10, the .NET/ASP.NET Core 8 runtime for the skin service, Node.js 20+,
+and npm. Prepare the submodules and dependencies from the repository root:
+
+```bash
+git submodule update --init --recursive
+npm --prefix src/Gml.Web.Client ci
+dotnet restore Gml.Backend.sln
+```
+
+On the first Development launch, the API generates a random key in
+`src/Gml.Web.Api/src/Gml.Web.Api/database/development.key` and reuses it for subsequent
+Rider and script launches. The file is excluded from Git. The `SECURITY_KEY` environment
+variable takes precedence; supply it through the environment in production.
+
+Open `Gml.Backend.sln` in Rider and Run or Debug the shared **GML Development**
+configuration. It starts Frontend, Backend (development), and Skins (development)
+together; Debug attaches to both .NET services. The .NET working directories are
+their respective project directories. Use Stop All to stop the compound configuration.
+
+For a terminal launch on Linux/macOS:
+
+```bash
+./scripts/dev.sh
+```
+
+The script also works from another directory when invoked by its absolute path.
+It checks tools, dependencies, and ports, and stops its process groups on Ctrl+C,
+SIGTERM, or any service exit. SQLite and service files use the usual local development directories.
+
+Open **http://localhost:3000**. Next.js forwards `/api*`, `/swagger*`, `/ws*`, and exact
+`/health` requests to `http://127.0.0.1:5002`. `/skins` and `/skins/*` go to port 5086,
+with the `/skins` prefix removed. Browser API and WebSocket requests use the frontend origin.
+The API's HTTP `frontend` launch profile uses the public marketplace at
+`https://gml-market.recloud.tech`; skins use the `http` profile. No local marketplace is required.
+
+Like Angie, an unfinished installation redirects `/` to `/mnt`; completed installations
+redirect `/mnt` and its nested pages to `/`. If the API is unavailable or the setup check
+takes more than three seconds, the root stays reachable and `/mnt` redirects to `/`.
+
+For a separately launched frontend, override `DEV_BACKEND_URL` and `DEV_SKINS_URL` in
+`src/Gml.Web.Client/.env.development.local`. Defaults are `http://127.0.0.1:5002` and
+`http://127.0.0.1:5086`.
+
 ## Installation Instructions
 
 ### Step 1: Clone the Repository
@@ -97,7 +142,7 @@ UID=0
 GID=0
 
 # Security key (replace with your own secure key)
-SECURITY_KEY=643866c80c46c909332b30600d3265803a3807286d6eb7c0d2e164877c809519
+SECURITY_KEY=<your-security-key>
 
 # Project settings
 PROJECT_NAME=GmlBackendPanel

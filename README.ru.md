@@ -69,6 +69,53 @@ curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/
 curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh -s -- delete --dir /srv/gml
 ```
 
+## Локальная разработка и Rider
+
+Нужны .NET SDK 10, .NET/ASP.NET Core Runtime 8 для сервиса скинов, Node.js 20+ и npm.
+Подготовьте подмодули и зависимости из корня репозитория:
+
+```bash
+git submodule update --init --recursive
+npm --prefix src/Gml.Web.Client ci
+dotnet restore Gml.Backend.sln
+```
+
+При первом запуске в Development API автоматически создаёт случайный ключ в
+`src/Gml.Web.Api/src/Gml.Web.Api/database/development.key` и переиспользует его при следующих
+запусках из Rider и скрипта. Файл исключён из Git. Переменная окружения `SECURITY_KEY` имеет
+приоритет; в production задавайте её через окружение.
+
+Откройте `Gml.Backend.sln` в Rider, выберите сохранённую конфигурацию **GML Development**
+и нажмите Run или Debug. Она одновременно запускает Frontend, Backend (development)
+и Skins (development); Debug подключает отладчики к обоим .NET-сервисам.
+Рабочие каталоги .NET-сервисов берутся из каталогов их проектов.
+
+Для запуска из терминала Linux/macOS используйте:
+
+```bash
+./scripts/dev.sh
+```
+
+Скрипт можно вызывать из любого каталога по его полному пути. Он проверяет инструменты,
+зависимости и порты, останавливает все свои процессы по Ctrl+C, SIGTERM или при выходе
+любого сервиса. В Rider останавливайте всю Compound-конфигурацию кнопкой Stop All.
+База SQLite и файлы сервисов сохраняются в обычных каталогах локальной разработки.
+
+Откройте **http://localhost:3000**. Next.js проксирует `/api*`, `/swagger*`, `/ws*` и точный
+`/health` к API на `http://127.0.0.1:5002`; `/skins` и `/skins/*` — к сервису на порту 5086
+с удалением префикса `/skins`. WebSocket и запросы браузера используют тот же адрес фронтенда.
+API использует HTTP-профиль `frontend` с публичным marketplace `https://gml-market.recloud.tech`,
+скины — профиль `http`. Отдельный marketplace запускать не требуется.
+
+Как в Angie, незавершённая установка перенаправляет `/` на `/mnt`; после установки `/mnt`
+и вложенные страницы возвращают на `/`. Если API недоступен или проверка дольше 3 секунд,
+главная страница остаётся доступной, а `/mnt` возвращает на `/`.
+
+При отдельном запуске фронтенда upstream можно переопределить в
+`src/Gml.Web.Client/.env.development.local`: `DEV_BACKEND_URL` и `DEV_SKINS_URL`.
+По умолчанию это `http://127.0.0.1:5002` и `http://127.0.0.1:5086`.
+
+
 ## Установка вручную
 
 ### Шаг 1. Клонируйте репозиторий
@@ -95,7 +142,7 @@ UID=0
 GID=0
 
 # Ключ безопасности (замените на собственный безопасный ключ)
-SECURITY_KEY=643866c80c46c909332b30600d3265803a3807286d6eb7c0d2e164877c809519
+SECURITY_KEY=<your-security-key>
 
 # Настройки проекта
 PROJECT_NAME=GmlBackendPanel

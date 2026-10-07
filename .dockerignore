@@ -20,6 +20,7 @@
 **/npm-debug.log
 **/obj
 **/secrets.dev.yaml
+**/development.key
 **/values.dev.yaml
 LICENSE
 README.md
