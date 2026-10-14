@@ -35,6 +35,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Gml.Web.Api\src\Gml.Web.Api\Gml.Web.Api.csproj" />
+      <ProjectReference Include="../../src/Gml.Web.Skin.Service/src/Gml.Web.Skin.Service/Gml.Web.Skin.Service.csproj" />
     </ItemGroup>
 
 </Project>
