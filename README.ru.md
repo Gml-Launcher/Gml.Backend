@@ -69,7 +69,7 @@ curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/
 curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh -s -- delete --dir /srv/gml
 ```
 
-## Локальная разработка и Rider
+## Локальная разработка: Rider и VS Code
 
 Нужны .NET SDK 10, .NET/ASP.NET Core Runtime 8 для сервиса скинов, Node.js 20+ и npm.
 Подготовьте подмодули и зависимости из корня репозитория:
@@ -82,13 +82,20 @@ dotnet restore Gml.Backend.sln
 
 При первом запуске в Development API автоматически создаёт случайный ключ в
 `src/Gml.Web.Api/src/Gml.Web.Api/database/development.key` и переиспользует его при следующих
-запусках из Rider и скрипта. Файл исключён из Git. Переменная окружения `SECURITY_KEY` имеет
+запусках из Rider, VS Code и скрипта. Файл исключён из Git. Переменная окружения `SECURITY_KEY` имеет
 приоритет; в production задавайте её через окружение.
 
 Откройте `Gml.Backend.sln` в Rider, выберите сохранённую конфигурацию **GML Development**
 и нажмите Run или Debug. Она одновременно запускает Frontend, Backend (development)
 и Skins (development); Debug подключает отладчики к обоим .NET-сервисам.
 Рабочие каталоги .NET-сервисов берутся из каталогов их проектов.
+
+В VS Code откройте корневую папку репозитория и установите рекомендованное расширение
+**C#** (`ms-dotnettools.csharp`). В панели **Run and Debug** выберите **GML Development**
+и нажмите **F5** (с отладкой) или **Ctrl+F5** (без отладки). Конфигурация собирает
+и запускает оба .NET-сервиса с теми же профилями и рабочими каталогами, что и Rider,
+а также запускает `npm run dev` для фронтенда. Остановка одного участника составной
+конфигурации кнопкой Stop останавливает остальные. Каждый сервис можно запускать отдельно.
 
 Для запуска из терминала Linux/macOS используйте:
 

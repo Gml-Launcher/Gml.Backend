@@ -69,7 +69,7 @@ curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/
 curl -sSL https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh | sudo sh -s -- delete --dir /srv/gml
 ```
 
-## Local Development and Rider
+## Local Development: Rider and VS Code
 
 Install .NET SDK 10, the .NET/ASP.NET Core 8 runtime for the skin service, Node.js 20+,
 and npm. Prepare the submodules and dependencies from the repository root:
@@ -82,13 +82,20 @@ dotnet restore Gml.Backend.sln
 
 On the first Development launch, the API generates a random key in
 `src/Gml.Web.Api/src/Gml.Web.Api/database/development.key` and reuses it for subsequent
-Rider and script launches. The file is excluded from Git. The `SECURITY_KEY` environment
+Rider, VS Code, and script launches. The file is excluded from Git. The `SECURITY_KEY` environment
 variable takes precedence; supply it through the environment in production.
 
 Open `Gml.Backend.sln` in Rider and Run or Debug the shared **GML Development**
 configuration. It starts Frontend, Backend (development), and Skins (development)
 together; Debug attaches to both .NET services. The .NET working directories are
 their respective project directories. Use Stop All to stop the compound configuration.
+
+In VS Code, open the repository root folder and install the recommended **C#** extension
+(`ms-dotnettools.csharp`). Select **GML Development** in **Run and Debug** and press
+**F5** to debug or **Ctrl+F5** to run without debugging. This builds and starts both
+.NET services with the same launch profiles and working directories as Rider, and runs
+`npm run dev` for the frontend. Stopping one member of the compound configuration with
+the Stop button stops the others. Each service can also be launched individually.
 
 For a terminal launch on Linux/macOS:
 

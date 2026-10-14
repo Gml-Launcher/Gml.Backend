@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "GML Development",
+      "configurations": ["Backend (development)", "Skins (development)", "Frontend"],
+      "stopAll": true
+    }
+  ],
+  "configurations": [
+    {
+      "name": "Backend (development)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build Backend",
+      "program": "${workspaceFolder}/src/Gml.Web.Api/src/Gml.Web.Api/bin/Debug/net10.0/Gml.Web.Api.dll",
+      "cwd": "${workspaceFolder}/src/Gml.Web.Api/src/Gml.Web.Api",
+      "launchSettingsFilePath": "${workspaceFolder}/src/Gml.Web.Api/src/Gml.Web.Api/Properties/launchSettings.json",
+      "launchSettingsProfile": "frontend",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Skins (development)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build Skins",
+      "program": "${workspaceFolder}/src/Gml.Web.Skin.Service/src/Gml.Web.Skin.Service/bin/Debug/net8.0/Gml.Web.Skin.Service.dll",
+      "cwd": "${workspaceFolder}/src/Gml.Web.Skin.Service/src/Gml.Web.Skin.Service",
+      "launchSettingsFilePath": "${workspaceFolder}/src/Gml.Web.Skin.Service/src/Gml.Web.Skin.Service/Properties/launchSettings.json",
+      "launchSettingsProfile": "http",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Frontend",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}/src/Gml.Web.Client"
+    }
+  ]
+}
